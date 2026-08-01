@@ -6,9 +6,15 @@ A single-page site for DynamiX Group, the Singapore wealth advisory firm founded
 
 David's personal advisor brand, AWFA, has its own separate kit at [`docs/branding-awfa.md`](docs/branding-awfa.md) for reference; the two are related but visually distinct (see the "Relationship to the AWFA Brand" section of the DynamiX kit).
 
-## Logo asset note
+## Logo assets
 
-The source logo (`Dynamix New Transparent.jpg`) is a flattened JPEG with a checkerboard pattern baked into the pixels (JPEGs have no alpha channel, so the "transparent" export didn't work as intended). It isn't used directly on the site. Export a true transparent PNG or SVG from the original design file if you want the literal mark embedded; until then the site uses a coded wordmark (see `docs/branding-dynamix.md`, Section 2.3).
+`assets/` holds resized copies of the real DynamiX Group logo (`Dynamix logo social.png`, the one export that actually has a proper background rather than a baked-in transparency checkerboard):
+
+- `dynamix-badge.png` (180x180) — used in the nav and footer as the brand mark.
+- `dynamix-favicon.png` (64x64) — browser tab icon.
+- `dynamix-social.png` (512x512) — `og:image` for link previews.
+
+The two earlier exports (`Dynamix New Transparent.jpg` / `.png`) both turned out to have the transparency-preview checkerboard flattened into the pixels rather than a real alpha channel, so they aren't used. If a clean transparent PNG or SVG of the full lockup (or just the X/ring mark on its own) becomes available, it can replace these directly.
 
 ## Contact details
 
