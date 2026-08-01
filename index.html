@@ -166,24 +166,19 @@
   }
   .hero-visual .grain { position: absolute; inset: 0; opacity: 0.5;
     background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
-  .hero-visual .swoosh {
-    position: absolute; top: -10%; right: -18%; width: 78%; height: 78%;
-    border: 22px solid var(--brand-red); border-radius: 50%;
-    clip-path: polygon(38% 0, 100% 0, 100% 100%, 38% 100%);
-  }
-  .hero-visual .ring {
-    position: absolute; width: 40%; height: 40%; top: 14%; right: 10%;
-    border: 1.5px solid var(--brand-gold); border-radius: 50%; opacity: 0.7;
+  .hero-visual .logo-mark {
+    position: absolute; left: 50%; top: 22%; width: 82%; transform: translate(-50%, 0);
+    filter: drop-shadow(0 10px 24px rgba(0,0,0,0.35));
   }
   .hero-visual .cert-panel {
-    position: absolute; left: 8%; bottom: 9%; width: 62%; background: var(--brand-red);
-    border-radius: var(--radius-md); padding: 18px 20px; color: #fff;
+    position: absolute; left: 50%; bottom: 10%; width: 68%; transform: translateX(-50%);
+    background: var(--brand-red); border-radius: var(--radius-md); padding: 18px 20px; color: #fff; text-align: center;
   }
   .hero-visual .cert-panel .label { font-size: 10.5px; letter-spacing: 0.05em; opacity: 0.8; margin-bottom: 4px; }
-  .hero-visual .cert-panel .value { font-size: 24px; font-weight: 700; font-family: "Source Serif 4", serif; font-variant-numeric: tabular-nums; }
-  @keyframes float-slow { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-  .hero-visual .ring { animation: float-slow 10s ease-in-out infinite; }
-  @media (prefers-reduced-motion: reduce) { .hero-visual .ring { animation: none; } }
+  .hero-visual .cert-panel .value { font-size: 22px; font-weight: 700; font-family: "Source Serif 4", serif; font-variant-numeric: tabular-nums; }
+  @keyframes float-slow { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -8px); } }
+  .hero-visual .logo-mark { animation: float-slow 10s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) { .hero-visual .logo-mark { animation: none; } }
 
   /* ---------- Values strip ---------- */
   .values { padding: 36px 0 52px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
@@ -367,8 +362,7 @@
       </div>
       <div class="hero-visual" aria-hidden="true">
         <div class="grain"></div>
-        <div class="swoosh"></div>
-        <div class="ring"></div>
+        <img class="logo-mark" src="assets/dynamix-lockup.png" alt="" />
         <div class="cert-panel">
           <div class="label">HOW WE WORK</div>
           <div class="value">One firm. One standard.</div>
