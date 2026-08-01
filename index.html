@@ -3,33 +3,35 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>David Seen | CFO of Your Life</title>
-<meta name="description" content="David Seen, Alpha Wealth Financial Advisers. A trusted financial companion for Singaporean families building wealth, protection, and legacy, one percent better every day." />
+<title>DynamiX Group | Providing Certainty in Life</title>
+<meta name="description" content="DynamiX Group is a Singapore wealth advisory firm founded and led by David Seen, providing certainty in life for individuals, families, and businesses." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&family=Playfair+Display:ital@1&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet" />
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
 <style>
   :root {
-    /* Brand primary */
-    --brand-gold: #D5AB45;
-    --brand-gold-strong: #B98F30;
-    --brand-forest: #27392E;
-    --brand-forest-soft: #32463A;
+    /* Brand primary, sampled from the DynamiX Group logo mark */
+    --brand-red: #9C1B24;
+    --brand-red-strong: #7A141B;
+    --brand-red-bright: #C62430;
+    --brand-gold: #B8934A;
 
     /* Neutrals */
-    --ink-900: #303030;
-    --ink-700: #4C4C4C;
-    --ink-500: #7A7A7A;
-    --ink-300: #9D9D9D;
-    --ink-100: #CDCDCD;
+    --ink-900: #1C1A1B;
+    --ink-700: #4A4547;
+    --ink-500: #79767B;
+    --ink-300: #A9A6A8;
+    --ink-100: #DAD7D8;
     --surface: #FFFFFF;
-    --surface-muted: #FCFCFC;
+    --surface-muted: #FAF9F8;
+    --dark-base: #171414;
+    --dark-soft: #241C1D;
 
     /* Semantic */
     --success: #3F8A5A;
-    --warning: #E0A33A;
-    --danger: #B7423A;
+    --warning: #C9922E;
+    --danger: #C0392B;
     --info: #3A6FB7;
 
     /* Working aliases */
@@ -40,55 +42,56 @@
     --text-faint: var(--ink-500);
     --border: var(--ink-100);
     --border-strong: var(--ink-300);
-    --accent: var(--brand-gold);
-    --accent-strong: var(--brand-gold-strong);
-    --accent-soft: rgba(213,171,69,0.14);
-    --dark: var(--brand-forest);
-    --dark-soft: var(--brand-forest-soft);
-    --text-on-dark: #F4F1E9;
-    --text-on-dark-muted: #C7CFC9;
+    --accent: var(--brand-red);
+    --accent-strong: var(--brand-red-strong);
+    --accent-bright: var(--brand-red-bright);
+    --accent-soft: rgba(156,27,36,0.10);
+    --gold: var(--brand-gold);
+    --dark: var(--dark-base);
+    --text-on-dark: #F4F0EC;
+    --text-on-dark-muted: #C9C0BC;
 
     --radius-sm: 6px;
     --radius-md: 12px;
     --radius-lg: 20px;
     --radius-pill: 999px;
-    --shadow-card: 0 4px 16px rgba(39,57,46,0.08);
+    --shadow-card: 0 4px 16px rgba(23,20,20,0.10);
     --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #1c2620;
-      --bg-muted: #202b24;
-      --text: #F1EEE5;
-      --text-muted: #C7CFC9;
-      --text-faint: #93A099;
-      --border: rgba(244,241,233,0.12);
-      --border-strong: rgba(244,241,233,0.2);
-      --accent: #E3BE64;
-      --accent-strong: #D5AB45;
-      --accent-soft: rgba(227,190,100,0.16);
-      --dark: #14201A;
-      --dark-soft: #1c2921;
-      --shadow-card: 0 4px 20px rgba(0,0,0,0.35);
+      --bg: #1a1617;
+      --bg-muted: #201b1c;
+      --text: #F1EDEA;
+      --text-muted: #C9C0BC;
+      --text-faint: #948C89;
+      --border: rgba(244,240,236,0.12);
+      --border-strong: rgba(244,240,236,0.2);
+      --accent: #D6444C;
+      --accent-strong: #C62430;
+      --accent-bright: #E15C63;
+      --accent-soft: rgba(214,68,76,0.16);
+      --dark: #0F0C0C;
+      --shadow-card: 0 4px 20px rgba(0,0,0,0.4);
     }
   }
   :root[data-theme="dark"] {
-    --bg: #1c2620; --bg-muted: #202b24; --text: #F1EEE5; --text-muted: #C7CFC9; --text-faint: #93A099;
-    --border: rgba(244,241,233,0.12); --border-strong: rgba(244,241,233,0.2);
-    --accent: #E3BE64; --accent-strong: #D5AB45; --accent-soft: rgba(227,190,100,0.16);
-    --dark: #14201A; --dark-soft: #1c2921; --shadow-card: 0 4px 20px rgba(0,0,0,0.35);
+    --bg: #1a1617; --bg-muted: #201b1c; --text: #F1EDEA; --text-muted: #C9C0BC; --text-faint: #948C89;
+    --border: rgba(244,240,236,0.12); --border-strong: rgba(244,240,236,0.2);
+    --accent: #D6444C; --accent-strong: #C62430; --accent-bright: #E15C63; --accent-soft: rgba(214,68,76,0.16);
+    --dark: #0F0C0C; --shadow-card: 0 4px 20px rgba(0,0,0,0.4);
   }
   :root[data-theme="light"] {
     --bg: var(--surface); --bg-muted: var(--surface-muted); --text: var(--ink-900); --text-muted: var(--ink-700); --text-faint: var(--ink-500);
     --border: var(--ink-100); --border-strong: var(--ink-300);
-    --accent: var(--brand-gold); --accent-strong: var(--brand-gold-strong); --accent-soft: rgba(213,171,69,0.14);
-    --dark: var(--brand-forest); --dark-soft: var(--brand-forest-soft); --shadow-card: 0 4px 16px rgba(39,57,46,0.08);
+    --accent: var(--brand-red); --accent-strong: var(--brand-red-strong); --accent-bright: var(--brand-red-bright); --accent-soft: rgba(156,27,36,0.10);
+    --dark: var(--dark-base); --shadow-card: 0 4px 16px rgba(23,20,20,0.10);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { background: var(--bg); }
   body {
-    font-family: "Raleway", "Helvetica Neue", Arial, sans-serif;
+    font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     line-height: 1.5;
@@ -99,9 +102,9 @@
   img, svg { display: block; max-width: 100%; }
   .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
   section { position: relative; }
-  h1, h2, h3, h4 { line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; }
-  .accent-serif { font-family: "Playfair Display", Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: 0; color: var(--accent-strong); }
-  ::selection { background: var(--brand-gold); color: var(--brand-forest); }
+  h1, h2, h3, h4 { font-family: "Source Serif 4", Georgia, serif; line-height: 1.15; font-weight: 700; letter-spacing: -0.01em; }
+  .accent-italic { font-style: italic; color: var(--accent-strong); }
+  ::selection { background: var(--brand-red); color: #fff; }
   [data-lucide] { width: 20px; height: 20px; stroke-width: 1.5; }
 
   /* ---------- Nav ---------- */
@@ -114,11 +117,14 @@
   }
   .nav-inner {
     max-width: 1200px; margin: 0 auto; padding: 0 24px;
-    height: 68px; display: flex; align-items: center; justify-content: space-between;
+    height: 70px; display: flex; align-items: center; justify-content: space-between;
   }
-  .brand { display: flex; flex-direction: column; line-height: 1.15; }
-  .brand .name { font-weight: 700; font-size: 16px; letter-spacing: -0.005em; color: var(--text); }
-  .brand .tagline { font-size: 10.5px; letter-spacing: 0.04em; color: var(--text-faint); }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand .ring-mark { width: 26px; height: 26px; flex-shrink: 0; }
+  .brand .word { display: flex; flex-direction: column; line-height: 1.05; }
+  .brand .word .name { font-family: "Source Serif 4", serif; font-weight: 700; font-size: 17px; letter-spacing: -0.005em; color: var(--text); }
+  .brand .word .name .x { color: var(--brand-red); }
+  .brand .word .sub { font-size: 9.5px; letter-spacing: 0.14em; color: var(--text-faint); margin-top: 1px; }
   .nav-links { display: flex; align-items: center; gap: 28px; }
   .nav-links a { font-size: 14px; color: var(--text-muted); transition: color .15s var(--ease-brand); }
   .nav-links a:hover { color: var(--text); }
@@ -130,64 +136,63 @@
 
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    font-family: "Raleway", sans-serif; font-size: 14px; font-weight: 600; white-space: nowrap;
+    font-family: "IBM Plex Sans", sans-serif; font-size: 14px; font-weight: 600; white-space: nowrap;
     padding: 11px 22px; border-radius: var(--radius-pill); border: 1px solid transparent;
     cursor: pointer; transition: transform .15s var(--ease-brand), background .25s var(--ease-brand), border-color .25s var(--ease-brand), opacity .25s var(--ease-brand);
   }
   .btn:active { transform: scale(0.97); }
-  .btn-primary { background: var(--brand-gold); color: var(--brand-forest); }
+  .btn-primary { background: var(--brand-red); color: #fff; }
   .btn-primary:hover { background: var(--accent-strong); }
   .btn-ghost { background: transparent; color: var(--text); border-color: var(--border-strong); }
   .btn-ghost:hover { border-color: var(--text-faint); }
-  .btn-on-dark { background: var(--brand-gold); color: var(--brand-forest); }
   .btn:disabled { opacity: 0.6; cursor: default; }
 
   /* ---------- Hero ---------- */
   .hero { padding: 56px 0 64px; }
   .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
-  .hero h1 { font-size: clamp(32px, 4.4vw, 48px); max-width: 15ch; }
-  .hero h1 .accent-serif { display: block; font-size: 1.05em; margin-top: 4px; }
+  .hero h1 { font-size: clamp(32px, 4.4vw, 50px); max-width: 13ch; }
   .hero p.sub { margin-top: 20px; font-size: 16.5px; line-height: 1.6; color: var(--text-muted); max-width: 44ch; }
   .hero-ctas { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; }
 
   .hero-visual {
     position: relative; aspect-ratio: 4/5; border-radius: var(--radius-lg); overflow: hidden;
-    background: linear-gradient(160deg, var(--brand-forest) 0%, var(--dark-soft) 60%, #1b2621 100%);
+    background: linear-gradient(160deg, var(--dark-base) 0%, var(--dark-soft) 55%, #201818 100%);
     box-shadow: var(--shadow-card);
   }
   .hero-visual .grain { position: absolute; inset: 0; opacity: 0.5;
-    background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 20px 20px; }
+    background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
+  .hero-visual .swoosh {
+    position: absolute; top: -10%; right: -18%; width: 78%; height: 78%;
+    border: 22px solid var(--brand-red); border-radius: 50%;
+    clip-path: polygon(38% 0, 100% 0, 100% 100%, 38% 100%);
+  }
   .hero-visual .ring {
-    position: absolute; border-radius: 50%; border: 1px solid rgba(213,171,69,0.35);
+    position: absolute; width: 40%; height: 40%; top: 14%; right: 10%;
+    border: 1.5px solid var(--brand-gold); border-radius: 50%; opacity: 0.7;
   }
-  .hero-visual .r1 { width: 60%; height: 60%; top: 8%; right: -10%; }
-  .hero-visual .r2 { width: 34%; height: 34%; bottom: 10%; left: -6%; border-color: rgba(244,241,233,0.16); }
-  .hero-visual .gold-panel {
-    position: absolute; left: 8%; bottom: 9%; width: 58%; background: var(--brand-gold);
-    border-radius: var(--radius-md); padding: 18px 20px; color: var(--brand-forest);
+  .hero-visual .cert-panel {
+    position: absolute; left: 8%; bottom: 9%; width: 62%; background: var(--brand-red);
+    border-radius: var(--radius-md); padding: 18px 20px; color: #fff;
   }
-  .hero-visual .gold-panel .label { font-size: 11px; letter-spacing: 0.04em; opacity: 0.75; margin-bottom: 4px; }
-  .hero-visual .gold-panel .value { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .hero-visual .cert-panel .label { font-size: 10.5px; letter-spacing: 0.05em; opacity: 0.8; margin-bottom: 4px; }
+  .hero-visual .cert-panel .value { font-size: 24px; font-weight: 700; font-family: "Source Serif 4", serif; font-variant-numeric: tabular-nums; }
   @keyframes float-slow { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
   .hero-visual .ring { animation: float-slow 10s ease-in-out infinite; }
   @media (prefers-reduced-motion: reduce) { .hero-visual .ring { animation: none; } }
 
-  /* ---------- Personality strip ---------- */
-  .personality { padding: 36px 0 52px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-  .personality-label { font-size: 13px; color: var(--text-faint); margin-bottom: 20px; }
+  /* ---------- Values strip ---------- */
+  .values { padding: 36px 0 52px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .values-label { font-size: 13px; color: var(--text-faint); margin-bottom: 20px; }
   .chips { display: flex; gap: 10px; flex-wrap: wrap; }
-  .chip {
-    font-size: 13px; font-weight: 500; color: var(--text-muted); border: 1px solid var(--border-strong);
-    border-radius: var(--radius-pill); padding: 8px 16px;
-  }
+  .chip { font-size: 13px; font-weight: 500; color: var(--text-muted); border: 1px solid var(--border-strong); border-radius: var(--radius-pill); padding: 8px 16px; }
 
   /* ---------- Section heading ---------- */
   .section { padding: 84px 0; }
   .section-head { max-width: 56ch; margin-bottom: 42px; }
   .section-head h2 { font-size: clamp(24px, 3vw, 32px); }
-  .section-head p { margin-top: 12px; font-size: 15px; color: var(--text-muted); line-height: 1.6; }
+  .section-head p { margin-top: 12px; font-size: 15px; color: var(--text-muted); line-height: 1.6; font-family: "IBM Plex Sans", sans-serif; }
 
-  /* ---------- Pillars bento ---------- */
+  /* ---------- Services bento ---------- */
   .bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .bento-card {
     border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--bg);
@@ -196,60 +201,60 @@
   }
   .bento-card:hover { transform: translateY(-2px); }
   .bento-card.wide { grid-column: span 2; }
-  .bento-card.accent { background: var(--brand-gold); color: var(--brand-forest); border-color: transparent; }
-  .bento-card.dark { background: var(--brand-forest); color: var(--text-on-dark); border-color: transparent; }
+  .bento-card.accent { background: var(--brand-red); color: #fff; border-color: transparent; }
+  .bento-card.dark { background: var(--dark); color: var(--text-on-dark); border-color: transparent; }
   .bento-card .icon-wrap {
     width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--bg-muted);
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
   .bento-card.accent .icon-wrap, .bento-card.dark .icon-wrap { background: rgba(255,255,255,0.18); }
-  .bento-card .icon-wrap [data-lucide] { width: 20px; height: 20px; }
   .bento-card.accent [data-lucide], .bento-card.dark [data-lucide] { color: #fff; }
   .bento-card:not(.accent):not(.dark) [data-lucide] { color: var(--text-muted); }
   .bento-card h3 { font-size: 18px; margin-bottom: 8px; }
-  .bento-card p { font-size: 13.5px; line-height: 1.55; color: var(--text-muted); max-width: 42ch; }
-  .bento-card.accent p { color: rgba(39,57,46,0.78); }
+  .bento-card p { font-family: "IBM Plex Sans", sans-serif; font-size: 13.5px; line-height: 1.55; color: var(--text-muted); max-width: 42ch; }
+  .bento-card.accent p { color: rgba(255,255,255,0.82); }
   .bento-card.dark p { color: var(--text-on-dark-muted); }
-
-  .compound-demo { display: flex; align-items: baseline; gap: 8px; margin-top: 4px; }
-  .compound-demo .num { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--brand-forest); }
-  .compound-demo .arrow { color: var(--brand-forest); opacity: 0.6; }
-  .compound-demo .note { font-size: 11px; color: rgba(39,57,46,0.65); }
-
   @media (max-width: 860px) { .bento { grid-template-columns: 1fr; } .bento-card.wide { grid-column: span 1; } }
 
-  /* ---------- Journey gallery ---------- */
-  .journey-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px 24px; }
-  .journey-card { display: flex; flex-direction: column; gap: 14px; }
-  .journey-visual { aspect-ratio: 16/11; border-radius: var(--radius-md); overflow: hidden; position: relative; }
-  .journey-visual .layer { position: absolute; inset: 0; }
-  .journey-meta h3 { font-size: 16px; margin-bottom: 4px; }
-  .journey-card p { font-size: 13.5px; color: var(--text-muted); line-height: 1.55; max-width: 46ch; }
-  @media (max-width: 760px) { .journey-grid { grid-template-columns: 1fr; } }
+  /* ---------- Leadership ---------- */
+  .leadership-wrap {
+    border-radius: var(--radius-lg); background: var(--dark); color: var(--text-on-dark);
+    padding: 56px; display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 48px; align-items: center;
+  }
+  .leadership-badge { width: 46px; height: 46px; border-radius: 50%; border: 1.5px solid var(--brand-gold); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+  .leadership-wrap h2 { color: var(--text-on-dark); }
+  .leadership-wrap p { font-family: "IBM Plex Sans", sans-serif; font-size: 14.5px; line-height: 1.65; color: var(--text-on-dark-muted); margin-top: 16px; max-width: 48ch; }
+  .leadership-quote {
+    border-left: 2px solid var(--brand-gold); padding-left: 22px;
+  }
+  .leadership-quote blockquote { font-family: "Source Serif 4", serif; font-style: italic; font-size: clamp(18px, 2vw, 21px); line-height: 1.45; color: var(--text-on-dark); }
+  .leadership-quote .attribution { margin-top: 16px; font-family: "IBM Plex Sans", sans-serif; font-size: 13.5px; color: var(--text-on-dark-muted); }
+  .leadership-quote .attribution strong { color: var(--text-on-dark); font-weight: 600; }
+  @media (max-width: 760px) { .leadership-wrap { grid-template-columns: 1fr; padding: 36px 26px; } }
 
   /* ---------- Process ---------- */
   .process-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
-  .process-item { padding: 24px 22px 0; border-top: 2px solid var(--brand-gold); }
-  .process-item .num { font-size: 13px; color: var(--text-faint); margin-bottom: 16px; display: block; font-variant-numeric: tabular-nums; }
+  .process-item { padding: 24px 22px 0; border-top: 2px solid var(--brand-red); }
+  .process-item .num { font-size: 13px; color: var(--text-faint); margin-bottom: 16px; display: block; font-variant-numeric: tabular-nums; font-family: "IBM Plex Sans", sans-serif; }
   .process-item h3 { font-size: 16px; margin-bottom: 10px; }
-  .process-item p { font-size: 13.5px; color: var(--text-muted); line-height: 1.55; max-width: 30ch; }
+  .process-item p { font-family: "IBM Plex Sans", sans-serif; font-size: 13.5px; color: var(--text-muted); line-height: 1.55; max-width: 30ch; }
   @media (max-width: 760px) { .process-row { grid-template-columns: 1fr; gap: 26px; } }
 
   /* ---------- Testimonial ---------- */
   .testimonial-wrap {
-    border-radius: var(--radius-lg); background: var(--brand-forest); color: var(--text-on-dark);
+    border-radius: var(--radius-lg); background: var(--bg-muted); border: 1px solid var(--border);
     padding: 56px; display: grid; grid-template-columns: auto 1fr; gap: 26px; align-items: start;
   }
-  .testimonial-wrap [data-lucide] { width: 28px; height: 28px; color: var(--brand-gold); flex-shrink: 0; margin-top: 4px; }
-  .testimonial-wrap blockquote { font-size: clamp(19px, 2.3vw, 24px); line-height: 1.42; font-weight: 500; }
-  .testimonial-wrap .attribution { margin-top: 20px; font-size: 14px; color: var(--text-on-dark-muted); }
-  .testimonial-wrap .attribution strong { color: var(--text-on-dark); font-weight: 600; }
+  .testimonial-wrap [data-lucide] { width: 28px; height: 28px; color: var(--brand-red); flex-shrink: 0; margin-top: 4px; }
+  .testimonial-wrap blockquote { font-family: "Source Serif 4", serif; font-size: clamp(19px, 2.3vw, 24px); line-height: 1.42; font-weight: 600; }
+  .testimonial-wrap .attribution { margin-top: 20px; font-family: "IBM Plex Sans", sans-serif; font-size: 14px; color: var(--text-muted); }
+  .testimonial-wrap .attribution strong { color: var(--text); font-weight: 600; }
   @media (max-width: 640px) { .testimonial-wrap { padding: 34px 26px; grid-template-columns: 1fr; } }
 
   /* ---------- Contact ---------- */
   .contact-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 60px; }
   .contact-info h2 { font-size: clamp(24px, 3vw, 30px); margin-bottom: 14px; }
-  .contact-info p { font-size: 15px; color: var(--text-muted); line-height: 1.6; max-width: 40ch; margin-bottom: 28px; }
+  .contact-info p { font-family: "IBM Plex Sans", sans-serif; font-size: 15px; color: var(--text-muted); line-height: 1.6; max-width: 40ch; margin-bottom: 28px; }
   .contact-detail { display: flex; flex-direction: column; gap: 14px; }
   .contact-detail .row { display: flex; align-items: center; gap: 10px; font-size: 14.5px; }
   .contact-detail .row [data-lucide] { color: var(--text-faint); }
@@ -263,7 +268,7 @@
     padding: 12px 14px; outline: none; transition: border-color .2s var(--ease-brand), box-shadow .2s var(--ease-brand); width: 100%;
   }
   .field textarea { resize: vertical; min-height: 96px; }
-  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--brand-gold); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--brand-red); box-shadow: 0 0 0 3px var(--accent-soft); }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   @media (max-width: 640px) { .field-row { grid-template-columns: 1fr; } }
   .field .error { font-size: 12.5px; color: var(--danger); display: none; }
@@ -271,7 +276,7 @@
   .field.has-error .error { display: block; }
 
   .form-submit-row { display: flex; align-items: center; gap: 14px; margin-top: 6px; }
-  .spinner { width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(39,57,46,0.35); border-top-color: var(--brand-forest); animation: spin 0.7s linear infinite; display: none; }
+  .spinner { width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; animation: spin 0.7s linear infinite; display: none; }
   .btn.is-loading .spinner { display: inline-block; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .form-success { display: none; align-items: center; gap: 10px; font-size: 14px; color: var(--text); background: var(--bg-muted); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; }
@@ -280,13 +285,15 @@
   @media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; gap: 40px; } }
 
   /* ---------- Footer ---------- */
-  footer { background: var(--brand-forest); color: var(--text-on-dark-muted); padding: 44px 0; }
+  footer { background: var(--dark); color: var(--text-on-dark-muted); padding: 44px 0; }
   .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-  .footer-brand .name { color: var(--text-on-dark); font-weight: 700; font-size: 15px; }
-  .footer-brand .tagline { font-size: 12px; margin-top: 2px; }
+  .footer-brand { display: flex; align-items: center; gap: 10px; }
+  .footer-brand .word .name { font-family: "Source Serif 4", serif; color: var(--text-on-dark); font-weight: 700; font-size: 15px; }
+  .footer-brand .word .name .x { color: var(--accent-bright); }
+  .footer-brand .word .tagline { font-size: 11.5px; margin-top: 2px; color: var(--text-on-dark-muted); }
   .footer-links { display: flex; gap: 22px; }
   .footer-links a { font-size: 13.5px; }
-  .footer-links a:hover { color: var(--brand-gold); }
+  .footer-links a:hover { color: var(--accent-bright); }
   .footer-copy { font-size: 12.5px; }
 
   /* ---------- Reveal ---------- */
@@ -312,28 +319,31 @@
 <header class="nav">
   <div class="nav-inner">
     <a href="#top" class="brand">
-      <span class="name">David Seen</span>
-      <span class="tagline">CFO OF YOUR LIFE &middot; 1% BETTER</span>
+      <svg class="ring-mark" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="10.5" stroke="#B8934A" stroke-width="1.6"/><path d="M13 2.5c3.5 2 5.8 6 5.8 10.5S16.5 21.5 13 23.5" stroke="#9C1B24" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <span class="word">
+        <span class="name">Dynami<span class="x">X</span> Group</span>
+        <span class="sub">PROVIDING CERTAINTY IN LIFE</span>
+      </span>
     </a>
     <nav class="nav-links">
-      <a href="#pillars">How I Help</a>
-      <a href="#journey">The Journey</a>
+      <a href="#services">Services</a>
+      <a href="#leadership">Leadership</a>
       <a href="#process">How It Works</a>
       <a href="#contact">Contact</a>
     </nav>
     <div class="nav-cta-wrap">
-      <a href="#contact" class="btn btn-primary">Start your plan</a>
+      <a href="#contact" class="btn btn-primary">Book a consultation</a>
       <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
         <i data-lucide="menu"></i>
       </button>
     </div>
   </div>
   <div class="mobile-menu" id="mobile-menu">
-    <a href="#pillars">How I Help</a>
-    <a href="#journey">The Journey</a>
+    <a href="#services">Services</a>
+    <a href="#leadership">Leadership</a>
     <a href="#process">How It Works</a>
     <a href="#contact">Contact</a>
-    <a href="#contact" class="btn btn-primary">Start your plan</a>
+    <a href="#contact" class="btn btn-primary">Book a consultation</a>
   </div>
 </header>
 
@@ -343,125 +353,98 @@
   <section class="hero">
     <div class="container hero-grid">
       <div>
-        <h1>CFO of your life.<span class="accent-serif">1% Better.</span></h1>
-        <p class="sub">A trusted financial companion for Singaporean families making wise choices about CPF, protection, and the life you're building.</p>
+        <h1>Providing certainty <span class="accent-italic">in life.</span></h1>
+        <p class="sub">DynamiX Group is a Singapore wealth advisory firm built to make big decisions steady, clear, and built to last.</p>
         <div class="hero-ctas">
-          <a href="#contact" class="btn btn-primary">Start your plan</a>
-          <a href="#pillars" class="btn btn-ghost">See how I help</a>
+          <a href="#contact" class="btn btn-primary">Book a consultation</a>
+          <a href="#services" class="btn btn-ghost">See our services</a>
         </div>
       </div>
       <div class="hero-visual" aria-hidden="true">
         <div class="grain"></div>
-        <div class="ring r1"></div>
-        <div class="ring r2"></div>
-        <div class="gold-panel">
-          <div class="label">1% BETTER, COMPOUNDED OVER A YEAR (ILLUSTRATIVE)</div>
-          <div class="value" id="compound-value">100.0</div>
+        <div class="swoosh"></div>
+        <div class="ring"></div>
+        <div class="cert-panel">
+          <div class="label">HOW WE WORK</div>
+          <div class="value">One firm. One standard.</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PERSONALITY STRIP -->
-  <section class="personality">
+  <!-- VALUES STRIP -->
+  <section class="values">
     <div class="container">
-      <p class="personality-label">What working together feels like</p>
+      <p class="values-label">What steady looks like</p>
       <div class="chips">
-        <span class="chip">Warm</span>
+        <span class="chip">Steady</span>
         <span class="chip">Disciplined</span>
-        <span class="chip">Family-anchored</span>
-        <span class="chip">Aspirational but grounded</span>
-        <span class="chip">Culturally Singaporean</span>
+        <span class="chip">Transparent</span>
+        <span class="chip">Client-first</span>
+        <span class="chip">Singaporean &amp; professional</span>
       </div>
     </div>
   </section>
 
-  <!-- PILLARS: bento -->
-  <section class="section" id="pillars">
+  <!-- SERVICES: bento -->
+  <section class="section" id="services">
     <div class="container">
       <div class="section-head reveal">
-        <h2>How I help</h2>
-        <p>Five things I focus on with every family I work with, in plain English, not jargon.</p>
+        <h2>How we help</h2>
+        <p>Five areas of advice, delivered by a firm, not a single point of contact.</p>
       </div>
       <div class="bento">
         <div class="bento-card wide accent reveal">
           <div class="icon-wrap"><i data-lucide="trending-up"></i></div>
           <div>
-            <h3>Wealth that works</h3>
-            <p>CPF, retirement planning, savings, and investment frameworks that actually make sense for your life.</p>
+            <h3>Wealth Planning</h3>
+            <p>Savings and investment frameworks structured around real goals, not market noise.</p>
           </div>
         </div>
         <div class="bento-card reveal">
           <div class="icon-wrap"><i data-lucide="shield"></i></div>
           <div>
-            <h3>Protection first</h3>
-            <p>Insurance, hospitalisation, and legacy cover for the people who depend on you.</p>
+            <h3>Protection &amp; Insurance</h3>
+            <p>Health, hospitalisation, and income protection for the people who depend on you.</p>
           </div>
         </div>
         <div class="bento-card reveal">
-          <div class="icon-wrap"><i data-lucide="sprout"></i></div>
+          <div class="icon-wrap"><i data-lucide="piggy-bank"></i></div>
           <div>
-            <h3>1% Better daily</h3>
-            <p>Small, honest habits that compound. No hacks, no hustle, just consistency.</p>
+            <h3>Retirement &amp; CPF</h3>
+            <p>CPF optimisation and a retirement income plan you can actually picture.</p>
           </div>
         </div>
         <div class="bento-card dark reveal">
           <div class="icon-wrap"><i data-lucide="home"></i></div>
           <div>
-            <h3>Family &amp; legacy</h3>
-            <p>Decisions framed around Dwayne, Dylan, and the people you're building this for.</p>
+            <h3>Legacy &amp; Estate</h3>
+            <p>Wills, trusts, and succession planning, so continuity outlasts any one generation.</p>
           </div>
         </div>
         <div class="bento-card reveal">
-          <div class="icon-wrap"><i data-lucide="compass"></i></div>
+          <div class="icon-wrap"><i data-lucide="briefcase"></i></div>
           <div>
-            <h3>The journey</h3>
-            <p>The wins, the milestones, and the moments worth showing up for.</p>
+            <h3>Corporate Advisory</h3>
+            <p>Employee benefits and business protection for companies that need the same discipline.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- JOURNEY: moments gallery -->
-  <section class="section" id="journey" style="background:var(--bg-muted)">
+  <!-- LEADERSHIP -->
+  <section class="section" id="leadership" style="background:var(--bg-muted)">
     <div class="container">
-      <div class="section-head reveal">
-        <h2>Moments along the way</h2>
-        <p>The plan matters because of what it's for. A few of the moments that remind me why.</p>
-      </div>
-      <div class="journey-grid">
-        <div class="journey-card reveal">
-          <div class="journey-visual">
-            <div class="layer" style="background: linear-gradient(150deg, #D5AB45 0%, #27392E 70%);"></div>
-            <div class="layer" style="background: radial-gradient(circle at 75% 20%, rgba(255,255,255,0.28), transparent 45%);"></div>
-          </div>
-          <div class="journey-meta"><h3>FWD Awards Night</h3></div>
-          <p>Recognition for showing up for clients consistently, one percent at a time.</p>
+      <div class="leadership-wrap reveal">
+        <div>
+          <div class="leadership-badge"><i data-lucide="compass" style="color:#B8934A"></i></div>
+          <h2>Built by one advisor. Run like a firm.</h2>
+          <p>David Seen founded DynamiX Group on a simple idea: certainty shouldn't depend on any one person being in the room. Every advisor here is trained on the same process, the same standards, and the same promise, so the relationship outlasts any single conversation.</p>
         </div>
-        <div class="journey-card reveal">
-          <div class="journey-visual">
-            <div class="layer" style="background: linear-gradient(140deg, #27392E 0%, #4C4C4C 100%);"></div>
-            <div class="layer" style="background: radial-gradient(circle at 25% 75%, rgba(213,171,69,0.4), transparent 50%);"></div>
-          </div>
-          <div class="journey-meta"><h3>Bangkok &amp; Tokyo</h3></div>
-          <p>The trips that remind us why we plan for the future in the first place.</p>
-        </div>
-        <div class="journey-card reveal">
-          <div class="journey-visual">
-            <div class="layer" style="background: linear-gradient(160deg, #B7423A 0%, #27392E 75%);"></div>
-            <div class="layer" style="background: radial-gradient(circle at 70% 70%, rgba(255,255,255,0.18), transparent 55%);"></div>
-          </div>
-          <div class="journey-meta"><h3>Lunar New Year, together</h3></div>
-          <p>Reunion dinners, red packets, and the family this is all built for.</p>
-        </div>
-        <div class="journey-card reveal">
-          <div class="journey-visual">
-            <div class="layer" style="background: linear-gradient(150deg, #3F8A5A 0%, #27392E 80%);"></div>
-            <div class="layer" style="background: radial-gradient(circle at 30% 25%, rgba(213,171,69,0.35), transparent 50%);"></div>
-          </div>
-          <div class="journey-meta"><h3>Dwayne &amp; Dylan</h3></div>
-          <p>The two people every plan in this house ultimately gets built around.</p>
+        <div class="leadership-quote">
+          <blockquote>"Providing certainty in life" isn't just our tagline. It's how we train every advisor who joins us.</blockquote>
+          <p class="attribution"><strong>David Seen</strong> &middot; Founder, DynamiX Group</p>
         </div>
       </div>
     </div>
@@ -478,22 +461,22 @@
         <div class="process-item reveal">
           <span class="num">01</span>
           <h3>Listen</h3>
-          <p>We start with your life, not a product: income, family, worries, and what better means to you.</p>
+          <p>We start with your situation, not a product pitch: income, goals, and what steady means for you.</p>
         </div>
         <div class="process-item reveal">
           <span class="num">02</span>
           <h3>Plan</h3>
-          <p>A clear plan for CPF, protection, and growth, explained in plain English.</p>
+          <p>A clear plan for protection, growth, and legacy, explained in plain English.</p>
         </div>
         <div class="process-item reveal">
           <span class="num">03</span>
           <h3>Protect</h3>
-          <p>We put the plan to work, so the people you love are covered first.</p>
+          <p>We put the plan to work, so the people and things you value are covered first.</p>
         </div>
         <div class="process-item reveal">
           <span class="num">04</span>
           <h3>Review</h3>
-          <p>We check in regularly and adjust. Small changes, compounded, are the whole strategy.</p>
+          <p>Regular reviews and adjustments. Continuity is the strategy, not a one-time setup.</p>
         </div>
       </div>
     </div>
@@ -505,8 +488,8 @@
       <div class="testimonial-wrap reveal">
         <i data-lucide="quote"></i>
         <div>
-          <blockquote>David didn't just talk about numbers. He asked about my parents' medical bills and my daughter's schooling first, then built the plan around us.</blockquote>
-          <p class="attribution"><strong>Serene Koh</strong> &middot; client since 2021</p>
+          <blockquote>We've worked with a few different advisors at DynamiX over the years as our family's needs changed. The plan never missed a beat.</blockquote>
+          <p class="attribution"><strong>Ryan &amp; Hui Min Tan</strong> &middot; clients since 2018</p>
         </div>
       </div>
     </div>
@@ -516,13 +499,12 @@
   <section class="section" id="contact" style="background:var(--bg-muted)">
     <div class="container contact-grid">
       <div class="contact-info reveal">
-        <h2>Ready for your 1% Better plan?</h2>
-        <p>Tell me what's on your mind, CPF, protection, family, or just where to start. I reply within two business days, usually faster.</p>
+        <h2>Ready for a steady plan?</h2>
+        <p>Tell us what's on your mind, personal or corporate. We reply within two business days, usually faster.</p>
         <div class="contact-detail">
-          <div class="row"><i data-lucide="mail"></i> hello@awfa.com.sg</div>
-          <div class="row"><i data-lucide="phone"></i> +65 8123 4567</div>
+          <div class="row"><i data-lucide="mail"></i> hello@dynamixgroup.com.sg</div>
+          <div class="row"><i data-lucide="phone"></i> +65 6789 0123</div>
           <div class="row"><i data-lucide="map-pin"></i> Singapore</div>
-          <div class="row"><i data-lucide="instagram"></i> @davseen222</div>
         </div>
       </div>
       <form class="contact-form reveal" id="contact-form" novalidate>
@@ -539,28 +521,29 @@
           </div>
         </div>
         <div class="field">
-          <label for="f-focus">What matters most right now?</label>
+          <label for="f-focus">What are you looking for?</label>
           <select id="f-focus" name="focus">
-            <option>CPF &amp; retirement</option>
+            <option>Personal wealth planning</option>
             <option>Protection &amp; insurance</option>
-            <option>Family &amp; legacy</option>
-            <option>Not sure yet</option>
+            <option>Retirement &amp; CPF</option>
+            <option>Legacy &amp; estate</option>
+            <option>Corporate advisory</option>
           </select>
         </div>
         <div class="field">
           <label for="f-message">Message</label>
           <textarea id="f-message" name="message" required></textarea>
-          <span class="error">Tell me a little about what's on your mind.</span>
+          <span class="error">Tell us a little about what you need.</span>
         </div>
         <div class="form-submit-row">
           <button class="btn btn-primary" type="submit" id="submit-btn">
             <span class="spinner"></span>
-            <span class="btn-label">Start your plan</span>
+            <span class="btn-label">Book a consultation</span>
           </button>
         </div>
         <div class="form-success" id="form-success">
           <i data-lucide="check-circle"></i>
-          Thanks. I'll reply within two business days.
+          Thanks. We'll reply within two business days.
         </div>
       </form>
     </div>
@@ -571,16 +554,18 @@
 <footer>
   <div class="container footer-inner">
     <div class="footer-brand">
-      <div class="name">David Seen &middot; AWFA</div>
-      <div class="tagline">CFO of your life. 1% Better.</div>
+      <svg width="22" height="22" viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="10.5" stroke="#B8934A" stroke-width="1.6"/><path d="M13 2.5c3.5 2 5.8 6 5.8 10.5S16.5 21.5 13 23.5" stroke="#D6444C" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <span class="word">
+        <div class="name">Dynami<span class="x">X</span> Group</div>
+        <div class="tagline">Providing certainty in life.</div>
+      </span>
     </div>
     <div class="footer-links">
-      <a href="#pillars">How I Help</a>
-      <a href="#journey">The Journey</a>
+      <a href="#services">Services</a>
+      <a href="#leadership">Leadership</a>
       <a href="#contact">Contact</a>
-      <a href="https://awfa.com.sg" target="_blank" rel="noopener">awfa.com.sg</a>
     </div>
-    <p class="footer-copy">&copy; 2026 David Seen / Alpha Wealth Financial Advisers</p>
+    <p class="footer-copy">&copy; 2026 DynamiX Group. Founded by David Seen.</p>
   </div>
 </footer>
 
@@ -603,30 +588,6 @@
       reveals.forEach(el => io.observe(el));
     } else {
       reveals.forEach(el => el.classList.add('in'));
-    }
-
-    // Illustrative 1% compounding count-up, per brand motion guidance
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const compoundEl = document.getElementById('compound-value');
-    const target = 100 * Math.pow(1.01, 12); // ~112.68
-    if (reduceMotion || !compoundEl) {
-      if (compoundEl) compoundEl.textContent = target.toFixed(1);
-    } else {
-      let start = null;
-      const duration = 1400;
-      function step(ts) {
-        if (!start) start = ts;
-        const progress = Math.min((ts - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        compoundEl.textContent = (100 + (target - 100) * eased).toFixed(1);
-        if (progress < 1) requestAnimationFrame(step);
-      }
-      const heroObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) { requestAnimationFrame(step); heroObserver.disconnect(); }
-        });
-      }, { threshold: 0.4 });
-      heroObserver.observe(compoundEl);
     }
 
     // Contact form: validation + fake submit cycle
