@@ -1,0 +1,662 @@
+<title>Amble Studio</title>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --bg-raised: #ffffff;
+    --bg-inset: #f1efea;
+    --bg-invert: #17161a;
+    --text: #17161a;
+    --text-muted: #5b5960;
+    --text-faint: #96939c;
+    --text-on-invert: #f4f2ed;
+    --text-on-invert-muted: #ada9b3;
+    --border: rgba(23,22,26,0.10);
+    --border-strong: rgba(23,22,26,0.18);
+    --border-invert: rgba(244,242,237,0.14);
+    --accent: #cf4726;
+    --accent-text: #b53c1f;
+    --accent-soft: rgba(207,71,38,0.10);
+    --accent-on-invert: #ef7350;
+    --shadow: 0 1px 2px rgba(23,22,26,0.05), 0 8px 24px rgba(23,22,26,0.05);
+    --radius-card: 14px;
+    --radius-input: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #131215;
+      --bg-raised: #1b1a1e;
+      --bg-inset: #201f24;
+      --bg-invert: #f4f2ed;
+      --text: #f1efe9;
+      --text-muted: #aeabb4;
+      --text-faint: #706d76;
+      --text-on-invert: #17161a;
+      --text-on-invert-muted: #55525a;
+      --border: rgba(244,242,237,0.10);
+      --border-strong: rgba(244,242,237,0.18);
+      --border-invert: rgba(23,22,26,0.12);
+      --accent: #ef7350;
+      --accent-text: #f4906f;
+      --accent-soft: rgba(239,115,80,0.14);
+      --accent-on-invert: #cf4726;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.28);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131215; --bg-raised: #1b1a1e; --bg-inset: #201f24; --bg-invert: #f4f2ed;
+    --text: #f1efe9; --text-muted: #aeabb4; --text-faint: #706d76;
+    --text-on-invert: #17161a; --text-on-invert-muted: #55525a;
+    --border: rgba(244,242,237,0.10); --border-strong: rgba(244,242,237,0.18); --border-invert: rgba(23,22,26,0.12);
+    --accent: #ef7350; --accent-text: #f4906f; --accent-soft: rgba(239,115,80,0.14); --accent-on-invert: #cf4726;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.28);
+  }
+  :root[data-theme="light"] {
+    --bg: #faf9f7; --bg-raised: #ffffff; --bg-inset: #f1efea; --bg-invert: #17161a;
+    --text: #17161a; --text-muted: #5b5960; --text-faint: #96939c;
+    --text-on-invert: #f4f2ed; --text-on-invert-muted: #ada9b3;
+    --border: rgba(23,22,26,0.10); --border-strong: rgba(23,22,26,0.18); --border-invert: rgba(244,242,237,0.14);
+    --accent: #cf4726; --accent-text: #b53c1f; --accent-soft: rgba(207,71,38,0.10); --accent-on-invert: #ef7350;
+    --shadow: 0 1px 2px rgba(23,22,26,0.05), 0 8px 24px rgba(23,22,26,0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--bg); }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  img, svg { display: block; max-width: 100%; }
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  section { position: relative; }
+  ::selection { background: var(--accent); color: #fff; }
+
+  /* ---------- Nav ---------- */
+  header.nav {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    max-width: 1180px; margin: 0 auto; padding: 0 24px;
+    height: 68px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 650; font-size: 16px; letter-spacing: -0.01em; }
+  .brand .mark {
+    width: 26px; height: 26px; border-radius: 7px; background: var(--accent);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .brand .mark svg { width: 14px; height: 14px; }
+  .nav-links { display: flex; align-items: center; gap: 30px; }
+  .nav-links a { font-size: 14px; color: var(--text-muted); transition: color .15s ease; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta-wrap { display: flex; align-items: center; gap: 16px; }
+  .nav-toggle {
+    display: none; width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg-raised); align-items: center; justify-content: center; cursor: pointer;
+  }
+  .nav-toggle svg { width: 17px; height: 17px; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 14px; font-weight: 600; white-space: nowrap;
+    padding: 10px 20px; border-radius: 999px; border: 1px solid transparent;
+    cursor: pointer; transition: transform .12s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { opacity: 0.92; }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--border-strong); }
+  .btn-ghost:hover { border-color: var(--text-faint); }
+  .btn-invert { background: var(--bg-invert); color: var(--text-on-invert); }
+  .btn-invert:hover { opacity: 0.9; }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 56px 0 72px;
+  }
+  .hero-grid {
+    display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 4.4vw, 54px);
+    line-height: 1.08; letter-spacing: -0.025em; font-weight: 650;
+    max-width: 15ch;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent-text); }
+  .hero p.sub {
+    margin-top: 20px; font-size: 16.5px; line-height: 1.6; color: var(--text-muted); max-width: 46ch;
+  }
+  .hero-ctas { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-visual { position: relative; aspect-ratio: 1/1; }
+  .hero-visual .blob {
+    position: absolute; border-radius: 28px;
+  }
+  .hero-visual .b1 { width: 62%; height: 62%; top: 4%; left: 6%; background: var(--accent); animation: float1 9s ease-in-out infinite; }
+  .hero-visual .b2 { width: 44%; height: 44%; bottom: 6%; right: 4%; background: var(--bg-invert); border-radius: 50%; animation: float2 11s ease-in-out infinite; }
+  .hero-visual .b3 {
+    width: 34%; height: 34%; top: 12%; right: 8%; background: var(--bg-raised);
+    border: 1px solid var(--border-strong); border-radius: 50%; animation: float3 7s ease-in-out infinite;
+  }
+  .hero-visual .grid-dots {
+    position: absolute; inset: 0; opacity: 0.5;
+    background-image: radial-gradient(var(--border-strong) 1px, transparent 1px);
+    background-size: 22px 22px; border-radius: 28px;
+  }
+  @keyframes float1 { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-8px, 10px) rotate(2deg); } }
+  @keyframes float2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(10px, -12px); } }
+  @keyframes float3 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-10px, -6px); } }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-visual .blob { animation: none !important; }
+  }
+
+  /* ---------- Client strip ---------- */
+  .clients { padding: 40px 0 56px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .clients-label { font-size: 13px; color: var(--text-faint); margin-bottom: 26px; }
+  .clients-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap;
+  }
+  .clients-row .logo { color: var(--text-faint); transition: color .2s ease; height: 26px; }
+  .clients-row .logo:hover { color: var(--text-muted); }
+
+  /* ---------- Section heading (shared) ---------- */
+  .section { padding: 88px 0; }
+  .section-head { max-width: 56ch; margin-bottom: 44px; }
+  .section-head h2 {
+    font-size: clamp(24px, 3vw, 34px); font-weight: 650; letter-spacing: -0.02em; line-height: 1.15;
+  }
+  .section-head p { margin-top: 12px; font-size: 15px; color: var(--text-muted); line-height: 1.6; }
+
+  /* ---------- Services bento ---------- */
+  .bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .bento-card {
+    border-radius: var(--radius-card); border: 1px solid var(--border); background: var(--bg-raised);
+    padding: 26px; display: flex; flex-direction: column; justify-content: space-between; gap: 30px;
+    min-height: 210px; box-shadow: var(--shadow); transition: transform .18s ease, border-color .18s ease;
+  }
+  .bento-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+  .bento-card.wide { grid-column: span 2; }
+  .bento-card.accent { background: var(--accent); color: #fff; border-color: transparent; }
+  .bento-card.invert { background: var(--bg-invert); color: var(--text-on-invert); border-color: transparent; }
+  .bento-card .icon {
+    width: 34px; height: 34px; border-radius: 9px; background: var(--bg-inset);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .bento-card.accent .icon, .bento-card.invert .icon { background: rgba(255,255,255,0.16); }
+  .bento-card .icon svg { width: 17px; height: 17px; stroke: currentColor; }
+  .bento-card h3 { font-size: 17px; font-weight: 650; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .bento-card p { font-size: 13.5px; line-height: 1.55; color: var(--text-muted); max-width: 40ch; }
+  .bento-card.accent p, .bento-card.invert p { color: rgba(255,255,255,0.78); }
+  @media (max-width: 860px) {
+    .bento { grid-template-columns: 1fr; }
+    .bento-card.wide { grid-column: span 1; }
+  }
+
+  /* ---------- Work grid ---------- */
+  .work-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 24px; }
+  .work-card { display: flex; flex-direction: column; gap: 16px; }
+  .work-visual {
+    aspect-ratio: 16/11; border-radius: var(--radius-card); overflow: hidden; position: relative;
+    border: 1px solid var(--border);
+  }
+  .work-visual .layer { position: absolute; inset: 0; }
+  .work-meta { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .work-meta h3 { font-size: 16.5px; font-weight: 650; letter-spacing: -0.01em; }
+  .work-meta span { font-size: 12.5px; color: var(--text-faint); flex-shrink: 0; }
+  .work-card p.result { font-size: 13.5px; color: var(--text-muted); line-height: 1.55; max-width: 46ch; }
+  @media (max-width: 760px) { .work-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- Process ---------- */
+  .process-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+  .process-item { padding: 26px 22px 0; border-top: 1px solid var(--border-strong); position: relative; }
+  .process-item .num {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px; color: var(--accent-text); margin-bottom: 18px; display: block;
+  }
+  .process-item h3 { font-size: 16px; font-weight: 650; margin-bottom: 10px; letter-spacing: -0.01em; }
+  .process-item p { font-size: 13.5px; color: var(--text-muted); line-height: 1.55; max-width: 30ch; }
+  @media (max-width: 760px) {
+    .process-row { grid-template-columns: 1fr; gap: 28px; }
+    .process-item { padding-top: 20px; }
+  }
+
+  /* ---------- Testimonial ---------- */
+  .testimonial-wrap {
+    border-radius: var(--radius-card); background: var(--bg-inset); padding: 56px; text-align: left;
+    display: grid; grid-template-columns: auto 1fr; gap: 26px; align-items: start;
+  }
+  .testimonial-wrap svg.quote { width: 30px; height: 30px; color: var(--accent); flex-shrink: 0; margin-top: 4px; }
+  .testimonial-wrap blockquote {
+    font-size: clamp(19px, 2.3vw, 25px); line-height: 1.42; letter-spacing: -0.01em; font-weight: 550;
+  }
+  .testimonial-wrap .attribution { margin-top: 22px; font-size: 14px; color: var(--text-muted); }
+  .testimonial-wrap .attribution strong { color: var(--text); font-weight: 600; }
+  @media (max-width: 640px) {
+    .testimonial-wrap { padding: 34px 26px; grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Contact ---------- */
+  .contact-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 60px; }
+  .contact-info h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 650; letter-spacing: -0.02em; margin-bottom: 14px; }
+  .contact-info p { font-size: 15px; color: var(--text-muted); line-height: 1.6; max-width: 40ch; margin-bottom: 30px; }
+  .contact-detail { display: flex; flex-direction: column; gap: 14px; }
+  .contact-detail .row { display: flex; align-items: center; gap: 10px; font-size: 14.5px; }
+  .contact-detail .row svg { width: 16px; height: 16px; color: var(--text-faint); flex-shrink: 0; }
+
+  form.contact-form { display: flex; flex-direction: column; gap: 18px; }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field label { font-size: 13px; font-weight: 600; color: var(--text); }
+  .field .hint { font-size: 12px; color: var(--text-faint); }
+  .field input, .field select, .field textarea {
+    font-family: inherit; font-size: 14.5px; color: var(--text);
+    background: var(--bg-raised); border: 1px solid var(--border-strong); border-radius: var(--radius-input);
+    padding: 12px 14px; outline: none; transition: border-color .15s ease, box-shadow .15s ease; width: 100%;
+  }
+  .field textarea { resize: vertical; min-height: 96px; }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 640px) { .field-row { grid-template-columns: 1fr; } }
+  .field .error { font-size: 12.5px; color: var(--accent-text); display: none; }
+  .field.has-error input, .field.has-error select { border-color: var(--accent-text); }
+  .field.has-error .error { display: block; }
+
+  .form-submit-row { display: flex; align-items: center; gap: 14px; margin-top: 6px; }
+  .spinner {
+    width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff; animation: spin 0.7s linear infinite; display: none;
+  }
+  .btn.is-loading .spinner { display: inline-block; }
+  .btn.is-loading .btn-label { opacity: 0.85; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .form-success {
+    display: none; align-items: center; gap: 10px; font-size: 14px; color: var(--text);
+    background: var(--bg-inset); border-radius: var(--radius-input); padding: 14px 16px;
+  }
+  .form-success.show { display: flex; }
+  .form-success svg { width: 18px; height: 18px; color: var(--accent-text); flex-shrink: 0; }
+  @media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+  /* ---------- Footer ---------- */
+  footer { border-top: 1px solid var(--border); padding: 40px 0; }
+  .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .footer-links { display: flex; gap: 22px; }
+  .footer-links a { font-size: 13.5px; color: var(--text-muted); }
+  .footer-links a:hover { color: var(--text); }
+  .footer-copy { font-size: 13px; color: var(--text-faint); }
+
+  /* ---------- Reveal on scroll ---------- */
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .hero-visual { max-width: 380px; margin: 0 auto; }
+  }
+  @media (max-width: 760px) {
+    .nav-links { display: none; }
+    .nav-toggle { display: flex; }
+    .nav-cta-wrap .btn-primary { display: none; }
+    .section { padding: 64px 0; }
+  }
+  .mobile-menu {
+    display: none; flex-direction: column; gap: 4px; padding: 10px 24px 18px;
+    border-top: 1px solid var(--border); background: var(--bg);
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { padding: 12px 4px; font-size: 15px; color: var(--text); border-bottom: 1px solid var(--border); }
+  .mobile-menu .btn { margin-top: 10px; }
+</style>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">
+      <span class="mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 L12 6 L20 18"/></svg>
+      </span>
+      Amble Studio
+    </a>
+    <nav class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-cta-wrap">
+      <a href="#contact" class="btn btn-primary">Start a project</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#work">Work</a>
+    <a href="#services">Services</a>
+    <a href="#process">Process</a>
+    <a href="#contact">Contact</a>
+    <a href="#contact" class="btn btn-primary">Start a project</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO: asymmetric split -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <h1>Design that makes small businesses look like <em>the real deal.</em></h1>
+        <p class="sub">We build brand identity, websites, and product design for owners who don't have time to think about any of it.</p>
+        <div class="hero-ctas">
+          <a href="#contact" class="btn btn-primary">Start a project</a>
+          <a href="#work" class="btn btn-ghost">See our work</a>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="grid-dots"></div>
+        <div class="blob b1"></div>
+        <div class="blob b3"></div>
+        <div class="blob b2"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLIENT STRIP -->
+  <section class="clients">
+    <div class="container">
+      <p class="clients-label">Small businesses we've worked with</p>
+      <div class="clients-row">
+        <svg class="logo" viewBox="0 0 120 26" fill="none"><circle cx="13" cy="13" r="12" stroke="currentColor" stroke-width="1.4"/><text x="13" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor" font-family="ui-sans-serif,system-ui">FC</text><text x="34" y="18" font-size="13" font-weight="600" fill="currentColor" font-family="ui-sans-serif,system-ui">Foundry Coffee</text></svg>
+        <svg class="logo" viewBox="0 0 110 26" fill="none"><rect x="1" y="1" width="24" height="24" rx="6" stroke="currentColor" stroke-width="1.4"/><text x="13" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor" font-family="ui-sans-serif,system-ui">KB</text><text x="34" y="18" font-size="13" font-weight="600" fill="currentColor" font-family="ui-sans-serif,system-ui">Kestrel Bookkeeping</text></svg>
+        <svg class="logo" viewBox="0 0 100 26" fill="none"><path d="M13 1 L25 13 L13 25 L1 13 Z" stroke="currentColor" stroke-width="1.4"/><text x="13" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor" font-family="ui-sans-serif,system-ui">MT</text><text x="34" y="18" font-size="13" font-weight="600" fill="currentColor" font-family="ui-sans-serif,system-ui">Marlow Tool</text></svg>
+        <svg class="logo" viewBox="0 0 100 26" fill="none"><circle cx="13" cy="13" r="12" stroke="currentColor" stroke-width="1.4"/><text x="13" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor" font-family="ui-sans-serif,system-ui">LT</text><text x="34" y="18" font-size="13" font-weight="600" fill="currentColor" font-family="ui-sans-serif,system-ui">Lowland Trail</text></svg>
+        <svg class="logo" viewBox="0 0 100 26" fill="none"><rect x="1" y="1" width="24" height="24" rx="12" stroke="currentColor" stroke-width="1.4"/><text x="13" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor" font-family="ui-sans-serif,system-ui">BD</text><text x="34" y="18" font-size="13" font-weight="600" fill="currentColor" font-family="ui-sans-serif,system-ui">Birchwood Dental</text></svg>
+        <svg class="logo" viewBox="0 0 110 26" fill="none"><rect x="1" y="1" width="24" height="24" rx="6" stroke="currentColor" stroke-width="1.4"/><text x="13" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor" font-family="ui-sans-serif,system-ui">RB</text><text x="34" y="18" font-size="13" font-weight="600" fill="currentColor" font-family="ui-sans-serif,system-ui">Rosette Bakehouse</text></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES: bento grid -->
+  <section class="section" id="services">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2>What we do</h2>
+        <p>Five services, one team. No handoffs between agencies for the parts that should talk to each other.</p>
+      </div>
+      <div class="bento">
+        <div class="bento-card wide accent reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+          <div>
+            <h3>Brand Identity</h3>
+            <p>Logo, type system, and a visual language that holds up on a sign, a label, and a phone screen.</p>
+          </div>
+        </div>
+        <div class="bento-card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+          <div>
+            <h3>Design Systems</h3>
+            <p>Reusable components and clear rules, so new pages don't need us in the room.</p>
+          </div>
+        </div>
+        <div class="bento-card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg></div>
+          <div>
+            <h3>Web Design &amp; Build</h3>
+            <p>Fast, accessible sites built to convert, not just to look nice in a portfolio.</p>
+          </div>
+        </div>
+        <div class="bento-card invert reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/></svg></div>
+          <div>
+            <h3>Product Design</h3>
+            <p>Interfaces for the tools your team and customers actually use every day.</p>
+          </div>
+        </div>
+        <div class="bento-card reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="5"/></svg></div>
+          <div>
+            <h3>Ongoing Support</h3>
+            <p>A monthly retainer for the requests that come up between big projects.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SELECTED WORK: case-study grid -->
+  <section class="section" id="work" style="background:var(--bg-inset)">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2>Selected work</h2>
+        <p>A few recent projects for owners who needed more than a template could give them.</p>
+      </div>
+      <div class="work-grid">
+        <div class="work-card reveal">
+          <div class="work-visual">
+            <div class="layer" style="background: linear-gradient(135deg, #e7dcc8 0%, #cf4726 55%, #7a2a14 100%);"></div>
+            <div class="layer" style="background: radial-gradient(circle at 78% 20%, rgba(255,255,255,0.35), transparent 45%);"></div>
+          </div>
+          <div class="work-meta"><h3>Foundry Coffee Co.</h3><span>Brand &amp; packaging</span></div>
+          <p class="result">New packaging shipped across all three locations within six weeks of kickoff, cups included.</p>
+        </div>
+        <div class="work-card reveal">
+          <div class="work-visual">
+            <div class="layer" style="background: linear-gradient(135deg, #232227 0%, #4a4750 100%);"></div>
+            <div class="layer" style="background: radial-gradient(circle at 25% 75%, rgba(207,71,38,0.55), transparent 50%);"></div>
+          </div>
+          <div class="work-meta"><h3>Kestrel Bookkeeping</h3><span>Brand &amp; website</span></div>
+          <p class="result">Turned a one-person practice into a business people refer their friends to.</p>
+        </div>
+        <div class="work-card reveal">
+          <div class="work-visual">
+            <div class="layer" style="background: linear-gradient(160deg, #d9d3c4 0%, #9a9484 100%);"></div>
+            <div class="layer" style="background: radial-gradient(circle at 70% 70%, rgba(23,22,26,0.28), transparent 55%);"></div>
+          </div>
+          <div class="work-meta"><h3>Marlow Tool Supply</h3><span>E-commerce rebuild</span></div>
+          <p class="result">Rebuilt the online store around actual inventory, not a template catalog.</p>
+        </div>
+        <div class="work-card reveal">
+          <div class="work-visual">
+            <div class="layer" style="background: linear-gradient(150deg, #3c4a3d 0%, #1c2620 100%);"></div>
+            <div class="layer" style="background: radial-gradient(circle at 30% 25%, rgba(239,180,90,0.4), transparent 50%);"></div>
+          </div>
+          <div class="work-meta"><h3>Lowland Trail Co.</h3><span>Brand refresh</span></div>
+          <p class="result">New identity and packaging for an outdoor gear line, from hang tags to trailhead signage.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS: numbered horizontal row -->
+  <section class="section" id="process">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2>How a project runs</h2>
+        <p>Four stages, roughly six to ten weeks depending on scope.</p>
+      </div>
+      <div class="process-row">
+        <div class="process-item reveal">
+          <span class="num">01</span>
+          <h3>Discover</h3>
+          <p>We learn the business, the customers, and what's actually broken before we touch a pixel.</p>
+        </div>
+        <div class="process-item reveal">
+          <span class="num">02</span>
+          <h3>Design</h3>
+          <p>Concepts move fast. You see real direction in the first week, not a mood board.</p>
+        </div>
+        <div class="process-item reveal">
+          <span class="num">03</span>
+          <h3>Build</h3>
+          <p>We build the real thing: production-ready pages, components, and files you own outright.</p>
+        </div>
+        <div class="process-item reveal">
+          <span class="num">04</span>
+          <h3>Launch</h3>
+          <p>We ship it, watch how it performs, and stay close for the first few weeks after.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL: centered quote -->
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="testimonial-wrap reveal">
+        <svg class="quote" viewBox="0 0 24 24" fill="currentColor"><path d="M7 11c-1.66 0-3-1.34-3-3 0-2.5 2-5 5-6l.5 1.3C7.7 4 6.5 5.5 6.2 7c.3-.1.6-.1.8-.1 1.66 0 3 1.34 3 3s-1.34 3-3 3zm10 0c-1.66 0-3-1.34-3-3 0-2.5 2-5 5-6l.5 1.3C17.7 4 16.5 5.5 16.2 7c.3-.1.6-.1.8-.1 1.66 0 3 1.34 3 3s-1.34 3-3 3z"/></svg>
+        <div>
+          <blockquote>Amble didn't just make us look good. They made it obvious what we actually do, and bookings picked up the month after launch.</blockquote>
+          <p class="attribution"><strong>Priya Anand</strong> &middot; Owner, Kestrel Bookkeeping</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT: split form -->
+  <section class="section" id="contact" style="background:var(--bg-inset)">
+    <div class="container contact-grid">
+      <div class="contact-info reveal">
+        <h2>Ready to start?</h2>
+        <p>Tell us a bit about the business and what's not working yet. We reply within two business days, usually faster.</p>
+        <div class="contact-detail">
+          <div class="row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            hello@amblestudio.co
+          </div>
+          <div class="row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.98.36 1.94.68 2.86a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.22-1.25a2 2 0 0 1 2.11-.45c.92.32 1.88.55 2.86.68A2 2 0 0 1 22 16.92z"/></svg>
+            +1 (406) 555-0142
+          </div>
+          <div class="row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Bozeman, Montana
+          </div>
+        </div>
+      </div>
+      <form class="contact-form reveal" id="contact-form" novalidate>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-name">Name</label>
+            <input id="f-name" name="name" type="text" required />
+            <span class="error">Enter your name.</span>
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" required />
+            <span class="error">Enter a valid email.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-type">Project type</label>
+          <select id="f-type" name="type">
+            <option>Brand identity</option>
+            <option>Website</option>
+            <option>Product design</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-message">Message</label>
+          <textarea id="f-message" name="message" required placeholder=""></textarea>
+          <span class="error">Tell us a little about the project.</span>
+        </div>
+        <div class="form-submit-row">
+          <button class="btn btn-primary" type="submit" id="submit-btn">
+            <span class="spinner"></span>
+            <span class="btn-label">Start a project</span>
+          </button>
+        </div>
+        <div class="form-success" id="form-success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
+          Thanks. We'll reply within two business days.
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <a href="#top" class="brand" style="font-size:14px">
+      <span class="mark" style="width:20px;height:20px;border-radius:5px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px"><path d="M4 18 L12 6 L20 18"/></svg>
+      </span>
+      Amble Studio
+    </a>
+    <div class="footer-links">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <p class="footer-copy">&copy; 2026 Amble Studio</p>
+  </div>
+</footer>
+
+<script>
+  // Mobile nav toggle
+  const navToggle = document.getElementById('nav-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  navToggle.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+  // Scroll reveal (IntersectionObserver, not scroll-listener)
+  const reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(el => io.observe(el));
+  } else {
+    reveals.forEach(el => el.classList.add('in'));
+  }
+
+  // Contact form: client-side validation + fake submit cycle
+  const form = document.getElementById('contact-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const successBox = document.getElementById('form-success');
+
+  function setError(fieldId, hasError) {
+    const field = document.getElementById(fieldId).closest('.field');
+    field.classList.toggle('has-error', hasError);
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('f-name').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    const message = document.getElementById('f-message').value.trim();
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    setError('f-name', !name);
+    setError('f-email', !emailValid);
+    setError('f-message', !message);
+
+    if (!name || !emailValid || !message) return;
+
+    submitBtn.classList.add('is-loading');
+    submitBtn.disabled = true;
+    setTimeout(() => {
+      submitBtn.classList.remove('is-loading');
+      submitBtn.disabled = false;
+      form.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
+      submitBtn.style.display = 'none';
+      successBox.classList.add('show');
+    }, 900);
+  });
+</script>
