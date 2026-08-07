@@ -1,0 +1,16 @@
+{
+  "name": "dynamix-group-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DynamiX Group site, plus the private daily dashboard and its assistant endpoint.",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.115.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "typescript": "^5.9.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  }
+}

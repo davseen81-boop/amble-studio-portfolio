@@ -2,17 +2,18 @@
 
 A private, mobile-first dashboard for the things that need doing every day. It lives at
 [`/dashboard/`](../dashboard/index.html), is installable on a phone, works offline, and can
-pull tasks in from Google Calendar and Gmail.
+pull tasks in from Google Calendar, Gmail, and Zoho Mail.
 
-It is deliberately built in two layers:
+It is deliberately built in layers:
 
 | Layer | What it needs | What you get |
 |---|---|---|
 | **The dashboard** | Nothing. Open the page. | Routines, tick-offs, streaks, carry-over nagging, calendar export, on-device reminders. |
-| **The bridge** | A one-off Apps Script setup, ~5 minutes | Tasks created from Calendar events and emails, plus completions synced across devices. |
+| **The bridge** | A one-off Apps Script setup, ~5 minutes | Tasks created from Calendar events, Gmail, and Zoho Mail, plus completions synced across devices. |
+| **The assistant** | An Anthropic API key in Vercel | A chat panel that answers questions about your routines and can tick them off, add them, or archive them. |
 
 The dashboard is fully useful on its own. The bridge is what satisfies "let me instruct work
-through the calendar or email app."
+through the calendar or email app." The assistant is optional on top of both.
 
 ---
 
@@ -129,6 +130,37 @@ Directives work the same as on calendar events. When a one-off email task is tic
 script swaps its label to **`Dashboard/Done`** so the thread is filed and does not come back.
 Recurring email tasks keep their label, because they are routines rather than errands.
 
+### Creating tasks from Zoho Mail
+
+Zoho Mail has no MCP connector and no Apps Script service, so the bridge talks to Zoho's REST
+API directly. There are two ways in, and they are not exclusive.
+
+**The quick way — forward into Gmail.** In Zoho Mail, add a filter that forwards anything you
+tag or flag to your Gmail address, and a Gmail filter that applies `Dashboard/Task` to it.
+Nothing to configure in `Code.gs`; the existing Gmail intake picks it up. Five minutes of
+clicking, and mail makes one extra hop.
+
+**The native way — the Zoho API.** Fill in the `ZOHO` block at the top of `Code.gs`:
+
+1. At [api-console.zoho.com](https://api-console.zoho.com), add a **Self Client**.
+2. Generate a code for scope `ZohoMail.messages.ALL,ZohoMail.folders.READ`.
+3. Exchange it once for a refresh token:
+   ```sh
+   curl -X POST 'https://accounts.zoho.com/oauth/v2/token' \
+     -d 'grant_type=authorization_code' -d 'client_id=...' \
+     -d 'client_secret=...' -d 'code=...'
+   ```
+4. Paste the client id, secret, and `refresh_token` into `ZOHO`, and set `enabled: true`.
+5. In Zoho Mail, create folders named **Tasks** and **Done**, and add a filter routing tagged
+   mail into Tasks.
+6. Run `zohoCheck` from the Apps Script editor to confirm the credentials and folders resolve.
+
+Subjects parse exactly like Gmail ones, directives and all. A completed one-off is moved to
+the Done folder so it stops coming back.
+
+> **Data centre matters.** `ZOHO.dc` must match your account: `com` (US), `eu`, `in`, `com.au`,
+> or `jp`. The wrong value returns 401 on every call, which reads like a bad token.
+
 ### Directive reference
 
 | Directive | Meaning |
@@ -160,7 +192,50 @@ never open the dashboard and ignore your calendar.
 
 ---
 
-## 3. Troubleshooting
+## 3. The assistant
+
+The chat panel lives behind the **Ask** tab. It answers questions about your routines —
+what's outstanding, what you keep missing, how your streaks look — and can act: tick something
+off, add a routine, archive one you're done with. Every action it takes shows as a green chip
+in the conversation, so nothing happens silently.
+
+### How it is wired
+
+An API key cannot live in a static page, so the chat panel calls a small serverless function
+on this same site: [`api/chat.ts`](../api/chat.ts). The function is stateless — it holds the
+key and nothing else. Your routines and the conversation live in your browser and are sent
+with each request; nothing is stored server-side.
+
+Writes work the same way round. When the assistant wants to change something, the function
+hands the request back to the browser, the browser applies it to local storage, and the result
+goes back for the next turn. The server never touches your data.
+
+### Setup
+
+1. Get an API key from [console.anthropic.com](https://console.anthropic.com).
+2. In your Vercel project settings, add environment variables:
+   - `ANTHROPIC_API_KEY` — required.
+   - `DASHBOARD_SHARED_KEY` — optional but recommended. Any long random string.
+3. Redeploy.
+4. If you set a shared key, put the same value in Settings → Assistant.
+
+> **Set the shared key.** Without it the endpoint answers anyone who finds the URL, and every
+> answer bills your Anthropic account. It is one environment variable and one field.
+
+### What it can and cannot see
+
+It sees your routines and their status — nothing else. It has no access to your inbox, your
+calendar beyond what has already synced into routines, your clients, or any firm data. It is
+also instructed not to give financial, regulatory, or compliance advice: that is your
+profession and MAS rules govern it, so the assistant stays out of it.
+
+### Cost
+
+It runs on `claude-opus-5` at low effort, which suits routine lookups and keeps replies quick.
+A typical question costs a fraction of a cent. To change the model or effort, edit `MODEL` and
+`output_config.effort` in `api/chat.ts`.
+
+## 4. Troubleshooting
 
 | Symptom | Cause |
 |---|---|
@@ -170,10 +245,14 @@ never open the dashboard and ignore your calendar.
 | A calendar event does not appear | The title is missing `#task`, or the calendar is not listed in `CALENDAR_IDS`. |
 | An email does not appear | The thread is missing the `Dashboard/Task` label, or already carries `Dashboard/Done`. |
 | Changes to `Code.gs` have no effect | Apps Script serves the last *deployed* version. Deploy → Manage deployments → edit → **New version**. |
+| Zoho returns 401 on everything | `ZOHO.dc` does not match your account's data centre. |
+| Zoho folder not found | The folder names in `ZOHO` must match Zoho Mail exactly, including case. |
+| Assistant says the key is not configured | `ANTHROPIC_API_KEY` is missing from the Vercel project, or the project has not been redeployed since it was added. |
+| Assistant returns Unauthorised | `DASHBOARD_SHARED_KEY` is set in Vercel but the matching value is missing from Settings → Assistant. |
 
 ---
 
-## 4. Design notes
+## 5. Design notes
 
 The dashboard follows [`branding-dynamix.md`](branding-dynamix.md): Source Serif 4 for display,
 IBM Plex Sans for UI, red as the single accent with gold rationed to the carried-over label and

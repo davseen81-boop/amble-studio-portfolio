@@ -23,9 +23,14 @@ site at `/dashboard/` (`noindex`, not linked from the marketing page). It tracks
 routines, keeps nagging about anything missed until it is done, and can pull tasks in from
 Google Calendar events tagged `#task` and Gmail threads labelled `Dashboard/Task`.
 
-It works standalone with no setup — routines live in the browser's local storage. The Calendar
-and email intake is optional and comes from `apps-script/Code.gs`, a small Google Apps Script
-that runs under David's own Google account.
+It works standalone with no setup — routines live in the browser's local storage. Two optional
+layers sit on top:
+
+- **`apps-script/Code.gs`** — a Google Apps Script running under David's own account that pulls
+  in tagged Calendar events, labelled Gmail threads, and (once configured) Zoho Mail, and syncs
+  completions across devices.
+- **`api/chat.ts`** — a Vercel serverless function backing the dashboard's Ask tab. It holds the
+  Anthropic API key and nothing else; routines and conversation stay in the browser.
 
 Full setup and usage: [`docs/dashboard.md`](docs/dashboard.md).
 
@@ -40,4 +45,7 @@ Open `index.html` directly in a browser, or serve the folder with any static fil
 ## Deploy
 
 - **Vercel:** project `amble-studio-portfolio` (name predates two rebrands now; rename when convenient).
+  The dashboard assistant needs `ANTHROPIC_API_KEY` set in the project's environment variables,
+  and `DASHBOARD_SHARED_KEY` is strongly recommended so the endpoint is not open to anyone who
+  finds the URL.
 - **GitHub Pages:** enable in repo settings (Pages → `main` branch, root folder).

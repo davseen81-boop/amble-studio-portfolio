@@ -108,6 +108,7 @@
     overscroll-behavior-y: contain;
     padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
   }
+  body.composing { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 68px); }
   h1, h2, h3 { font-family: "Source Serif 4", Georgia, serif; line-height: 1.15; letter-spacing: -0.01em; margin: 0; }
   button, input, select, textarea { font: inherit; color: inherit; }
   button { cursor: pointer; }
@@ -264,7 +265,7 @@
   /* ---------- Bottom nav ---------- */
   .nav {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
-    display: grid; grid-template-columns: repeat(4, 1fr);
+    display: grid; grid-template-columns: repeat(5, 1fr);
     background: color-mix(in srgb, var(--card) 92%, transparent);
     -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
     border-top: 1px solid var(--border);
@@ -350,6 +351,46 @@
   details.help summary { cursor: pointer; font-weight: 500; color: var(--text); }
   details.help ol { padding-left: 20px; margin: 10px 0 0; }
   details.help li { margin-bottom: 7px; }
+
+  /* ---------- Assistant ---------- */
+  .chat-wrap { display: flex; flex-direction: column; gap: 10px; }
+  .chat-log { display: flex; flex-direction: column; gap: 10px; padding-bottom: 8px; }
+  .msg { max-width: 88%; padding: 11px 14px; border-radius: var(--radius-md); font-size: 14.5px; white-space: pre-wrap; word-wrap: break-word; }
+  .msg.user { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+  .msg.bot { align-self: flex-start; background: var(--card); border: 1px solid var(--border); border-bottom-left-radius: 4px; box-shadow: var(--shadow-card); }
+  .msg.err { align-self: flex-start; background: rgba(192,57,43,0.10); border: 1px solid rgba(192,57,43,0.4); color: var(--danger); font-size: 13.5px; }
+  .msg.act { align-self: flex-start; background: rgba(63,138,90,0.10); border: 1px solid rgba(63,138,90,0.4); color: var(--success); font-size: 12.5px; padding: 7px 12px; border-radius: var(--radius-pill); }
+  .msg .cursor { display: inline-block; width: 7px; height: 15px; background: var(--text-faint); vertical-align: -2px; animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .composer {
+    position: fixed; left: 0; right: 0; z-index: 35;
+    bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
+    display: flex; gap: 8px; padding: 10px 16px;
+    background: color-mix(in srgb, var(--bg) 94%, transparent);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+  }
+  .composer[hidden] { display: none; }
+  .composer textarea {
+    flex: 1; resize: none; max-height: 110px;
+    padding: 10px 13px; border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong); background: var(--card); color: var(--text);
+    font-size: 16px; line-height: 1.4;
+  }
+  .composer textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
+  .composer .send {
+    flex: none; width: 42px; height: 42px; align-self: flex-end;
+    border-radius: 50%; border: 0; background: var(--accent); color: #fff;
+    display: grid; place-content: center;
+  }
+  .composer .send:disabled { opacity: 0.45; }
+  .chat-suggest { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 4px; }
+  .chat-suggest button {
+    font-size: 12.5px; padding: 6px 12px; border-radius: var(--radius-pill);
+    border: 1px dashed var(--border-strong); background: transparent; color: var(--text-muted);
+  }
+  .chat-suggest button:hover { border-style: solid; color: var(--accent); border-color: var(--accent); }
 
   .toast {
     position: fixed; left: 50%; transform: translateX(-50%); z-index: 80;
@@ -470,6 +511,14 @@
     </div>
   </section>
 
+  <!-- ============ ASSISTANT ============ -->
+  <section class="view" id="view-ask" hidden>
+    <div class="chat-wrap">
+      <div class="chat-suggest" id="chatSuggest"></div>
+      <div class="chat-log" id="chatLog"></div>
+    </div>
+  </section>
+
   <!-- ============ SETTINGS ============ -->
   <section class="view" id="view-settings" hidden>
     <div class="card">
@@ -511,6 +560,24 @@
     </div>
 
     <div class="card">
+      <h3>Assistant</h3>
+      <p class="desc">The chat panel answers questions about your routines and can tick things off for you. It runs through a small endpoint on this site that holds the API key — the key is never in this page.</p>
+      <div class="field">
+        <label class="label" for="chatUrl">Endpoint</label>
+        <input class="input" id="chatUrl" type="text" placeholder="/api/chat" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="field">
+        <label class="label" for="chatKey">Shared key (optional)</label>
+        <input class="input" id="chatKey" type="text" placeholder="matches DASHBOARD_SHARED_KEY" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnSaveChat">Save</button>
+        <button class="btn btn-sm" id="btnClearChat">Clear conversation</button>
+      </div>
+      <p class="hint">Leave the endpoint as <code class="inline">/api/chat</code> unless you deployed it elsewhere. Set <code class="inline">ANTHROPIC_API_KEY</code> (and optionally <code class="inline">DASHBOARD_SHARED_KEY</code>) in your Vercel project settings.</p>
+    </div>
+
+    <div class="card">
       <h3>Your data</h3>
       <p class="desc">Everything lives in this browser's local storage. Nothing is sent anywhere unless you connect the bridge above.</p>
       <div class="kv"><span>Routines</span><span id="statTasks">0</span></div>
@@ -545,6 +612,7 @@
 <nav class="nav">
   <button data-view="today" aria-current="page"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Today</button>
   <button data-view="all"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 17 4 18 7 15"/><polyline points="3 7 4 8 7 5"/><line x1="11" y1="6" x2="21" y2="6"/><line x1="11" y1="12" x2="21" y2="12"/><line x1="11" y1="18" x2="21" y2="18"/></svg>Routines</button>
+  <button data-view="ask"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg>Ask</button>
   <button data-view="cal"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Connect</button>
   <button data-view="settings"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><line x1="21" y1="4" x2="14" y2="4"/><line x1="10" y1="4" x2="3" y2="4"/><line x1="21" y1="12" x2="12" y2="12"/><line x1="8" y1="12" x2="3" y2="12"/><line x1="21" y1="20" x2="16" y2="20"/><line x1="12" y1="20" x2="3" y2="20"/><line x1="14" y1="2" x2="14" y2="6"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="16" y1="18" x2="16" y2="22"/></svg>Settings</button>
 </nav>
@@ -603,6 +671,13 @@
   </div>
 </div>
 
+<div class="composer" id="composer" hidden>
+  <textarea id="chatInput" rows="1" placeholder="Ask about your routines…" maxlength="2000"></textarea>
+  <button class="send" id="chatSend" aria-label="Send">
+    <svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+</div>
+
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -623,6 +698,7 @@ const defaultState = () => ({
   log: {},
   notified: {},           // { "YYYY-MM-DD": [taskId, ...] }
   sync: { url: "", token: "", lastAt: null, lastError: null },
+  chat: { url: "/api/chat", key: "", history: [] },
   seeded: false
 });
 
@@ -986,6 +1062,8 @@ function renderSettings() {
   const best = activeTasks().reduce((m, t) => Math.max(m, streakOf(t)), 0);
   $("#statStreak").textContent = best ? `${best} days` : "—";
 
+  $("#chatUrl").value = S.chat.url || "";
+  $("#chatKey").value = S.chat.key || "";
   $("#syncUrl").value = S.sync.url || "";
   $("#syncToken").value = S.sync.token || "";
   $("#syncState").textContent = S.sync.url
@@ -1024,21 +1102,27 @@ function render() {
   if (currentView === "today") renderToday();
   else if (currentView === "all") renderAll();
   else if (currentView === "cal") renderCal();
+  else if (currentView === "ask") renderChat();
   else if (currentView === "settings") renderSettings();
 }
 
 function switchView(v) {
   currentView = v;
-  ["today", "all", "cal", "settings"].forEach(name => {
+  ["today", "all", "ask", "cal", "settings"].forEach(name => {
     $("#view-" + name).hidden = name !== v;
   });
+  // The composer is pinned above the nav, so the body needs extra clearance.
+  $("#composer").hidden = v !== "ask";
+  document.body.classList.toggle("composing", v === "ask");
   document.querySelectorAll(".nav button").forEach(b => {
     if (b.dataset.view === v) b.setAttribute("aria-current", "page");
     else b.removeAttribute("aria-current");
   });
-  $("#fab").hidden = (v === "settings" || v === "cal");
+  $("#fab").hidden = (v === "settings" || v === "cal" || v === "ask");
   window.scrollTo(0, 0);
   render();
+  // The interesting end of a conversation is the bottom, not the top.
+  if (v === "ask" && S.chat.history.length) scrollChatDown();
 }
 
 /* =========================================================================
@@ -1427,6 +1511,262 @@ function normaliseSchedule(s) {
 }
 
 /* =========================================================================
+   Assistant
+   ========================================================================= */
+let chatBusy = false;
+
+/**
+ * The endpoint is stateless, so every turn carries the routines with it.
+ * Sending pre-computed status rather than the raw completion log keeps the
+ * payload small and stops the model having to do date arithmetic.
+ */
+function chatContext() {
+  const key = today();
+  const now = new Date();
+  return {
+    today: key,
+    weekday: now.toLocaleDateString(undefined, { weekday: "long" }),
+    localTime: `${pad(now.getHours())}:${pad(now.getMinutes())}`,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Singapore",
+    routines: activeTasks().map(t => ({
+      id: t.id,
+      title: t.title,
+      notes: t.notes || undefined,
+      schedule: scheduleLabel(t) + (t.schedule.time ? ` at ${fmtTime(t.schedule.time)}` : ""),
+      source: t.source,
+      dueToday: isDueOn(t, now),
+      doneToday: isDone(t, key),
+      streakDays: streakOf(t),
+      missedInARow: missedRun(t)
+    }))
+  };
+}
+
+const SUGGESTIONS = [
+  "What's still outstanding today?",
+  "What have I been missing most?",
+  "How are my streaks looking?",
+  "What's on for tomorrow?"
+];
+
+function renderChat() {
+  const suggest = $("#chatSuggest");
+  suggest.innerHTML = "";
+  if (S.chat.history.length === 0) {
+    SUGGESTIONS.forEach(q => {
+      const b = el("button", null, q);
+      b.addEventListener("click", () => { $("#chatInput").value = q; sendChat(); });
+      suggest.appendChild(b);
+    });
+  }
+
+  const log = $("#chatLog");
+  log.innerHTML = "";
+
+  if (S.chat.history.length === 0) {
+    const e = el("div", "empty");
+    e.innerHTML = icon("checkCircle", "lucide-lg") +
+      "<p>Ask about what's due, what you keep missing, or tell me to tick something off.</p>";
+    log.appendChild(e);
+    return;
+  }
+
+  for (const m of S.chat.history) {
+    // Tool turns carry no prose; the action chips already reported them.
+    const text = messageText(m);
+    if (!text) continue;
+    log.appendChild(el("div", "msg " + (m.role === "user" ? "user" : "bot"), text));
+    if (m.actions) {
+      m.actions.forEach(a => log.appendChild(el("div", "msg act", a)));
+    }
+  }
+}
+
+/** Pulls the plain text out of a message whose content may be blocks. */
+function messageText(m) {
+  if (typeof m.content === "string") return m.content;
+  if (!Array.isArray(m.content)) return "";
+  return m.content.filter(b => b.type === "text").map(b => b.text).join("").trim();
+}
+
+function scrollChatDown() {
+  requestAnimationFrame(() => window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }));
+}
+
+/** Applies a model-requested action locally and returns a human summary. */
+function runChatTool(name, input) {
+  if (name === "complete_routine") {
+    const t = S.tasks.find(x => x.id === input.id);
+    if (!t) return { ok: false, text: `No routine with id ${input.id}.` };
+    const day = /^\d{4}-\d{2}-\d{2}$/.test(input.date || "") ? input.date : today();
+    setDone(t, day, true);
+    return { ok: true, text: `Marked done: ${t.title}${day === today() ? "" : " (" + day + ")"}` };
+  }
+
+  if (name === "add_routine") {
+    const title = String(input.title || "").trim();
+    if (!title) return { ok: false, text: "A routine needs a title." };
+    const schedule = normaliseSchedule({
+      freq: input.freq, time: input.time, days: input.days, dom: input.dom, date: input.date
+    });
+    if (schedule.freq === "weekly" && (!schedule.days || !schedule.days.length)) {
+      return { ok: false, text: "A weekly routine needs at least one weekday." };
+    }
+    S.tasks.push({
+      id: "t_" + Math.random().toString(36).slice(2, 10),
+      title, notes: String(input.notes || "").slice(0, 500),
+      schedule, source: "local", startDate: today(),
+      createdAt: new Date().toISOString(), archivedAt: null
+    });
+    save();
+    return { ok: true, text: `Added: ${title} — ${scheduleLabel({ schedule })}` };
+  }
+
+  if (name === "archive_routine") {
+    const t = S.tasks.find(x => x.id === input.id);
+    if (!t) return { ok: false, text: `No routine with id ${input.id}.` };
+    t.archivedAt = new Date().toISOString();
+    save();
+    return { ok: true, text: `Archived: ${t.title}` };
+  }
+
+  return { ok: false, text: `Unknown action: ${name}` };
+}
+
+/**
+ * One request/response round. Returns the assistant turn so the caller can
+ * decide whether tool results need another round.
+ */
+async function chatTurn(apiMessages, onDelta) {
+  const res = await fetch(S.chat.url || "/api/chat", {
+    method: "POST",
+    headers: Object.assign(
+      { "Content-Type": "application/json" },
+      S.chat.key ? { "X-Dashboard-Key": S.chat.key } : {}
+    ),
+    body: JSON.stringify({ messages: apiMessages, context: chatContext() })
+  });
+
+  if (!res.ok) {
+    let detail = `HTTP ${res.status}`;
+    try { const j = await res.json(); if (j.error) detail = j.error; } catch (e) { /* not JSON */ }
+    throw new Error(detail);
+  }
+  if (!res.body) throw new Error("No response stream.");
+
+  // Parse the SSE frames by hand — EventSource cannot POST.
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let done = null;
+  let failure = null;
+
+  while (true) {
+    const chunk = await reader.read();
+    if (chunk.done) break;
+    buffer += decoder.decode(chunk.value, { stream: true });
+
+    const frames = buffer.split("\n\n");
+    buffer = frames.pop() || "";
+
+    for (const frame of frames) {
+      const evLine = frame.split("\n").find(l => l.startsWith("event: "));
+      const dataLine = frame.split("\n").find(l => l.startsWith("data: "));
+      if (!evLine || !dataLine) continue;
+
+      const event = evLine.slice(7).trim();
+      let payload;
+      try { payload = JSON.parse(dataLine.slice(6)); } catch (e) { continue; }
+
+      if (event === "text") onDelta(payload.text);
+      else if (event === "error") failure = payload.message;
+      else if (event === "done") done = payload;
+    }
+  }
+
+  if (failure) throw new Error(failure);
+  if (!done) throw new Error("The reply ended unexpectedly.");
+  return done;
+}
+
+async function sendChat() {
+  if (chatBusy) return;
+  const input = $("#chatInput");
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = "";
+  input.style.height = "auto";
+  chatBusy = true;
+  $("#chatSend").disabled = true;
+
+  S.chat.history.push({ role: "user", content: text });
+  save();
+  renderChat();
+
+  const log = $("#chatLog");
+  const bubble = el("div", "msg bot");
+  bubble.innerHTML = '<span class="cursor"></span>';
+  log.appendChild(bubble);
+  scrollChatDown();
+
+  // The wire history keeps tool blocks; the rendered history keeps prose.
+  const wire = S.chat.history.map(m => ({ role: m.role, content: m.content }));
+  let streamed = "";
+
+  try {
+    for (let round = 0; round < 4; round++) {
+      streamed = "";
+      const done = await chatTurn(wire, delta => {
+        streamed += delta;
+        bubble.textContent = streamed;
+        scrollChatDown();
+      });
+
+      if (done.stop_reason === "refusal") throw new Error("That request was declined.");
+
+      wire.push({ role: "assistant", content: done.content });
+      const turn = { role: "assistant", content: done.content, actions: [] };
+      S.chat.history.push(turn);
+
+      if (!done.tool_uses || done.tool_uses.length === 0) break;
+
+      // Apply each action locally, then feed the outcomes back for the next round.
+      const results = done.tool_uses.map(tu => {
+        const out = runChatTool(tu.name, tu.input || {});
+        turn.actions.push(out.text);
+        return {
+          type: "tool_result",
+          tool_use_id: tu.id,
+          content: out.text,
+          is_error: !out.ok
+        };
+      });
+
+      wire.push({ role: "user", content: results });
+      S.chat.history.push({ role: "user", content: results });
+      bubble.innerHTML = '<span class="cursor"></span>';
+    }
+
+    save();
+    renderChat();
+    render();
+    queueSync();
+  } catch (err) {
+    bubble.remove();
+    const e = el("div", "msg err", err.message || String(err));
+    log.appendChild(e);
+    // Drop the unanswered user turn so a retry does not double up.
+    S.chat.history = S.chat.history.filter(m => m.role !== "user" || messageText(m) !== text);
+    save();
+  } finally {
+    chatBusy = false;
+    $("#chatSend").disabled = false;
+    scrollChatDown();
+  }
+}
+
+/* =========================================================================
    Backup
    ========================================================================= */
 function exportBackup() {
@@ -1553,6 +1893,32 @@ function init() {
     toast("Disconnected.");
   });
 
+  $("#btnSaveChat").addEventListener("click", () => {
+    S.chat.url = $("#chatUrl").value.trim() || "/api/chat";
+    S.chat.key = $("#chatKey").value.trim();
+    save();
+    toast("Assistant settings saved.");
+  });
+  $("#btnClearChat").addEventListener("click", () => {
+    S.chat.history = [];
+    save();
+    renderChat();
+    toast("Conversation cleared.");
+  });
+
+  $("#chatSend").addEventListener("click", sendChat);
+  $("#chatInput").addEventListener("keydown", e => {
+    // Enter sends on a desktop keyboard; Shift+Enter and mobile keep newlines.
+    if (e.key === "Enter" && !e.shiftKey && !/Mobi|Android/i.test(navigator.userAgent)) {
+      e.preventDefault();
+      sendChat();
+    }
+  });
+  $("#chatInput").addEventListener("input", e => {
+    e.target.style.height = "auto";
+    e.target.style.height = Math.min(e.target.scrollHeight, 110) + "px";
+  });
+
   $("#btnExport").addEventListener("click", exportBackup);
   $("#btnImport").addEventListener("click", () => $("#importFile").click());
   $("#importFile").addEventListener("change", e => {
@@ -1560,7 +1926,7 @@ function init() {
     e.target.value = "";
   });
   $("#btnReset").addEventListener("click", () => {
-    if (!confirm("Delete every routine and all completion history on this device?")) return;
+    if (!confirm("Delete every routine, the conversation, and all completion history on this device?")) return;
     localStorage.removeItem(KEY);
     S = defaultState();
     seedIfEmpty();

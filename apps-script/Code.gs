@@ -69,6 +69,38 @@ const STATE_FILE = 'dynamix-daily-state.json';
 /** Keep this many days of completion history. Older entries are pruned. */
 const HISTORY_DAYS = 400;
 
+// ---------------------------------------------------------------- Zoho Mail --
+
+/**
+ * Zoho Mail intake. Off until you fill this in.
+ *
+ * Zoho has no MCP connector and no Apps Script service, so the bridge talks to
+ * its REST API directly with an OAuth refresh token. Setup:
+ *
+ *   1. api-console.zoho.com > Add Client > Self Client.
+ *   2. Generate a code for scope `ZohoMail.messages.ALL,ZohoMail.folders.READ`
+ *      with your own account as the target.
+ *   3. Exchange the code for a refresh token (once, from any terminal):
+ *        curl -X POST 'https://accounts.zoho.com/oauth/v2/token' \
+ *          -d 'grant_type=authorization_code' -d 'client_id=...' \
+ *          -d 'client_secret=...' -d 'code=...'
+ *   4. Paste the client id, secret, and refresh_token below.
+ *   5. In Zoho Mail, create a folder called Tasks and a folder called Done,
+ *      then add a filter that moves flagged or tagged mail into Tasks.
+ *
+ * If your account is on a regional data centre, change ZOHO_DC: `com` (US),
+ * `eu`, `in`, `com.au`, `jp`. Getting this wrong returns 401 on every call.
+ */
+const ZOHO = {
+  enabled: false,
+  clientId: '',
+  clientSecret: '',
+  refreshToken: '',
+  dc: 'com',
+  todoFolder: 'Tasks',
+  doneFolder: 'Done'
+};
+
 // ============================================================================
 // WEB APP ENTRY POINTS
 // ============================================================================
@@ -128,6 +160,13 @@ function handle(req) {
 
   // An email task that is a one-off gets filed away once it has been ticked off.
   archiveCompletedEmailTasks(tasks, state.log);
+  if (ZOHO.enabled) {
+    try {
+      archiveCompletedZohoTasks(tasks, state.log);
+    } catch (err) {
+      console.error('Zoho archive failed: ' + err);
+    }
+  }
 
   state.log = pruneLog(state.log, HISTORY_DAYS);
   state.lastSync = new Date().toISOString();
@@ -151,6 +190,13 @@ function collectTasks() {
     tasks = tasks.concat(emailTasks());
   } catch (err) {
     console.error('Gmail read failed: ' + err);
+  }
+  if (ZOHO.enabled) {
+    try {
+      tasks = tasks.concat(zohoTasks());
+    } catch (err) {
+      console.error('Zoho Mail read failed: ' + err);
+    }
   }
 
   // Two sources can describe the same routine; first one wins.
@@ -333,6 +379,149 @@ function archiveCompletedEmailTasks(tasks, log) {
       console.error('Could not re-label thread ' + t.sourceRef + ': ' + err);
     }
   });
+}
+
+// -------------------------------------------------------------- Zoho Mail --
+
+/**
+ * Zoho Mail has no Apps Script service and no MCP connector, so this is a thin
+ * REST client. Access tokens last an hour, so one is cached in script
+ * properties and refreshed only when it is close to expiring.
+ */
+function zohoToken() {
+  const props = PropertiesService.getScriptProperties();
+  const cached = props.getProperty('zoho_access_token');
+  const expiry = Number(props.getProperty('zoho_token_expiry') || 0);
+
+  // Refresh a minute early so a token cannot expire mid-request.
+  if (cached && Date.now() < expiry - 60000) return cached;
+
+  const res = UrlFetchApp.fetch('https://accounts.zoho.' + ZOHO.dc + '/oauth/v2/token', {
+    method: 'post',
+    payload: {
+      grant_type: 'refresh_token',
+      refresh_token: ZOHO.refreshToken,
+      client_id: ZOHO.clientId,
+      client_secret: ZOHO.clientSecret
+    },
+    muteHttpExceptions: true
+  });
+
+  const body = JSON.parse(res.getContentText() || '{}');
+  if (!body.access_token) {
+    throw new Error('Zoho token refresh failed: ' + res.getContentText().slice(0, 200));
+  }
+
+  props.setProperty('zoho_access_token', body.access_token);
+  props.setProperty('zoho_token_expiry', String(Date.now() + (body.expires_in || 3600) * 1000));
+  return body.access_token;
+}
+
+function zohoFetch(path, options) {
+  options = options || {};
+  const res = UrlFetchApp.fetch('https://mail.zoho.' + ZOHO.dc + '/api' + path, {
+    method: options.method || 'get',
+    contentType: 'application/json',
+    headers: { Authorization: 'Zoho-oauthtoken ' + zohoToken() },
+    payload: options.payload ? JSON.stringify(options.payload) : undefined,
+    muteHttpExceptions: true
+  });
+
+  const code = res.getResponseCode();
+  if (code < 200 || code >= 300) {
+    // A 401 here is nearly always the wrong data centre in ZOHO.dc.
+    throw new Error('Zoho ' + path + ' returned ' + code + ': ' + res.getContentText().slice(0, 200));
+  }
+  return JSON.parse(res.getContentText() || '{}');
+}
+
+/** Zoho keys everything off numeric account and folder IDs, so resolve them once. */
+function zohoAccountId() {
+  const props = PropertiesService.getScriptProperties();
+  const cached = props.getProperty('zoho_account_id');
+  if (cached) return cached;
+
+  const data = zohoFetch('/accounts');
+  const account = (data.data || [])[0];
+  if (!account) throw new Error('No Zoho Mail account visible to this token.');
+  props.setProperty('zoho_account_id', account.accountId);
+  return account.accountId;
+}
+
+function zohoFolderId(accountId, name) {
+  const data = zohoFetch('/accounts/' + accountId + '/folders');
+  const match = (data.data || []).filter(function (f) {
+    return String(f.folderName).toLowerCase() === String(name).toLowerCase();
+  })[0];
+  if (!match) throw new Error('Zoho folder not found: ' + name);
+  return match.folderId;
+}
+
+/** Turns messages sitting in the Zoho "Tasks" folder into routines. */
+function zohoTasks() {
+  const accountId = zohoAccountId();
+  const folderId = zohoFolderId(accountId, ZOHO.todoFolder);
+
+  const data = zohoFetch('/accounts/' + accountId + '/messages/view?folderId=' +
+                         encodeURIComponent(folderId) + '&limit=50');
+
+  return (data.data || []).map(function (msg) {
+    const subject = msg.subject || '(no subject)';
+    const parsed = parseDirectives(subject.replace(SUBJECT_PREFIX, ''));
+    const received = new Date(Number(msg.receivedTime) || Date.now());
+
+    const schedule = { freq: parsed.freq || 'once', time: parsed.time || '' };
+    if (schedule.freq === 'weekly') schedule.days = parsed.days && parsed.days.length ? parsed.days : [received.getDay()];
+    if (schedule.freq === 'monthly') schedule.dom = parsed.dom || received.getDate();
+    if (schedule.freq === 'once') schedule.date = parsed.date || dateKey(new Date());
+
+    return {
+      id: 'zo_' + msg.messageId,
+      title: parsed.title || subject,
+      notes: truncate(cleanText(msg.summary || msg.sender || ''), 300),
+      schedule: schedule,
+      source: 'email',
+      sourceRef: msg.messageId,
+      startDate: dateKey(received),
+      createdAt: received.toISOString()
+    };
+  });
+}
+
+/** A completed one-off Zoho task is moved to the Done folder so it stops coming back. */
+function archiveCompletedZohoTasks(tasks, log) {
+  const pending = tasks.filter(function (t) {
+    if (t.source !== 'email' || !t.sourceRef) return false;
+    if (String(t.id).indexOf('zo_') !== 0) return false;
+    if (t.schedule.freq !== 'once') return false;
+    const entries = log[t.id];
+    return !!(entries && Object.keys(entries).length);
+  });
+  if (!pending.length) return;
+
+  const accountId = zohoAccountId();
+  const destfolderId = zohoFolderId(accountId, ZOHO.doneFolder);
+
+  zohoFetch('/accounts/' + accountId + '/updatemessage', {
+    method: 'put',
+    payload: {
+      mode: 'moveMessage',
+      destfolderId: destfolderId,
+      messageId: pending.map(function (t) { return t.sourceRef; })
+    }
+  });
+}
+
+/** Run this from the editor to check the Zoho credentials and folders resolve. */
+function zohoCheck() {
+  if (!ZOHO.enabled) { console.log('ZOHO.enabled is false — nothing to check.'); return; }
+  const accountId = zohoAccountId();
+  console.log('Account: ' + accountId);
+  console.log('Todo folder: ' + zohoFolderId(accountId, ZOHO.todoFolder));
+  console.log('Done folder: ' + zohoFolderId(accountId, ZOHO.doneFolder));
+  const tasks = zohoTasks();
+  console.log('Found ' + tasks.length + ' Zoho task(s).');
+  tasks.forEach(function (t) { console.log('  ' + t.title + '  ' + JSON.stringify(t.schedule)); });
 }
 
 // ============================================================================
