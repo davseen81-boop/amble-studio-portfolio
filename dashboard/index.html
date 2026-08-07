@@ -6,37 +6,51 @@
 <title>Daily Dashboard | DynamiX Group</title>
 <meta name="description" content="A private daily task dashboard with Google Calendar and email intake." />
 <meta name="robots" content="noindex, nofollow" />
-<meta name="theme-color" content="#171414" />
+<meta name="theme-color" content="#27392E" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Daily" />
 <link rel="manifest" href="manifest.webmanifest" />
-<link rel="icon" type="image/png" href="../assets/dynamix-favicon.png" />
-<link rel="apple-touch-icon" href="../assets/dynamix-badge.png" />
+<link rel="icon" type="image/png" href="../assets/dynamix-favicon-gold.png" />
+<link rel="apple-touch-icon" href="../assets/dynamix-badge-gold.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --brand-red: #9C1B24;
-    --brand-red-strong: #7A141B;
-    --brand-red-bright: #C62430;
-    --brand-gold: #B8934A;
+    /* Brand primary — AWFA kit (docs/branding.md): gold accent, forest anchor */
+    --brand-gold: #D5AB45;
+    --brand-forest: #27392E;
 
-    --ink-900: #1C1A1B;
-    --ink-700: #4A4547;
-    --ink-500: #79767B;
-    --ink-300: #A9A6A8;
-    --ink-100: #DAD7D8;
+    /* Gold only reaches 2.1:1 on white, so it is never body copy there. This is
+       the text-safe variant (5.0:1); --on-accent is what sits on a gold fill. */
+    --brand-gold-deep: #8A6B1E;
+    --brand-gold-bright: #E0BA5C;
+
+    /* Neutrals */
+    --ink-900: #303030;
+    --ink-700: #4C4C4C;
+    --ink-500: #7A7A7A;
+    --ink-300: #9D9D9D;
+    --ink-100: #CDCDCD;
     --surface: #FFFFFF;
-    --surface-muted: #FAF9F8;
-    --dark-base: #171414;
+    --surface-muted: #FCFCFC;
+    --dark-base: var(--brand-forest);
 
+    /* Semantic */
     --success: #3F8A5A;
-    --warning: #C9922E;
-    --danger: #C0392B;
+    --warning: #E0A33A;
+    --danger: #B7423A;
     --info: #3A6FB7;
 
+    /* Coloured text on a light ground needs to clear 4.5:1; the fills above
+       are tuned for dots and borders and several fall short as type. */
+    --success-text: #2F7048;
+    --warning-text: #8A6520;
+    --danger-text: #A03A32;
+    --info-text: #2F5E9E;
+
+    /* Working aliases */
     --bg: var(--surface-muted);
     --card: var(--surface);
     --text: var(--ink-900);
@@ -44,19 +58,21 @@
     --text-faint: var(--ink-500);
     --border: var(--ink-100);
     --border-strong: var(--ink-300);
-    --accent: var(--brand-red);
-    --accent-strong: var(--brand-red-strong);
-    --accent-soft: rgba(156,27,36,0.10);
+    --accent: var(--brand-gold);
+    --accent-strong: #C29A34;
+    --accent-soft: rgba(213,171,69,0.14);
+    --on-accent: var(--brand-forest);
+    --accent-text: var(--brand-gold-deep);
     --gold: var(--brand-gold);
     --dark: var(--dark-base);
-    --text-on-dark: #F4F0EC;
-    --text-on-dark-muted: #C9C0BC;
+    --text-on-dark: #F2EFE8;
+    --text-on-dark-muted: #C6CFC8;
 
     --radius-sm: 6px;
     --radius-md: 12px;
     --radius-lg: 20px;
     --radius-pill: 999px;
-    --shadow-card: 0 1px 2px rgba(23,20,20,0.05), 0 4px 16px rgba(23,20,20,0.06);
+    --shadow-card: 0 1px 2px rgba(39,57,46,0.04), 0 4px 16px rgba(39,57,46,0.08);
 
     /* Motion: calm and institutional, per the brand kit */
     --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -68,21 +84,27 @@
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #141112;
-      --card: #1e1a1b;
-      --text: #F1EDEA;
-      --text-muted: #C9C0BC;
-      --text-faint: #948C89;
-      --border: rgba(244,240,236,0.12);
-      --border-strong: rgba(244,240,236,0.22);
-      --accent: #D6444C;
-      --accent-strong: #C62430;
-      --accent-soft: rgba(214,68,76,0.16);
+      --bg: #161E1A;
+      --card: #1F2A24;
+      --text: #F2EFE8;
+      --text-muted: #C6CFC8;
+      --text-faint: #90A096;
+      --border: rgba(242,239,232,0.12);
+      --border-strong: rgba(242,239,232,0.22);
+      --accent: var(--brand-gold-bright);
+      --accent-strong: var(--brand-gold);
+      --accent-soft: rgba(224,186,92,0.16);
+      /* Gold is legible as text on a dark ground, so accent and accent-text converge. */
+      --accent-text: var(--brand-gold-bright);
       --success: #5BAA78;
-      --warning: #DFAE52;
-      --danger: #E06456;
+      --warning: #E4B75F;
+      --danger: #D46B60;
       --info: #6E9BD8;
-      --dark: #0F0C0C;
+      --success-text: #5BAA78;
+      --warning-text: #E4B75F;
+      --danger-text: #D46B60;
+      --info-text: #6E9BD8;
+      --dark: #101713;
       --shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.35);
     }
   }
@@ -101,7 +123,7 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    font-family: "Raleway", "Helvetica Neue", Arial, sans-serif;
     font-size: 16px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
@@ -109,7 +131,7 @@
     padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
   }
   body.composing { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 68px); }
-  h1, h2, h3 { font-family: "Source Serif 4", Georgia, serif; line-height: 1.15; letter-spacing: -0.01em; margin: 0; }
+  h1, h2, h3 { font-family: "Raleway", "Helvetica Neue", Arial, sans-serif; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; margin: 0; }
   button, input, select, textarea { font: inherit; color: inherit; }
   button { cursor: pointer; }
   .num { font-variant-numeric: tabular-nums; }
@@ -124,13 +146,13 @@
     background: var(--dark);
     color: var(--text-on-dark);
     padding: calc(env(safe-area-inset-top) + 18px) 20px 20px;
-    border-bottom: 1px solid rgba(184,147,74,0.28);
+    border-bottom: 1px solid rgba(213,171,69,0.30);
   }
   .topbar-row { display: flex; align-items: center; gap: 12px; }
   .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
   .brand img { width: 30px; height: 30px; border-radius: 7px; display: block; }
-  .brand-name { font-family: "Source Serif 4", Georgia, serif; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
-  .brand-name .x { color: var(--brand-red-bright); }
+  .brand-name { font-family: "Raleway", sans-serif; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+  .brand-name .x { color: var(--brand-gold-bright); }
   .sync-dot {
     margin-left: auto; display: inline-flex; align-items: center; gap: 7px;
     font-size: 11px; color: var(--text-on-dark-muted);
@@ -155,8 +177,8 @@
   .ring { flex: none; width: 78px; height: 78px; position: relative; }
   .ring svg { transform: rotate(-90deg); display: block; }
   .ring-track { stroke: rgba(255,255,255,0.14); }
-  .ring-fill { stroke: var(--brand-red-bright); transition: stroke-dashoffset var(--dur-page) var(--ease-brand); }
-  .ring-fill.complete { stroke: var(--brand-gold); }
+  .ring-fill { stroke: var(--brand-gold-bright); transition: stroke-dashoffset var(--dur-page) var(--ease-brand); }
+  .ring-fill.complete { stroke: var(--success); }
   .ring-label {
     position: absolute; inset: 0; display: grid; place-content: center; text-align: center;
     font-variant-numeric: tabular-nums;
@@ -210,10 +232,10 @@
     font-variant-numeric: tabular-nums;
   }
   .chip.time { color: var(--text-muted); }
-  .chip.streak { color: var(--gold); border-color: rgba(184,147,74,0.4); background: rgba(184,147,74,0.10); }
-  .chip.warn { color: var(--warning); border-color: rgba(201,146,46,0.45); background: rgba(201,146,46,0.10); }
-  .chip.bad { color: var(--danger); border-color: rgba(192,57,43,0.42); background: rgba(192,57,43,0.10); }
-  .chip.src { color: var(--info); border-color: rgba(58,111,183,0.38); background: rgba(58,111,183,0.09); }
+  .chip.streak { color: var(--accent-text); border-color: rgba(213,171,69,0.45); background: rgba(213,171,69,0.12); }
+  .chip.warn { color: var(--warning-text); border-color: rgba(224,163,58,0.5); background: rgba(224,163,58,0.12); }
+  .chip.bad { color: var(--danger-text); border-color: rgba(183,66,58,0.45); background: rgba(183,66,58,0.10); }
+  .chip.src { color: var(--info-text); border-color: rgba(58,111,183,0.38); background: rgba(58,111,183,0.09); }
 
   .task-actions { flex: none; display: flex; flex-direction: column; gap: 4px; }
   .icon-btn {
@@ -254,11 +276,11 @@
   }
   .btn:hover { border-color: var(--text-faint); }
   .btn:active { transform: translateY(1px); }
-  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .btn-primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
   .btn-sm { padding: 6px 12px; font-size: 13px; }
   .btn-block { width: 100%; }
-  .btn-danger { color: var(--danger); border-color: rgba(192,57,43,0.4); }
+  .btn-danger { color: var(--danger-text); border-color: rgba(183,66,58,0.42); }
   .btn:disabled { opacity: 0.5; pointer-events: none; }
   .btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
 
@@ -278,14 +300,14 @@
     -webkit-tap-highlight-color: transparent;
   }
   .nav button .lucide { width: 21px; height: 21px; }
-  .nav button[aria-current="page"] { color: var(--accent); }
+  .nav button[aria-current="page"] { color: var(--accent-text); }
 
   .fab {
     position: fixed; right: 16px; z-index: 45;
     bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 14px);
     width: 54px; height: 54px; border-radius: 50%;
-    background: var(--accent); color: #fff; border: 0;
-    box-shadow: 0 6px 20px rgba(156,27,36,0.4);
+    background: var(--accent); color: var(--on-accent); border: 0;
+    box-shadow: 0 6px 20px rgba(39,57,46,0.28);
     display: grid; place-content: center;
     -webkit-tap-highlight-color: transparent;
   }
@@ -356,10 +378,10 @@
   .chat-wrap { display: flex; flex-direction: column; gap: 10px; }
   .chat-log { display: flex; flex-direction: column; gap: 10px; padding-bottom: 8px; }
   .msg { max-width: 88%; padding: 11px 14px; border-radius: var(--radius-md); font-size: 14.5px; white-space: pre-wrap; word-wrap: break-word; }
-  .msg.user { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+  .msg.user { align-self: flex-end; background: var(--accent); color: var(--on-accent); border-bottom-right-radius: 4px; }
   .msg.bot { align-self: flex-start; background: var(--card); border: 1px solid var(--border); border-bottom-left-radius: 4px; box-shadow: var(--shadow-card); }
-  .msg.err { align-self: flex-start; background: rgba(192,57,43,0.10); border: 1px solid rgba(192,57,43,0.4); color: var(--danger); font-size: 13.5px; }
-  .msg.act { align-self: flex-start; background: rgba(63,138,90,0.10); border: 1px solid rgba(63,138,90,0.4); color: var(--success); font-size: 12.5px; padding: 7px 12px; border-radius: var(--radius-pill); }
+  .msg.err { align-self: flex-start; background: rgba(183,66,58,0.10); border: 1px solid rgba(183,66,58,0.4); color: var(--danger-text); font-size: 13.5px; }
+  .msg.act { align-self: flex-start; background: rgba(63,138,90,0.10); border: 1px solid rgba(63,138,90,0.4); color: var(--success-text); font-size: 12.5px; padding: 7px 12px; border-radius: var(--radius-pill); }
   .msg .cursor { display: inline-block; width: 7px; height: 15px; background: var(--text-faint); vertical-align: -2px; animation: blink 1s steps(2) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
 
@@ -381,7 +403,7 @@
   .composer textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
   .composer .send {
     flex: none; width: 42px; height: 42px; align-self: flex-end;
-    border-radius: 50%; border: 0; background: var(--accent); color: #fff;
+    border-radius: 50%; border: 0; background: var(--accent); color: var(--on-accent);
     display: grid; place-content: center;
   }
   .composer .send:disabled { opacity: 0.45; }
@@ -408,7 +430,7 @@
 <header class="topbar">
   <div class="topbar-row">
     <div class="brand">
-      <img src="../assets/dynamix-badge.png" alt="" />
+      <img src="../assets/dynamix-badge-gold.png" alt="" />
       <span class="brand-name">Dynami<span class="x">X</span> Daily</span>
     </div>
     <button class="sync-dot" id="syncBtn" data-state="off" title="Sync now">
@@ -439,7 +461,7 @@
 
     <div class="section" id="sec-overdue" hidden>
       <div class="section-head">
-        <h2 class="label" style="color:var(--warning)">Carried over</h2>
+        <h2 class="label" style="color:var(--warning-text)">Carried over</h2>
         <span class="count" id="cnt-overdue"></span>
       </div>
       <div class="task-list" id="list-overdue"></div>
@@ -455,7 +477,7 @@
 
     <div class="section" id="sec-done" hidden>
       <div class="section-head">
-        <h2 class="label" style="color:var(--success)">Done</h2>
+        <h2 class="label" style="color:var(--success-text)">Done</h2>
         <span class="count" id="cnt-done"></span>
       </div>
       <div class="task-list" id="list-done"></div>
@@ -1362,7 +1384,7 @@ function fire(title, body) {
   try {
     if (navigator.serviceWorker && navigator.serviceWorker.ready) {
       navigator.serviceWorker.ready.then(reg => {
-        reg.showNotification(title, { body, icon: "../assets/dynamix-badge.png", badge: "../assets/dynamix-favicon.png", tag: title });
+        reg.showNotification(title, { body, icon: "../assets/dynamix-badge-gold.png", badge: "../assets/dynamix-favicon-gold.png", tag: title });
       }).catch(() => new Notification(title, { body }));
     } else {
       new Notification(title, { body });

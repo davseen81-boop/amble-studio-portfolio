@@ -6,24 +6,24 @@
   "scope": ".",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#171414",
-  "theme_color": "#171414",
+  "background_color": "#27392E",
+  "theme_color": "#27392E",
   "categories": ["productivity"],
   "icons": [
     {
-      "src": "../assets/dynamix-badge.png",
+      "src": "../assets/dynamix-badge-gold.png",
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "../assets/dynamix-social.png",
+      "src": "../assets/dynamix-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "../assets/dynamix-social.png",
+      "src": "../assets/dynamix-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

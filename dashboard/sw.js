@@ -7,15 +7,15 @@
  * and, optionally, the Apps Script bridge (which is always network-only).
  */
 
-const CACHE = "dynamix-daily-v1";
+const CACHE = "dynamix-daily-v2";
 
 const SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "../assets/dynamix-badge.png",
-  "../assets/dynamix-favicon.png",
-  "../assets/dynamix-social.png"
+  "../assets/dynamix-badge-gold.png",
+  "../assets/dynamix-favicon-gold.png",
+  "../assets/dynamix-icon-512.png"
 ];
 
 self.addEventListener("install", event => {

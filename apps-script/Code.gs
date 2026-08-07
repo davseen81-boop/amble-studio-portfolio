@@ -675,15 +675,15 @@ function sendDailyDigest() {
   const rows = outstanding.map(function (t) {
     const when = t.schedule.time ? ' — ' + t.schedule.time : '';
     return '<li style="margin-bottom:6px"><b>' + escapeHtml(t.title) + '</b>' +
-           '<span style="color:#79767B">' + escapeHtml(when) + '</span></li>';
+           '<span style="color:#7A7A7A">' + escapeHtml(when) + '</span></li>';
   }).join('');
 
   const html =
-    '<div style="font-family:Helvetica,Arial,sans-serif;color:#1C1A1B;max-width:520px">' +
-    '<p style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#79767B;margin:0 0 4px">DynamiX Daily</p>' +
-    '<h2 style="margin:0 0 14px;font-size:20px">' + outstanding.length + ' still to do today</h2>' +
+    '<div style="font-family:Raleway,Helvetica,Arial,sans-serif;color:#303030;max-width:520px">' +
+    '<p style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#8A6B1E;margin:0 0 4px">DynamiX Daily</p>' +
+    '<h2 style="margin:0 0 14px;font-size:20px;color:#27392E">' + outstanding.length + ' still to do today</h2>' +
     '<ul style="padding-left:18px;margin:0 0 18px">' + rows + '</ul>' +
-    '<p style="font-size:13px;color:#4A4547;margin:0">Reply to this email with <b>Task: something new</b> and label it ' +
+    '<p style="font-size:13px;color:#4C4C4C;margin:0">Reply to this email with <b>Task: something new</b> and label it ' +
     escapeHtml(LABEL_TODO) + ' to add it to tomorrow\'s list.</p>' +
     '</div>';
 
