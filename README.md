@@ -16,6 +16,19 @@ David's personal advisor brand, AWFA, has its own separate kit at [`docs/brandin
 
 The two earlier exports (`Dynamix New Transparent.jpg` / `.png`) both turned out to have the transparency-preview checkerboard flattened into the pixels rather than a real alpha channel, so they aren't used. If a clean transparent PNG or SVG of the full lockup (or just the X/ring mark on its own) becomes available, it can replace these directly.
 
+## Daily Dashboard
+
+`dashboard/` is a private, installable daily task dashboard for David, served from the same
+site at `/dashboard/` (`noindex`, not linked from the marketing page). It tracks recurring
+routines, keeps nagging about anything missed until it is done, and can pull tasks in from
+Google Calendar events tagged `#task` and Gmail threads labelled `Dashboard/Task`.
+
+It works standalone with no setup — routines live in the browser's local storage. The Calendar
+and email intake is optional and comes from `apps-script/Code.gs`, a small Google Apps Script
+that runs under David's own Google account.
+
+Full setup and usage: [`docs/dashboard.md`](docs/dashboard.md).
+
 ## Contact details
 
 The email, phone, and consultation copy on the live site are placeholders, replace them with DynamiX Group's real contact details before sharing this publicly.

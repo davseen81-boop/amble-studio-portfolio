@@ -1,0 +1,32 @@
+{
+  "name": "DynamiX Daily",
+  "short_name": "Daily",
+  "description": "A private daily routine dashboard with Google Calendar and email intake.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#171414",
+  "theme_color": "#171414",
+  "categories": ["productivity"],
+  "icons": [
+    {
+      "src": "../assets/dynamix-badge.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../assets/dynamix-social.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../assets/dynamix-social.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
