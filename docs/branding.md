@@ -1,6 +1,10 @@
 # Branding Kit — David Seen / AWFA
 
-> Adopted from `@davseen222` on Instagram and Alpha Wealth Financial Advisers (awfa.com.sg). Intended as the source of truth for visual identity and voice across the CPF Calculator and the wider AI Advisor Ecosystem.
+> **This is the primary brand kit** — the source of truth for visual identity and voice across every surface in this repository: the public site, the daily dashboard, and any generated email or document.
+>
+> Adopted from `@davseen222` on Instagram and Alpha Wealth Financial Advisers (awfa.com.sg). Originally written for the CPF Calculator and the wider AI Advisor Ecosystem; promoted to primary here so all of David's properties share one identity.
+>
+> The earlier DynamiX Group kit is kept at [`branding-dynamix.md`](branding-dynamix.md) as a record of the previous identity.
 
 ---
 
