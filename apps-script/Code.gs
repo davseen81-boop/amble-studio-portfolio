@@ -681,7 +681,7 @@ function sendDailyDigest() {
   const html =
     '<div style="font-family:Raleway,Helvetica,Arial,sans-serif;color:#303030;max-width:520px">' +
     '<p style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#8A6B1E;margin:0 0 4px">DynamiX Daily</p>' +
-    '<h2 style="margin:0 0 14px;font-size:20px;color:#27392E">' + outstanding.length + ' still to do today</h2>' +
+    '<h2 style="margin:0 0 14px;font-size:20px;color:#111111">' + outstanding.length + ' still to do today</h2>' +
     '<ul style="padding-left:18px;margin:0 0 18px">' + rows + '</ul>' +
     '<p style="font-size:13px;color:#4C4C4C;margin:0">Reply to this email with <b>Task: something new</b> and label it ' +
     escapeHtml(LABEL_TODO) + ' to add it to tomorrow\'s list.</p>' +

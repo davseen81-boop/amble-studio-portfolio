@@ -254,19 +254,23 @@ A typical question costs a fraction of a cent. To change the model or effort, ed
 
 ## 5. Design notes
 
-The dashboard follows [`branding.md`](branding.md), the AWFA kit: Raleway throughout, gold
-(`#D5AB45`) as the single accent, forest (`#27392E`) for the header and other dark surfaces,
-Lucide-style 1.5px outline icons, and calm 150/250ms motion.
+The dashboard follows [`branding.md`](branding.md), the AWFA kit — Raleway throughout, gold
+`#D5AB45` as the single accent, Lucide-style 1.5px outline icons, calm 150/250ms motion — with
+one deliberate deviation: **the dark anchor is black `#111111`, not the kit's forest `#27392E`.**
+David asked for gold and black. Black is also the better ground for the DynamiX logo, whose
+chrome lettering washes out on light surfaces, and it lifts the accent contrast from 5.69:1 to
+8.76:1.
 
-Two contrast rules from the kit are load-bearing rather than decorative, because gold is a
-light colour:
+Two contrast rules are load-bearing rather than decorative, because gold is a light colour:
 
 - **Nothing white ever sits on gold.** White on `#D5AB45` is 2.16:1, well under AA. Every gold
-  fill — buttons, the FAB, your own chat bubbles — takes forest text instead, which is 5.69:1.
+  fill — buttons, the FAB, your own chat bubbles — takes black text instead, at 8.76:1.
 - **Gold is never body copy on white**, for the same reason. Where a gold-toned label is wanted
   on a light surface the token is `--accent-text` (`#8A6B1E`, 5.00:1), not `--accent`.
 
-On dark surfaces the constraint disappears — gold on forest is 5.69:1 and the brightened
-`#E0BA5C` on the dark background is 9.19:1 — so `--accent-text` and `--accent` converge there.
+The amber, green, red, and blue semantic colours have the same problem to a lesser degree, so
+each has a `-text` variant tuned to clear 4.5:1. On dark surfaces the constraint disappears —
+the brightened `#E0BA5C` on the dark background is 10.5:1 — so `--accent-text` and `--accent`
+converge there.
 
 The DynamiX Group name and voice are unchanged; only the visual system moved.

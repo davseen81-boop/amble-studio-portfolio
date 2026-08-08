@@ -4,14 +4,16 @@ Providing certainty in life.
 
 A single-page site for DynamiX Group, the Singapore wealth advisory firm founded and led by David Seen, built as a self-contained `index.html`.
 
-Brand identity and visual system live in [`docs/branding.md`](docs/branding.md) — the AWFA kit, now the source of truth across every surface here. The site keeps the DynamiX Group name and its firm voice; only the visual system moved, so the palette is gold `#D5AB45` on forest `#27392E` with Raleway throughout. The previous DynamiX kit is kept at [`docs/branding-dynamix.md`](docs/branding-dynamix.md) as a record of the earlier identity.
+Brand identity and visual system live in [`docs/branding.md`](docs/branding.md) — the AWFA kit, now the source of truth across every surface here. The site keeps the DynamiX Group name and its firm voice; only the visual system moved. The palette is gold `#D5AB45` on black `#111111`, with Raleway throughout.
 
-Gold is a light colour, which makes two rules load-bearing rather than stylistic: nothing white ever sits on a gold fill (2.16:1 — buttons take forest text instead, 5.69:1), and gold is never small text on white (the `--accent-text` token, `#8A6B1E`, is the 5:1 substitute). The same applies to the amber, green, red, and blue semantic colours, which each have a `-text` variant for use as type.
+That black is a deliberate deviation from the kit, which specifies forest `#27392E` as its dark anchor: David asked for gold and black. It also suits the logo better — the chrome lettering washes out on light grounds — and raises the gold/dark contrast from 5.69:1 to 8.76:1. The previous DynamiX kit is kept at [`docs/branding-dynamix.md`](docs/branding-dynamix.md) as a record of the earlier identity.
+
+Gold is a light colour, which makes two rules load-bearing rather than stylistic: nothing white ever sits on a gold fill (2.16:1 — buttons take black text instead, 8.76:1), and gold is never small text on white (the `--accent-text` token, `#8A6B1E`, is the 5:1 substitute). The same applies to the amber, green, red, and blue semantic colours, which each have a `-text` variant for use as type.
 
 ## Logo assets
 
 `assets/dynamix-lockup.png` (1006x523) is the real DynamiX Group logo with a genuine alpha
-channel — 78% of its pixels are fully transparent, so it drops straight onto the forest hero
+channel — 78% of its pixels are fully transparent, so it drops straight onto the black hero
 panel without a plate behind it. Everything else is derived from it:
 
 - `dynamix-favicon.png` (64x64) — browser tab.
@@ -19,16 +21,17 @@ panel without a plate behind it. Everything else is derived from it:
 - `dynamix-icon-512.png` (512x512) — PWA manifest, `purpose: any`.
 - `dynamix-maskable-512.png` (512x512) — PWA `purpose: maskable`, with a wider safe zone,
   since launchers crop maskable icons to a circle.
-- `dynamix-social.png` (1200x630) — `og:image`, the full lockup on forest at OG's 1.91:1.
+- `dynamix-social.png` (1200x630) — `og:image`, the full lockup on black at OG's 1.91:1.
 
-The square icons crop to the **X motif** rather than shrinking the whole lockup: the lockup is
-nearly 2:1, so at 64px the wordmark is unreadable, while the X stays legible and is the mark
-the brand kit itself calls the signature. Regenerate them from the lockup if it ever changes.
+Every icon is the **full lockup** on black, at the largest size the square allows. A 2:1 mark
+in a square is a compromise — at 64px the tagline is gone and the wordmark is small — but the
+full logo is what was asked for, and padding is kept tight so it reads as well as it can.
+Regenerate them from the lockup if it ever changes.
 
-The logo carries its own red, which is why `--brand-logo-red` exists. It is used *only* by the
-coded wordmark in the nav, so the text X matches the X in the mark beside it. It is never used
-on a dark ground — the logo red is 7.8:1 on white but 1.3:1 on forest, so the footer wordmark
-stays gold.
+The nav, footer, and dashboard header show the lockup directly rather than a square badge
+beside a typed wordmark, which duplicated the name and tagline the logo already contains. The
+header is black for the same reason the icons are: the logo's chrome lettering nearly vanishes
+on white.
 
 The two earlier exports (`Dynamix New Transparent.jpg` / `.png`) had the transparency-preview
 checkerboard flattened into the pixels rather than a real alpha channel, so they aren't used.

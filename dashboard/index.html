@@ -6,7 +6,7 @@
 <title>Daily Dashboard | DynamiX Group</title>
 <meta name="description" content="A private daily task dashboard with Google Calendar and email intake." />
 <meta name="robots" content="noindex, nofollow" />
-<meta name="theme-color" content="#27392E" />
+<meta name="theme-color" content="#111111" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Daily" />
@@ -18,9 +18,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root {
-    /* Brand primary — AWFA kit (docs/branding.md): gold accent, forest anchor */
+    /* Brand primary — AWFA kit (docs/branding.md), gold on black */
     --brand-gold: #D5AB45;
-    --brand-forest: #27392E;
+    --brand-black: #111111;
 
     /* Gold only reaches 2.1:1 on white, so it is never body copy there. This is
        the text-safe variant (5.0:1); --on-accent is what sits on a gold fill. */
@@ -35,7 +35,7 @@
     --ink-100: #CDCDCD;
     --surface: #FFFFFF;
     --surface-muted: #FCFCFC;
-    --dark-base: var(--brand-forest);
+    --dark-base: var(--brand-black);
 
     /* Semantic */
     --success: #3F8A5A;
@@ -61,18 +61,18 @@
     --accent: var(--brand-gold);
     --accent-strong: #C29A34;
     --accent-soft: rgba(213,171,69,0.14);
-    --on-accent: var(--brand-forest);
+    --on-accent: var(--brand-black);
     --accent-text: var(--brand-gold-deep);
     --gold: var(--brand-gold);
     --dark: var(--dark-base);
-    --text-on-dark: #F2EFE8;
-    --text-on-dark-muted: #C6CFC8;
+    --text-on-dark: #F5F4F2;
+    --text-on-dark-muted: #C9C9C9;
 
     --radius-sm: 6px;
     --radius-md: 12px;
     --radius-lg: 20px;
     --radius-pill: 999px;
-    --shadow-card: 0 1px 2px rgba(39,57,46,0.04), 0 4px 16px rgba(39,57,46,0.08);
+    --shadow-card: 0 1px 2px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.10);
 
     /* Motion: calm and institutional, per the brand kit */
     --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -84,13 +84,13 @@
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #161E1A;
-      --card: #1F2A24;
-      --text: #F2EFE8;
-      --text-muted: #C6CFC8;
-      --text-faint: #90A096;
-      --border: rgba(242,239,232,0.12);
-      --border-strong: rgba(242,239,232,0.22);
+      --bg: #0D0D0D;
+      --card: #1A1A1A;
+      --text: #F5F4F2;
+      --text-muted: #C9C9C9;
+      --text-faint: #8F8F8F;
+      --border: rgba(255,255,255,0.12);
+      --border-strong: rgba(255,255,255,0.22);
       --accent: var(--brand-gold-bright);
       --accent-strong: var(--brand-gold);
       --accent-soft: rgba(224,186,92,0.16);
@@ -104,7 +104,7 @@
       --warning-text: #E4B75F;
       --danger-text: #D46B60;
       --info-text: #6E9BD8;
-      --dark: #101713;
+      --dark: #080808;
       --shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.35);
     }
   }
@@ -150,7 +150,7 @@
   }
   .topbar-row { display: flex; align-items: center; gap: 12px; }
   .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-  .brand img { width: 30px; height: 30px; border-radius: 7px; display: block; }
+  .brand img { height: 26px; width: auto; display: block; flex-shrink: 0; }
   .brand-name { font-family: "Raleway", sans-serif; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
   .brand-name .x { color: var(--brand-gold-bright); }
   .sync-dot {
@@ -307,7 +307,7 @@
     bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 14px);
     width: 54px; height: 54px; border-radius: 50%;
     background: var(--accent); color: var(--on-accent); border: 0;
-    box-shadow: 0 6px 20px rgba(39,57,46,0.28);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.32);
     display: grid; place-content: center;
     -webkit-tap-highlight-color: transparent;
   }
@@ -430,8 +430,8 @@
 <header class="topbar">
   <div class="topbar-row">
     <div class="brand">
-      <img src="../assets/dynamix-badge.png" alt="" />
-      <span class="brand-name">Dynami<span class="x">X</span> Daily</span>
+      <img src="../assets/dynamix-lockup.png" alt="DynamiX Group" />
+      <span class="brand-name">Daily</span>
     </div>
     <button class="sync-dot" id="syncBtn" data-state="off" title="Sync now">
       <span id="syncText">Local</span>
