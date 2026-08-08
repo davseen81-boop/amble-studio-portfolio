@@ -82,4 +82,10 @@ Open `index.html` directly in a browser, or serve the folder with any static fil
   `vercel.json` raises the chat function's timeout to 60s — the default 10s cuts long answers off
   mid-sentence, since the model thinks before it writes — marks `/dashboard/` `noindex`, keeps the
   service worker uncached so updates land, and caches `/assets/` immutably.
+
+  Because there is no build step, Vercel serves the repository root, so every tracked file is
+  fetchable on the live domain. `.vercelignore` keeps `apps-script/`, `docs/`, and this README out
+  of the deployment — `Code.gs` in particular holds the bridge `SECRET` and the Zoho credentials.
+  Those belong in the Apps Script editor, never in a commit. Leave `package.json`,
+  `package-lock.json`, and `tsconfig.json` deployed; the function build needs them.
 - **GitHub Pages:** enable in repo settings (Pages → `main` branch, root folder).

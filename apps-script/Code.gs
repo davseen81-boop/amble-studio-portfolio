@@ -19,7 +19,11 @@
  * --------------------------
  *   1. Go to script.google.com and create a new project.
  *   2. Paste this whole file in, replacing the default `myFunction`.
- *   3. Change SECRET below to a long random string of your own.
+ *   3. Change SECRET below to a long random string of your own. Do that here in
+ *      the Apps Script editor, not in the copy of this file in the repository —
+ *      a committed secret ends up in git history, and the repository is what
+ *      gets deployed to the public site. The same goes for the Zoho
+ *      credentials further down.
  *   4. Run `setup` once from the editor toolbar and grant the permissions it
  *      asks for. This creates the Gmail labels and the state file.
  *   5. Deploy > New deployment > Web app.
@@ -84,7 +88,9 @@ const HISTORY_DAYS = 400;
  *        curl -X POST 'https://accounts.zoho.com/oauth/v2/token' \
  *          -d 'grant_type=authorization_code' -d 'client_id=...' \
  *          -d 'client_secret=...' -d 'code=...'
- *   4. Paste the client id, secret, and refresh_token below.
+ *   4. Paste the client id, secret, and refresh_token below — again, in the Apps
+ *      Script editor rather than the repository copy. A Zoho refresh token does
+ *      not expire on its own, so a committed one stays valid until revoked.
  *   5. In Zoho Mail, create a folder called Tasks and a folder called Done,
  *      then add a filter that moves flagged or tagged mail into Tasks.
  *
