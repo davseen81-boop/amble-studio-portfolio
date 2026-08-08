@@ -1,0 +1,13 @@
+# With no build step, Vercel serves the repository root as static files — so
+# anything tracked here is fetchable on the live domain unless it is excluded.
+#
+# apps-script/Code.gs matters most: it has a SECRET constant and a Zoho
+# clientSecret/refreshToken block. Those are meant to be filled in inside the
+# Apps Script editor rather than committed, but if they ever are, this keeps
+# them off the public site.
+apps-script/
+docs/
+README.md
+
+# Do NOT add package.json, package-lock.json, or tsconfig.json here — the
+# api/chat.ts function build needs them to install and compile.

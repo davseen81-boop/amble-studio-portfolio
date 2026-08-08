@@ -1,0 +1,2394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Daily Dashboard | DynamiX Group</title>
+<meta name="description" content="A private daily task dashboard with Google Calendar and email intake." />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#111111" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Daily" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" type="image/png" href="../assets/dynamix-favicon.png" />
+<link rel="apple-touch-icon" href="../assets/dynamix-badge.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* Brand primary — AWFA kit (docs/branding.md), gold on black */
+    --brand-gold: #D5AB45;
+    --brand-black: #111111;
+
+    /* Gold only reaches 2.1:1 on white, so it is never body copy there. This is
+       the text-safe variant (5.0:1); --on-accent is what sits on a gold fill. */
+    --brand-gold-deep: #8A6B1E;
+    --brand-gold-bright: #E0BA5C;
+
+    /* Neutrals */
+    --ink-900: #303030;
+    --ink-700: #4C4C4C;
+    --ink-500: #7A7A7A;
+    --ink-300: #9D9D9D;
+    --ink-100: #CDCDCD;
+    --surface: #FFFFFF;
+    --surface-muted: #FCFCFC;
+    --dark-base: var(--brand-black);
+
+    /* Semantic */
+    --success: #3F8A5A;
+    --warning: #E0A33A;
+    --danger: #B7423A;
+    --info: #3A6FB7;
+
+    /* Coloured text on a light ground needs to clear 4.5:1; the fills above
+       are tuned for dots and borders and several fall short as type. */
+    --success-text: #2F7048;
+    --warning-text: #8A6520;
+    --danger-text: #A03A32;
+    --info-text: #2F5E9E;
+
+    /* Working aliases */
+    --bg: var(--surface-muted);
+    --card: var(--surface);
+    --text: var(--ink-900);
+    --text-muted: var(--ink-700);
+    --text-faint: var(--ink-500);
+    --border: var(--ink-100);
+    --border-strong: var(--ink-300);
+    --accent: var(--brand-gold);
+    --accent-strong: #C29A34;
+    --accent-soft: rgba(213,171,69,0.14);
+    --on-accent: var(--brand-black);
+    --accent-text: var(--brand-gold-deep);
+    --gold: var(--brand-gold);
+    --dark: var(--dark-base);
+    --text-on-dark: #F5F4F2;
+    --text-on-dark-muted: #C9C9C9;
+
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-pill: 999px;
+    --shadow-card: 0 1px 2px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.10);
+
+    /* Motion: calm and institutional, per the brand kit */
+    --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --dur-micro: 150ms;
+    --dur-default: 250ms;
+    --dur-page: 400ms;
+
+    --nav-h: 66px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0D0D0D;
+      --card: #1A1A1A;
+      --text: #F5F4F2;
+      --text-muted: #C9C9C9;
+      --text-faint: #8F8F8F;
+      --border: rgba(255,255,255,0.12);
+      --border-strong: rgba(255,255,255,0.22);
+      --accent: var(--brand-gold-bright);
+      --accent-strong: var(--brand-gold);
+      --accent-soft: rgba(224,186,92,0.16);
+      /* Gold is legible as text on a dark ground, so accent and accent-text converge. */
+      --accent-text: var(--brand-gold-bright);
+      --success: #5BAA78;
+      --warning: #E4B75F;
+      --danger: #D46B60;
+      --info: #6E9BD8;
+      --success-text: #5BAA78;
+      --warning-text: #E4B75F;
+      --danger-text: #D46B60;
+      --info-text: #6E9BD8;
+      --dark: #080808;
+      --shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.35);
+    }
+  }
+
+  /* Lucide-style icons: outlined, 1.5px stroke, rounded caps and joins */
+  .lucide {
+    width: 20px; height: 20px; flex: none; display: block;
+    fill: none; stroke: currentColor; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .lucide-lg { width: 30px; height: 30px; stroke-width: 1.25; }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Raleway", "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: contain;
+    padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
+  }
+  body.composing { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 68px); }
+  h1, h2, h3 { font-family: "Raleway", "Helvetica Neue", Arial, sans-serif; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; margin: 0; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  .num { font-variant-numeric: tabular-nums; }
+  .label {
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-size: 11px; font-weight: 600; color: var(--text-faint);
+  }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---------- Header ---------- */
+  .topbar {
+    background: var(--dark);
+    color: var(--text-on-dark);
+    padding: calc(env(safe-area-inset-top) + 18px) 20px 20px;
+    border-bottom: 1px solid rgba(213,171,69,0.30);
+  }
+  .topbar-row { display: flex; align-items: center; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .brand img { height: 26px; width: auto; display: block; flex-shrink: 0; }
+  .brand-name { font-family: "Raleway", sans-serif; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+  .brand-name .x { color: var(--brand-gold-bright); }
+  .sync-dot {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 7px;
+    font-size: 11px; color: var(--text-on-dark-muted);
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius-pill); padding: 5px 11px;
+  }
+  .sync-dot::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--ink-500); flex: none;
+  }
+  .sync-dot[data-state="ok"]::before { background: var(--success); }
+  .sync-dot[data-state="busy"]::before { background: var(--warning); animation: pulse 1s infinite; }
+  .sync-dot[data-state="error"]::before { background: var(--danger); }
+  @keyframes pulse { 50% { opacity: 0.3; } }
+
+  .hero { display: flex; align-items: flex-end; gap: 18px; margin-top: 20px; }
+  .hero-text { flex: 1; min-width: 0; }
+  .hero-date { display: flex; align-items: center; gap: 2px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-on-dark-muted); font-weight: 600; }
+  .daynav {
+    background: none; border: 0; color: var(--text-on-dark-muted); padding: 2px 3px;
+    display: inline-flex; align-items: center; border-radius: var(--radius-sm);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .daynav .lucide { width: 15px; height: 15px; }
+  .daynav:hover { color: var(--accent); }
+  .daynav:disabled { opacity: 0.3; pointer-events: none; }
+  .daynav.jump {
+    font: inherit; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--accent); border: 1px solid rgba(213,171,69,0.4);
+    padding: 2px 8px; margin-left: 6px; border-radius: var(--radius-pill);
+  }
+  .daynav.jump[hidden] { display: none; }
+
+  /* ---------- Activity ---------- */
+  .act {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-md); padding: 11px 13px; box-shadow: var(--shadow-card);
+  }
+  .act .when { flex: none; font-size: 12px; font-weight: 600; color: var(--accent-text); font-variant-numeric: tabular-nums; padding-top: 1px; }
+  .act .what { flex: 1; min-width: 0; font-size: 14.5px; word-wrap: break-word; white-space: pre-wrap; }
+  .act .via { font-size: 11px; color: var(--text-faint); margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+  .act .via .lucide { width: 12px; height: 12px; }
+
+  /* ---------- Voice ---------- */
+  .voice-backdrop {
+    position: fixed; inset: 0; z-index: 70; background: rgba(17,17,17,0.72);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  }
+  .voice-backdrop[hidden] { display: none; }
+  .voice-card {
+    background: var(--card); border-radius: var(--radius-lg); padding: 28px 24px 22px;
+    width: 100%; max-width: 420px; text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+  .voice-orb {
+    width: 78px; height: 78px; margin: 0 auto 18px; border-radius: 50%;
+    background: var(--accent-soft); border: 2px solid var(--accent);
+    display: grid; place-content: center; color: var(--accent-text);
+  }
+  .voice-orb .lucide { width: 32px; height: 32px; }
+  .voice-backdrop.listening .voice-orb { animation: orb 1.4s ease-in-out infinite; }
+  @keyframes orb {
+    0%,100% { box-shadow: 0 0 0 0 rgba(213,171,69,0.45); }
+    50%     { box-shadow: 0 0 0 16px rgba(213,171,69,0); }
+  }
+  .voice-status { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-faint); font-weight: 600; }
+  .voice-text { margin: 12px 0 20px; font-size: 16px; line-height: 1.45; min-height: 3em; color: var(--text); }
+  .voice-text .interim { color: var(--text-faint); }
+  .voice-actions { display: flex; gap: 8px; justify-content: center; }
+
+  .fab-stack { position: fixed; right: 16px; z-index: 45; bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 14px); display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .fab-stack[hidden] { display: none; }
+  .fab-mic {
+    width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--border-strong);
+    background: var(--card); color: var(--accent-text); display: grid; place-content: center;
+    box-shadow: var(--shadow-card); -webkit-tap-highlight-color: transparent;
+  }
+  .fab-mic .lucide { width: 20px; height: 20px; }
+  .fab-mic:active { transform: scale(0.93); }
+  .hero h1 { font-size: 26px; margin-top: 5px; color: var(--text-on-dark); }
+  .hero-sub { font-size: 13px; color: var(--text-on-dark-muted); margin-top: 6px; }
+
+  .ring { flex: none; width: 78px; height: 78px; position: relative; }
+  .ring svg { transform: rotate(-90deg); display: block; }
+  .ring-track { stroke: rgba(255,255,255,0.14); }
+  .ring-fill { stroke: var(--brand-gold-bright); transition: stroke-dashoffset var(--dur-page) var(--ease-brand); }
+  .ring-fill.complete { stroke: var(--success); }
+  .ring-label {
+    position: absolute; inset: 0; display: grid; place-content: center; text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .ring-label b { display: block; font-size: 19px; font-weight: 700; color: var(--text-on-dark); line-height: 1; }
+  .ring-label span { font-size: 10px; color: var(--text-on-dark-muted); }
+
+  /* ---------- Layout ---------- */
+  main { max-width: 720px; margin: 0 auto; padding: 18px 16px 24px; }
+  .view[hidden] { display: none; }
+  .section + .section { margin-top: 26px; }
+  .section-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+  .section-head .count { margin-left: auto; font-size: 12px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+  /* ---------- Task card ---------- */
+  .task-list { display: flex; flex-direction: column; gap: 9px; }
+  .task {
+    display: flex; align-items: flex-start; gap: 13px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 13px 14px;
+    box-shadow: var(--shadow-card);
+    transition: opacity var(--dur-default) var(--ease-brand), border-color var(--dur-default) var(--ease-brand);
+  }
+  .task.is-overdue { border-left: 3px solid var(--warning); }
+  .task.is-chronic { border-left: 3px solid var(--danger); }
+  .task.is-done { opacity: 0.55; }
+  .task.is-done .task-title { text-decoration: line-through; text-decoration-color: var(--text-faint); }
+
+  .check {
+    flex: none; width: 28px; height: 28px; margin-top: 1px;
+    border-radius: 50%; border: 2px solid var(--border-strong);
+    background: transparent; display: grid; place-content: center;
+    transition: all var(--dur-micro) var(--ease-brand);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .check .lucide { width: 15px; height: 15px; stroke: var(--card); stroke-width: 2.6; fill: none; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity var(--dur-micro); }
+  .check[aria-pressed="true"] { background: var(--success); border-color: var(--success); }
+  .check[aria-pressed="true"] svg { opacity: 1; }
+  .check:active { transform: scale(0.9); }
+
+  .task-body { flex: 1; min-width: 0; }
+  .task-title { font-weight: 500; font-size: 15px; word-wrap: break-word; }
+  .task-notes { font-size: 13px; color: var(--text-muted); margin-top: 3px; word-wrap: break-word; white-space: pre-wrap; }
+  .task-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 7px; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 500; padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    background: var(--bg); border: 1px solid var(--border); color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .chip.time { color: var(--text-muted); }
+  .chip.streak { color: var(--accent-text); border-color: rgba(213,171,69,0.45); background: rgba(213,171,69,0.12); }
+  .chip.warn { color: var(--warning-text); border-color: rgba(224,163,58,0.5); background: rgba(224,163,58,0.12); }
+  .chip.bad { color: var(--danger-text); border-color: rgba(183,66,58,0.45); background: rgba(183,66,58,0.10); }
+  .chip.src { color: var(--info-text); border-color: rgba(58,111,183,0.38); background: rgba(58,111,183,0.09); }
+
+  .task-actions { flex: none; display: flex; flex-direction: column; gap: 4px; }
+  .icon-btn {
+    width: 30px; height: 30px; border-radius: var(--radius-sm);
+    border: 1px solid transparent; background: transparent; color: var(--text-faint);
+    display: grid; place-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .icon-btn:hover { background: var(--bg); color: var(--accent); }
+  .icon-btn:active { transform: scale(0.92); }
+
+  /* ---------- Empty / banner ---------- */
+  .empty {
+    text-align: center; padding: 40px 20px; color: var(--text-faint);
+    border: 1px dashed var(--border-strong); border-radius: var(--radius-md);
+  }
+  .empty .lucide-lg { margin: 0 auto 10px; color: var(--border-strong); }
+  .empty p { margin: 0; font-size: 14px; }
+
+  .banner {
+    display: flex; gap: 11px; align-items: flex-start;
+    border-radius: var(--radius-md); padding: 12px 14px; font-size: 13px;
+    border: 1px solid rgba(58,111,183,0.32); background: rgba(58,111,183,0.08);
+    color: var(--text-muted); margin-bottom: 16px;
+  }
+  .banner.warn { border-color: rgba(201,146,46,0.4); background: rgba(201,146,46,0.09); }
+  .banner strong { color: var(--text); }
+  .banner .btn { display: flex; width: fit-content; margin-top: 10px; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 10px 16px; border-radius: var(--radius-pill);
+    border: 1px solid var(--border-strong); background: var(--card); color: var(--text);
+    font-size: 14px; font-weight: 500;
+    transition: all var(--dur-micro) var(--ease-brand);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:hover { border-color: var(--text-faint); }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .btn-primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-block { width: 100%; }
+  .btn-danger { color: var(--danger-text); border-color: rgba(183,66,58,0.42); }
+  .btn:disabled { opacity: 0.5; pointer-events: none; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* ---------- Bottom nav ---------- */
+  .nav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    background: color-mix(in srgb, var(--card) 92%, transparent);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .nav button {
+    background: none; border: 0; padding: 9px 4px 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    color: var(--text-faint); font-size: 10.5px; font-weight: 500;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav button .lucide { width: 21px; height: 21px; }
+  .nav button[aria-current="page"] { color: var(--accent-text); }
+
+  .fab {
+    /* Positioned by .fab-stack now. Leaving position:fixed here made it float
+       over the mic button and swallow its clicks. */
+    position: relative; z-index: 1;
+    width: 54px; height: 54px; border-radius: 50%;
+    background: var(--accent); color: var(--on-accent); border: 0;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.32);
+    display: grid; place-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .fab[hidden] { display: none; }
+  .fab .lucide { width: 24px; height: 24px; stroke-width: 2; }
+  .fab:active { transform: scale(0.93); }
+
+  /* ---------- Sheet / modal ---------- */
+  .sheet-backdrop {
+    position: fixed; inset: 0; z-index: 60; background: rgba(23,20,20,0.55);
+    display: flex; align-items: flex-end; justify-content: center;
+    -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+  }
+  .sheet-backdrop[hidden] { display: none; }
+  .sheet {
+    background: var(--card); width: 100%; max-width: 560px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: 8px 18px calc(20px + env(safe-area-inset-bottom));
+    max-height: 92vh; overflow-y: auto;
+    animation: rise var(--dur-default) var(--ease-brand);
+  }
+  @keyframes rise { from { transform: translateY(22px); opacity: 0.5; } }
+  @media (min-width: 600px) {
+    .sheet-backdrop { align-items: center; }
+    .sheet { border-radius: var(--radius-lg); }
+  }
+  .grabber { width: 38px; height: 4px; border-radius: 2px; background: var(--border-strong); margin: 6px auto 14px; }
+  .sheet h2 { font-size: 19px; margin-bottom: 16px; }
+
+  .field { margin-bottom: 14px; }
+  .field > label { display: block; margin-bottom: 6px; }
+  .input, select.input, textarea.input {
+    width: 100%; padding: 11px 13px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text);
+    font-size: 16px; /* 16px avoids iOS zoom-on-focus */
+  }
+  .input:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
+  textarea.input { resize: vertical; min-height: 64px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hint { font-size: 12px; color: var(--text-faint); margin-top: 5px; }
+
+  .daypicker { display: flex; gap: 5px; }
+  .daypicker button {
+    flex: 1; padding: 9px 0; border-radius: var(--radius-sm);
+    border: 1px solid var(--border-strong); background: var(--bg);
+    font-size: 12px; font-weight: 600; color: var(--text-faint);
+  }
+  .daypicker button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+  /* ---------- Settings ---------- */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 16px; box-shadow: var(--shadow-card);
+  }
+  .card + .card { margin-top: 14px; }
+  .card h3 { font-size: 16px; margin-bottom: 4px; }
+  .card p.desc { font-size: 13px; color: var(--text-muted); margin: 0 0 13px; }
+  .kv { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
+  .kv:last-child { border-bottom: 0; }
+  .kv span:last-child { color: var(--text-muted); font-variant-numeric: tabular-nums; text-align: right; }
+  code.inline { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
+  details.help { margin-top: 12px; font-size: 13px; color: var(--text-muted); }
+  details.help summary { cursor: pointer; font-weight: 500; color: var(--text); }
+  details.help ol { padding-left: 20px; margin: 10px 0 0; }
+  details.help li { margin-bottom: 7px; }
+
+  /* ---------- Assistant ---------- */
+  .chat-wrap { display: flex; flex-direction: column; gap: 10px; }
+  .chat-log { display: flex; flex-direction: column; gap: 10px; padding-bottom: 8px; }
+  .msg { max-width: 88%; padding: 11px 14px; border-radius: var(--radius-md); font-size: 14.5px; white-space: pre-wrap; word-wrap: break-word; }
+  .msg.user { align-self: flex-end; background: var(--accent); color: var(--on-accent); border-bottom-right-radius: 4px; }
+  .msg.bot { align-self: flex-start; background: var(--card); border: 1px solid var(--border); border-bottom-left-radius: 4px; box-shadow: var(--shadow-card); }
+  .msg.err { align-self: flex-start; background: rgba(183,66,58,0.10); border: 1px solid rgba(183,66,58,0.4); color: var(--danger-text); font-size: 13.5px; }
+  .msg.act { align-self: flex-start; background: rgba(63,138,90,0.10); border: 1px solid rgba(63,138,90,0.4); color: var(--success-text); font-size: 12.5px; padding: 7px 12px; border-radius: var(--radius-pill); }
+  .msg .cursor { display: inline-block; width: 7px; height: 15px; background: var(--text-faint); vertical-align: -2px; animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .composer {
+    position: fixed; left: 0; right: 0; z-index: 35;
+    bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
+    display: flex; gap: 8px; padding: 10px 16px;
+    background: color-mix(in srgb, var(--bg) 94%, transparent);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+  }
+  .composer[hidden] { display: none; }
+  .composer textarea {
+    flex: 1; resize: none; max-height: 110px;
+    padding: 10px 13px; border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong); background: var(--card); color: var(--text);
+    font-size: 16px; line-height: 1.4;
+  }
+  .composer textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
+  .composer .send {
+    flex: none; width: 42px; height: 42px; align-self: flex-end;
+    border-radius: 50%; border: 0; background: var(--accent); color: var(--on-accent);
+    display: grid; place-content: center;
+  }
+  .composer .send:disabled { opacity: 0.45; }
+  .chat-suggest { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 4px; }
+  .chat-suggest button {
+    font-size: 12.5px; padding: 6px 12px; border-radius: var(--radius-pill);
+    border: 1px dashed var(--border-strong); background: transparent; color: var(--text-muted);
+  }
+  .chat-suggest button:hover { border-style: solid; color: var(--accent); border-color: var(--accent); }
+
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%); z-index: 80;
+    bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 20px);
+    background: var(--dark); color: var(--text-on-dark);
+    padding: 11px 18px; border-radius: var(--radius-pill); font-size: 13.5px;
+    box-shadow: 0 8px 26px rgba(0,0,0,0.35); max-width: calc(100vw - 32px);
+    animation: rise var(--dur-micro) var(--ease-brand);
+  }
+  .toast[hidden] { display: none; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-row">
+    <div class="brand">
+      <img src="../assets/dynamix-lockup.png" alt="DynamiX Group" />
+      <span class="brand-name">Daily</span>
+    </div>
+    <button class="sync-dot" id="syncBtn" data-state="off" title="Sync now">
+      <span id="syncText">Local</span>
+    </button>
+  </div>
+  <div class="hero">
+    <div class="hero-text">
+      <div class="hero-date">
+        <button class="daynav" id="dayPrev" aria-label="Previous day">
+          <svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span id="heroDate"></span>
+        <button class="daynav" id="dayNext" aria-label="Next day">
+          <svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="daynav jump" id="dayToday" hidden>Today</button>
+      </div>
+      <h1 id="heroGreeting">Today</h1>
+      <div class="hero-sub" id="heroSub"></div>
+    </div>
+    <div class="ring">
+      <svg width="78" height="78" viewBox="0 0 78 78" aria-hidden="true">
+        <circle class="ring-track" cx="39" cy="39" r="33" fill="none" stroke-width="7" />
+        <circle class="ring-fill" id="ringFill" cx="39" cy="39" r="33" fill="none" stroke-width="7"
+                stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3" />
+      </svg>
+      <div class="ring-label"><b id="ringPct">0%</b><span id="ringCount">0 / 0</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ============ TODAY ============ -->
+  <section class="view" id="view-today">
+    <div id="banners"></div>
+
+    <div class="section" id="sec-overdue" hidden>
+      <div class="section-head">
+        <h2 class="label" style="color:var(--warning-text)">Carried over</h2>
+        <span class="count" id="cnt-overdue"></span>
+      </div>
+      <div class="task-list" id="list-overdue"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2 class="label">Due today</h2>
+        <span class="count" id="cnt-today"></span>
+      </div>
+      <div class="task-list" id="list-today"></div>
+    </div>
+
+    <div class="section" id="sec-activity">
+      <div class="section-head">
+        <h2 class="label">Activity</h2>
+        <span class="count" id="cnt-activity"></span>
+      </div>
+      <div class="task-list" id="list-activity"></div>
+      <div class="btn-row" style="margin-top:10px">
+        <button class="btn btn-sm" id="btnAddNote">Add a note</button>
+        <button class="btn btn-sm" id="btnVoiceNote">Speak a note</button>
+      </div>
+    </div>
+
+    <div class="section" id="sec-done" hidden>
+      <div class="section-head">
+        <h2 class="label" style="color:var(--success-text)">Done</h2>
+        <span class="count" id="cnt-done"></span>
+      </div>
+      <div class="task-list" id="list-done"></div>
+    </div>
+  </section>
+
+  <!-- ============ ALL TASKS ============ -->
+  <section class="view" id="view-all" hidden>
+    <div class="section">
+      <div class="section-head">
+        <h2 class="label">All routines</h2>
+        <span class="count" id="cnt-all"></span>
+      </div>
+      <div class="task-list" id="list-all"></div>
+    </div>
+    <div class="section" id="sec-archived" hidden>
+      <div class="section-head"><h2 class="label">Archived</h2></div>
+      <div class="task-list" id="list-archived"></div>
+    </div>
+  </section>
+
+  <!-- ============ CALENDAR ============ -->
+  <section class="view" id="view-cal" hidden>
+    <div class="card">
+      <h3>Put these on your phone</h3>
+      <p class="desc">Google Calendar is the reminder engine. Export your routines as calendar events and your phone nudges you natively, even with this dashboard closed.</p>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnIcs">Download .ics for all routines</button>
+      </div>
+      <p class="hint">Open the downloaded file on your phone and add it to Google Calendar. Each routine becomes a recurring event with an alert at its scheduled time.</p>
+      <details class="help">
+        <summary>Or add them one at a time</summary>
+        <div class="task-list" id="list-gcal" style="margin-top:12px"></div>
+      </details>
+    </div>
+
+    <div class="card">
+      <h3>Create tasks from Calendar</h3>
+      <p class="desc">Anything on your calendar works as a task the moment you tag it. In any Google Calendar event, put <code class="inline">#task</code> in the title.</p>
+      <div class="kv"><span>Daily routine</span><span><code class="inline">Review pipeline #task @daily</code></span></div>
+      <div class="kv"><span>Weekdays only</span><span><code class="inline">Morning calls #task @weekdays</code></span></div>
+      <div class="kv"><span>Specific days</span><span><code class="inline">Team sync #task @mon,@thu</code></span></div>
+      <div class="kv"><span>One-off</span><span><code class="inline">File GST #task</code></span></div>
+      <p class="hint">Requires the Calendar &amp; Email bridge in Settings. Without it, this dashboard stays fully local and you add routines by hand.</p>
+    </div>
+
+    <div class="card">
+      <h3>Create tasks from Email</h3>
+      <p class="desc">Forward or label an email and it lands here as a task. The subject becomes the title; directives anywhere in the subject set the schedule.</p>
+      <div class="kv"><span>Label an email</span><span><code class="inline">Dashboard/Task</code></span></div>
+      <div class="kv"><span>Or mail yourself</span><span><code class="inline">Task: Call Mr Tan @weekdays @9am</code></span></div>
+      <p class="hint">Marking the task done here removes the label and files the thread under <code class="inline">Dashboard/Done</code>.</p>
+    </div>
+  </section>
+
+  <!-- ============ ASSISTANT ============ -->
+  <section class="view" id="view-ask" hidden>
+    <div class="chat-wrap">
+      <div class="chat-suggest" id="chatSuggest"></div>
+      <div class="chat-log" id="chatLog"></div>
+    </div>
+  </section>
+
+  <!-- ============ SETTINGS ============ -->
+  <section class="view" id="view-settings" hidden>
+    <div class="card">
+      <h3>Reminders on this device</h3>
+      <p class="desc">Browser notifications fire while the dashboard is installed and running in the background. Calendar alerts are the reliable backstop — set both.</p>
+      <div class="btn-row">
+        <button class="btn" id="btnNotify">Enable notifications</button>
+        <button class="btn btn-sm" id="btnTestNotify">Send a test</button>
+      </div>
+      <p class="hint" id="notifyState"></p>
+    </div>
+
+    <div class="card">
+      <h3>Calendar &amp; Email bridge</h3>
+      <p class="desc">Paste the Web App URL of your Google Apps Script deployment. It reads tagged calendar events and labelled emails, and syncs your completions across devices.</p>
+      <div class="field">
+        <label class="label" for="syncUrl">Web app URL</label>
+        <input class="input" id="syncUrl" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="field">
+        <label class="label" for="syncToken">Shared secret</label>
+        <input class="input" id="syncToken" type="text" placeholder="the SECRET you set in Code.gs" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnSaveSync">Save &amp; sync</button>
+        <button class="btn btn-sm" id="btnClearSync">Disconnect</button>
+      </div>
+      <p class="hint" id="syncState">Not connected. The dashboard works fully offline without this.</p>
+      <details class="help">
+        <summary>How to set this up (about 5 minutes)</summary>
+        <ol>
+          <li>Go to <code class="inline">script.google.com</code> and create a new project.</li>
+          <li>Paste in the contents of <code class="inline">apps-script/Code.gs</code> from this repository.</li>
+          <li>Change the <code class="inline">SECRET</code> at the top to a long random string.</li>
+          <li><b>Deploy → New deployment → Web app.</b> Execute as <b>Me</b>, access <b>Anyone</b>. Grant the Gmail and Calendar permissions it asks for.</li>
+          <li>Copy the <code class="inline">/exec</code> URL into the field above along with the same secret, then Save &amp; sync.</li>
+        </ol>
+      </details>
+    </div>
+
+    <div class="card">
+      <h3>Assistant</h3>
+      <p class="desc">The chat panel answers questions about your routines and can tick things off for you. It runs through a small endpoint on this site that holds the API key — the key is never in this page.</p>
+      <div class="field">
+        <label class="label" for="chatUrl">Endpoint</label>
+        <input class="input" id="chatUrl" type="text" placeholder="/api/chat" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="field">
+        <label class="label" for="chatKey">Shared key (optional)</label>
+        <input class="input" id="chatKey" type="text" placeholder="matches DASHBOARD_SHARED_KEY" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnSaveChat">Save</button>
+        <button class="btn btn-sm" id="btnClearChat">Clear conversation</button>
+      </div>
+      <p class="hint">Leave the endpoint as <code class="inline">/api/chat</code> unless you deployed it elsewhere. Set <code class="inline">ANTHROPIC_API_KEY</code> (and optionally <code class="inline">DASHBOARD_SHARED_KEY</code>) in your Vercel project settings.</p>
+    </div>
+
+    <div class="card">
+      <h3>Your data</h3>
+      <p class="desc">Everything lives in this browser's local storage. Nothing is sent anywhere unless you connect the bridge above.</p>
+      <div class="kv"><span>Routines</span><span id="statTasks">0</span></div>
+      <div class="kv"><span>Completions logged</span><span id="statDone">0</span></div>
+      <div class="kv"><span>Activity notes</span><span id="statNotes">0</span></div>
+      <div class="kv"><span>Tracking since</span><span id="statSince">—</span></div>
+      <div class="kv"><span>Best current streak</span><span id="statStreak">—</span></div>
+      <div class="btn-row" style="margin-top:14px">
+        <button class="btn btn-sm" id="btnExport">Export backup</button>
+        <button class="btn btn-sm" id="btnImport">Import backup</button>
+        <button class="btn btn-sm btn-danger" id="btnReset">Reset everything</button>
+      </div>
+      <input type="file" id="importFile" accept="application/json" class="sr" />
+    </div>
+
+    <div class="card">
+      <h3>Install on your phone</h3>
+      <p class="desc" id="installDesc">Add this to your home screen so it opens like an app and works offline.</p>
+      <div class="btn-row"><button class="btn" id="btnInstall" hidden>Install app</button></div>
+      <details class="help" open>
+        <summary>Manual steps</summary>
+        <ol>
+          <li><b>iPhone (Safari):</b> Share → Add to Home Screen.</li>
+          <li><b>Android (Chrome):</b> ⋮ menu → Add to Home screen / Install app.</li>
+        </ol>
+      </details>
+    </div>
+  </section>
+</main>
+
+<div class="fab-stack" id="fabStack">
+<button class="fab-mic" id="fabMic" aria-label="Speak a note">
+  <svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+</button>
+<button class="fab" id="fab" aria-label="Add a routine"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+</div>
+
+<nav class="nav">
+  <button data-view="today" aria-current="page"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Today</button>
+  <button data-view="all"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 17 4 18 7 15"/><polyline points="3 7 4 8 7 5"/><line x1="11" y1="6" x2="21" y2="6"/><line x1="11" y1="12" x2="21" y2="12"/><line x1="11" y1="18" x2="21" y2="18"/></svg>Routines</button>
+  <button data-view="ask"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg>Ask</button>
+  <button data-view="cal"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Connect</button>
+  <button data-view="settings"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><line x1="21" y1="4" x2="14" y2="4"/><line x1="10" y1="4" x2="3" y2="4"/><line x1="21" y1="12" x2="12" y2="12"/><line x1="8" y1="12" x2="3" y2="12"/><line x1="21" y1="20" x2="16" y2="20"/><line x1="12" y1="20" x2="3" y2="20"/><line x1="14" y1="2" x2="14" y2="6"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="16" y1="18" x2="16" y2="22"/></svg>Settings</button>
+</nav>
+
+<!-- ============ EDIT SHEET ============ -->
+<div class="sheet-backdrop" id="sheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="grabber"></div>
+    <h2 id="sheetTitle">New routine</h2>
+    <form id="taskForm">
+      <div class="field">
+        <label class="label" for="fTitle">What needs doing</label>
+        <input class="input" id="fTitle" required maxlength="140" placeholder="Review client pipeline" />
+      </div>
+      <div class="field">
+        <label class="label" for="fNotes">Notes (optional)</label>
+        <textarea class="input" id="fNotes" maxlength="500" rows="2" placeholder="Anything you want to see alongside it"></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="label" for="fFreq">Repeats</label>
+          <select class="input" id="fFreq">
+            <option value="daily">Every day</option>
+            <option value="weekdays">Weekdays</option>
+            <option value="weekly">Certain days</option>
+            <option value="monthly">Monthly</option>
+            <option value="once">One-off</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="fTime">Time (optional)</label>
+          <input class="input" id="fTime" type="time" />
+        </div>
+      </div>
+      <div class="field" id="wrapDays" hidden>
+        <label class="label">On these days</label>
+        <div class="daypicker" id="dayPicker"></div>
+      </div>
+      <div class="field" id="wrapDom" hidden>
+        <label class="label" for="fDom">Day of month</label>
+        <input class="input" id="fDom" type="number" min="1" max="31" value="1" />
+      </div>
+      <div class="field" id="wrapDate" hidden>
+        <label class="label" for="fDate">On</label>
+        <input class="input" id="fDate" type="date" />
+      </div>
+      <div class="btn-row" style="margin-top:18px">
+        <button type="submit" class="btn btn-primary btn-block">Save routine</button>
+      </div>
+      <div class="btn-row" style="margin-top:8px">
+        <button type="button" class="btn btn-sm" id="btnCancel">Cancel</button>
+        <button type="button" class="btn btn-sm btn-danger" id="btnArchive" hidden>Archive</button>
+        <button type="button" class="btn btn-sm" id="btnUnarchive" hidden>Restore</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="composer" id="composer" hidden>
+  <textarea id="chatInput" rows="1" placeholder="Ask about your routines…" maxlength="2000"></textarea>
+  <button class="send" id="chatMic" aria-label="Dictate" style="background:var(--card);border:1px solid var(--border-strong);color:var(--accent-text)">
+    <svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+  </button>
+  <button class="send" id="chatSend" aria-label="Send">
+    <svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  </button>
+</div>
+
+<div class="voice-backdrop" id="voiceOverlay" hidden>
+  <div class="voice-card" role="dialog" aria-modal="true" aria-labelledby="voiceStatus">
+    <div class="voice-orb" id="voiceOrb"></div>
+    <div class="voice-status" id="voiceStatus">Listening</div>
+    <div class="voice-text" id="voiceText"></div>
+    <div class="voice-actions">
+      <button class="btn btn-primary" id="voiceStop">Stop &amp; save</button>
+      <button class="btn btn-sm" id="voiceCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+"use strict";
+(function () {
+
+/* =========================================================================
+   Storage
+   ========================================================================= */
+const KEY = "dynamix.daily.v1";
+const DAY_NAMES = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+const defaultState = () => ({
+  version: 1,
+  createdAt: new Date().toISOString(),
+  tasks: [],
+  /* log[taskId] = { "YYYY-MM-DD": epochMillis } */
+  log: {},
+  /* activity["YYYY-MM-DD"] = [{ id, at, text, source }] — a free-form record of
+     what actually happened that day, alongside the routine tick-offs. */
+  activity: {},
+  notified: {},           // { "YYYY-MM-DD": [taskId, ...] }
+  sync: { url: "", token: "", lastAt: null, lastError: null },
+  chat: { url: "/api/chat", key: "", history: [] },
+  seeded: false
+});
+
+let S = load();
+
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    return Object.assign(defaultState(), parsed);
+  } catch (e) {
+    console.warn("Could not read saved state, starting fresh.", e);
+    return defaultState();
+  }
+}
+
+function save() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(S));
+  } catch (e) {
+    toast("Could not save — storage may be full.");
+  }
+}
+
+/* =========================================================================
+   Dates
+   ========================================================================= */
+function dateKey(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+function today() { return dateKey(new Date()); }
+function parseKey(k) {
+  const [y, m, d] = k.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+function addDays(d, n) {
+  const c = new Date(d.getTime());
+  c.setDate(c.getDate() + n);
+  return c;
+}
+
+/* =========================================================================
+   Schedule logic
+   ========================================================================= */
+function isDueOn(task, d) {
+  const s = task.schedule || { freq: "daily" };
+  // Never due before the routine existed.
+  if (task.startDate && dateKey(d) < task.startDate) return false;
+  switch (s.freq) {
+    case "daily":    return true;
+    case "weekdays": return d.getDay() >= 1 && d.getDay() <= 5;
+    case "weekly":   return Array.isArray(s.days) && s.days.includes(d.getDay());
+    case "monthly":  return d.getDate() === (s.dom || 1);
+    case "once":     return dateKey(d) === s.date;
+    default:         return true;
+  }
+}
+
+function isDone(task, key) { return !!(S.log[task.id] && S.log[task.id][key]); }
+
+function setDone(task, key, done) {
+  if (!S.log[task.id]) S.log[task.id] = {};
+  if (done) S.log[task.id][key] = Date.now();
+  else delete S.log[task.id][key];
+  save();
+}
+
+/** Consecutive completed due-days ending today (or yesterday if today isn't done yet). */
+function streakOf(task) {
+  let n = 0;
+  let d = new Date();
+  // If today is due but not yet done, start counting from yesterday so an
+  // unfinished morning doesn't read as a broken streak.
+  if (isDueOn(task, d) && !isDone(task, dateKey(d))) d = addDays(d, -1);
+  for (let i = 0; i < 400; i++) {
+    if (isDueOn(task, d)) {
+      if (isDone(task, dateKey(d))) n++;
+      else break;
+    }
+    if (task.startDate && dateKey(d) < task.startDate) break;
+    d = addDays(d, -1);
+  }
+  return n;
+}
+
+/** How many consecutive due-days before today were missed. Drives the nagging. */
+function missedRun(task) {
+  let n = 0;
+  let d = addDays(new Date(), -1);
+  for (let i = 0; i < 120; i++) {
+    if (task.startDate && dateKey(d) < task.startDate) break;
+    if (isDueOn(task, d)) {
+      if (isDone(task, dateKey(d))) break;
+      n++;
+    }
+    d = addDays(d, -1);
+  }
+  return n;
+}
+
+function activeTasks() { return S.tasks.filter(t => !t.archivedAt); }
+
+/* The Today view doubles as a day browser, so most rendering works off the
+   date being viewed rather than the real today. */
+let viewDate = new Date();
+function viewKey() { return dateKey(viewDate); }
+function isViewingToday() { return viewKey() === today(); }
+function setViewDate(d) {
+  const limit = new Date();
+  // There is nothing to see in the future, so the browser stops at today.
+  viewDate = d > limit ? limit : d;
+  render();
+}
+
+function dueOn(d) {
+  return activeTasks()
+    .filter(t => isDueOn(t, d))
+    .sort((a, b) => {
+      const at = a.schedule.time || "99:99";
+      const bt = b.schedule.time || "99:99";
+      return at === bt ? a.title.localeCompare(b.title) : at.localeCompare(bt);
+    });
+}
+function dueToday() { return dueOn(new Date()); }
+
+function scheduleLabel(t) {
+  const s = t.schedule || {};
+  switch (s.freq) {
+    case "daily":    return "Every day";
+    case "weekdays": return "Weekdays";
+    case "weekly":   return (s.days || []).slice().sort().map(d => DAY_NAMES[d]).join(", ") || "Weekly";
+    case "monthly":  return `Day ${s.dom || 1} monthly`;
+    case "once":     return s.date === today() ? "Today only" : (s.date || "One-off");
+    default:         return "Every day";
+  }
+}
+
+function fmtTime(hhmm) {
+  if (!hhmm) return "";
+  const [h, m] = hhmm.split(":").map(Number);
+  const ampm = h >= 12 ? "pm" : "am";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return m === 0 ? `${h12}${ampm}` : `${h12}:${String(m).padStart(2, "0")}${ampm}`;
+}
+
+/* =========================================================================
+   Activity log
+   ========================================================================= */
+function activityFor(key) { return (S.activity && S.activity[key]) || []; }
+
+function addActivity(text, source, key) {
+  text = String(text || "").trim();
+  if (!text) return null;
+  const day = key || viewKey();
+  if (!S.activity[day]) S.activity[day] = [];
+  const entry = {
+    id: "a_" + Math.random().toString(36).slice(2, 10),
+    at: new Date().toISOString(),
+    text: text.slice(0, 1000),
+    source: source || "typed"
+  };
+  S.activity[day].push(entry);
+  save();
+  return entry;
+}
+
+function removeActivity(day, id) {
+  if (!S.activity[day]) return;
+  S.activity[day] = S.activity[day].filter(e => e.id !== id);
+  if (!S.activity[day].length) delete S.activity[day];
+  save();
+}
+
+function fmtClock(iso) {
+  const d = new Date(iso);
+  return isNaN(d) ? "" : `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+/* =========================================================================
+   Rendering
+   ========================================================================= */
+const $ = sel => document.querySelector(sel);
+const el = (tag, cls, txt) => {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt != null) n.textContent = txt;
+  return n;
+};
+
+/* Lucide-style icon set: outlined, rounded caps and joins, per the brand kit. */
+const ICONS = {
+  check:   '<polyline points="4 12.5 9.5 18 20 6.5"/>',
+  pencil:  '<path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>',
+  target:  '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  checkCircle: '<circle cx="12" cy="12" r="10"/><polyline points="8 12.5 11 15.5 16 9"/>',
+  list:    '<polyline points="3 17 4 18 7 15"/><polyline points="3 7 4 8 7 5"/><line x1="11" y1="6" x2="21" y2="6"/><line x1="11" y1="12" x2="21" y2="12"/><line x1="11" y1="18" x2="21" y2="18"/>',
+  plus:    '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+  mic:     '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>',
+  sparkle: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>',
+  stop:    '<rect x="6" y="6" width="12" height="12" rx="2"/>'
+};
+function icon(name, cls) {
+  return `<svg class="lucide${cls ? " " + cls : ""}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name] || ""}</svg>`;
+}
+const CHECK_SVG = icon("check");
+
+function taskNode(t, opts) {
+  opts = opts || {};
+  const key = opts.dateKey || today();
+  const done = isDone(t, key);
+  const missed = opts.missed || 0;
+
+  const node = el("div", "task");
+  if (done) node.classList.add("is-done");
+  else if (missed >= 3) node.classList.add("is-chronic");
+  else if (missed > 0) node.classList.add("is-overdue");
+
+  if (!opts.readOnly) {
+    const check = el("button", "check");
+    check.setAttribute("aria-pressed", String(done));
+    check.setAttribute("aria-label", (done ? "Mark not done: " : "Mark done: ") + t.title);
+    check.innerHTML = CHECK_SVG;
+    check.addEventListener("click", () => {
+      setDone(t, key, !done);
+      if (!done) haptic();
+      render();
+      queueSync();
+    });
+    node.appendChild(check);
+  }
+
+  const body = el("div", "task-body");
+  body.appendChild(el("div", "task-title", t.title));
+  if (t.notes) body.appendChild(el("div", "task-notes", t.notes));
+
+  const meta = el("div", "task-meta");
+  meta.appendChild(el("span", "chip", scheduleLabel(t)));
+  if (t.schedule.time) meta.appendChild(el("span", "chip time", fmtTime(t.schedule.time)));
+
+  const streak = streakOf(t);
+  if (streak >= 2) meta.appendChild(el("span", "chip streak", `${streak} day streak`));
+
+  if (missed === 1) meta.appendChild(el("span", "chip warn", "Missed yesterday"));
+  else if (missed > 1) meta.appendChild(el("span", "chip bad", `Missed ${missed} in a row`));
+
+  if (t.source === "calendar") meta.appendChild(el("span", "chip src", "Calendar"));
+  else if (t.source === "email") meta.appendChild(el("span", "chip src", "Email"));
+
+  body.appendChild(meta);
+  node.appendChild(body);
+
+  const actions = el("div", "task-actions");
+  const edit = el("button", "icon-btn");
+  edit.innerHTML = icon("pencil");
+  edit.title = "Edit";
+  edit.setAttribute("aria-label", "Edit " + t.title);
+  edit.addEventListener("click", () => openSheet(t));
+  actions.appendChild(edit);
+  node.appendChild(actions);
+
+  return node;
+}
+
+function renderToday() {
+  const key = viewKey();
+  const onToday = isViewingToday();
+  const due = dueOn(viewDate);
+
+  const pending = [], finished = [], overdue = [];
+  for (const t of due) {
+    if (isDone(t, key)) finished.push(t);
+    else {
+      // Carry-over only makes sense relative to now; on a past day a routine was
+      // simply done or not done, so it is listed plainly.
+      const m = onToday ? missedRun(t) : 0;
+      (m > 0 ? overdue : pending).push({ t, m });
+    }
+  }
+  if (onToday) {
+    for (const t of activeTasks()) {
+      if (isDueOn(t, viewDate)) continue;
+      const m = missedRun(t);
+      if (m > 0) overdue.push({ t, m });
+    }
+  }
+  overdue.sort((a, b) => b.m - a.m);
+
+  fill("#list-overdue", overdue.map(o => taskNode(o.t, { missed: o.m, dateKey: key })));
+  $("#sec-overdue").hidden = overdue.length === 0;
+  $("#cnt-overdue").textContent = overdue.length ? `${overdue.length} needing attention` : "";
+
+  const todayNodes = pending.map(o => taskNode(o.t, { missed: 0, dateKey: key }));
+  if (todayNodes.length === 0) {
+    const e = el("div", "empty");
+    if (due.length === 0) {
+      e.innerHTML = icon("target", "lucide-lg") +
+        (onToday ? '<p>Nothing scheduled for today.<br>Tap + to add your first routine.</p>'
+                 : '<p>Nothing was scheduled for this day.</p>');
+    } else if (overdue.length) {
+      e.innerHTML = icon("list", "lucide-lg") +
+        '<p>Nothing new today — the carried-over items above are what is outstanding.</p>';
+    } else {
+      e.innerHTML = icon("checkCircle", "lucide-lg") +
+        (onToday ? '<p>Everything due today is done. Well held.</p>'
+                 : '<p>Everything due that day was done.</p>');
+    }
+    fill("#list-today", [e]);
+  } else {
+    fill("#list-today", todayNodes);
+  }
+  $("#cnt-today").textContent = due.length ? `${finished.length} of ${due.length}` : "";
+
+  fill("#list-done", finished.map(t => taskNode(t, { dateKey: key })));
+  $("#sec-done").hidden = finished.length === 0;
+  $("#cnt-done").textContent = finished.length ? String(finished.length) : "";
+
+  renderActivity(key);
+  renderBanners();
+}
+
+function renderActivity(key) {
+  const entries = activityFor(key).slice().sort((a, b) => String(a.at).localeCompare(String(b.at)));
+  $("#cnt-activity").textContent = entries.length ? `${entries.length} logged` : "";
+
+  if (!entries.length) {
+    const e = el("div", "empty");
+    e.innerHTML = icon("mic", "lucide-lg") +
+      '<p>Nothing logged for this day yet.<br>Speak or type a note to record what happened.</p>';
+    fill("#list-activity", [e]);
+    return;
+  }
+
+  fill("#list-activity", entries.map(entry => {
+    const row = el("div", "act");
+    row.appendChild(el("div", "when", fmtClock(entry.at)));
+
+    const body = el("div", "what");
+    body.appendChild(document.createTextNode(entry.text));
+    const via = el("div", "via");
+    via.innerHTML = icon(entry.source === "voice" ? "mic" : entry.source === "assistant" ? "sparkle" : "pencil") +
+      (entry.source === "voice" ? "Spoken" : entry.source === "assistant" ? "Logged by the assistant" : "Typed");
+    body.appendChild(via);
+    row.appendChild(body);
+
+    const del = el("button", "icon-btn", "\u00d7");
+    del.title = "Delete this note";
+    del.setAttribute("aria-label", "Delete note");
+    del.addEventListener("click", () => {
+      removeActivity(key, entry.id);
+      render();
+      queueSync();
+    });
+    row.appendChild(del);
+    return row;
+  }));
+}
+
+function renderHeader() {
+  const key = viewKey();
+  const onToday = isViewingToday();
+  const due = dueOn(viewDate);
+  const finished = due.filter(t => isDone(t, key));
+  const overdue = onToday
+    ? activeTasks().filter(t => !isDone(t, key) && missedRun(t) > 0)
+    : [];
+
+  $("#heroDate").textContent = viewDate.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" });
+  $("#dayNext").disabled = onToday;
+  $("#dayToday").hidden = onToday;
+
+  if (onToday) {
+    const h = new Date().getHours();
+    $("#heroGreeting").textContent = h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+  } else {
+    const days = Math.round((parseKey(today()) - parseKey(key)) / 86400000);
+    $("#heroGreeting").textContent = days === 1 ? "Yesterday" : `${days} days ago`;
+  }
+
+  const total = due.length, doneN = finished.length;
+  const pct = total ? Math.round((doneN / total) * 100) : 0;
+  const C = 2 * Math.PI * 33;
+  const fillEl = $("#ringFill");
+  fillEl.style.strokeDashoffset = String(C * (1 - pct / 100));
+  fillEl.classList.toggle("complete", total > 0 && doneN === total);
+  $("#ringPct").textContent = pct + "%";
+  $("#ringCount").textContent = `${doneN} / ${total}`;
+
+  const left = total - doneN;
+  const notes = activityFor(key).length;
+  const noteBit = notes ? `  ${notes} note${notes === 1 ? "" : "s"} logged.` : "";
+
+  if (!onToday) {
+    $("#heroSub").textContent = (total === 0
+      ? "Nothing was scheduled."
+      : `${doneN} of ${total} done.`) + noteBit;
+    return;
+  }
+
+  $("#heroSub").textContent = (total === 0
+    ? (overdue.length ? `Nothing due today, ${overdue.length} carried over.` : "No routines due today.")
+    : left === 0
+      ? (overdue.length ? `Today is clear — ${overdue.length} carried over.` : "All clear for today.")
+      : `${left} still to do${overdue.length ? `, ${overdue.length} carried over` : ""}.`) + noteBit;
+}
+
+function renderBanners() {
+  const wrap = $("#banners");
+  wrap.innerHTML = "";
+
+  if (!S.sync.url) {
+    const b = el("div", "banner");
+    b.innerHTML = '<div><strong>Not connected to Calendar or Email yet.</strong><br>' +
+      'Right now this dashboard is local to this device. Connect the bridge to pull in tasks you create from your calendar or inbox.</div>';
+    const go = el("button", "btn btn-sm", "Set it up");
+    go.addEventListener("click", () => switchView("settings"));
+    b.querySelector("div").appendChild(go);
+    wrap.appendChild(b);
+  } else if (S.sync.lastError) {
+    const b = el("div", "banner warn");
+    b.innerHTML = `<div><strong>Last sync failed.</strong><br>${escapeHtml(S.sync.lastError)}</div>`;
+    wrap.appendChild(b);
+  }
+
+  if ("Notification" in window && Notification.permission === "default" && activeTasks().length) {
+    const b = el("div", "banner");
+    b.innerHTML = '<div><strong>Reminders are off.</strong><br>Turn on notifications so this nudges you at the time each routine is due.</div>';
+    const go = el("button", "btn btn-sm", "Turn on");
+    go.addEventListener("click", askNotify);
+    b.querySelector("div").appendChild(go);
+    wrap.appendChild(b);
+  }
+}
+
+function renderAll() {
+  const active = activeTasks();
+  fill("#list-all", active.length
+    ? active.map(t => taskNode(t, { readOnly: true }))
+    : [Object.assign(el("div", "empty"), { innerHTML: icon("list", "lucide-lg") + '<p>No routines yet.</p>' })]);
+  $("#cnt-all").textContent = active.length ? `${active.length}` : "";
+
+  const archived = S.tasks.filter(t => t.archivedAt);
+  $("#sec-archived").hidden = archived.length === 0;
+  fill("#list-archived", archived.map(t => taskNode(t, { readOnly: true })));
+}
+
+function renderCal() {
+  fill("#list-gcal", activeTasks().map(t => {
+    const row = el("div", "task");
+    const body = el("div", "task-body");
+    body.appendChild(el("div", "task-title", t.title));
+    body.appendChild(el("div", "task-notes", scheduleLabel(t) + (t.schedule.time ? ` at ${fmtTime(t.schedule.time)}` : "")));
+    row.appendChild(body);
+    const a = el("a", "btn btn-sm", "Add");
+    a.href = gcalLink(t);
+    a.target = "_blank";
+    a.rel = "noopener";
+    row.appendChild(a);
+    return row;
+  }));
+}
+
+function renderSettings() {
+  $("#statTasks").textContent = String(activeTasks().length);
+  let doneCount = 0;
+  for (const id in S.log) doneCount += Object.keys(S.log[id]).length;
+  let noteCount = 0;
+  for (const d in S.activity) noteCount += S.activity[d].length;
+  $("#statDone").textContent = String(doneCount);
+  $("#statNotes").textContent = String(noteCount);
+  $("#statSince").textContent = new Date(S.createdAt).toLocaleDateString();
+  const best = activeTasks().reduce((m, t) => Math.max(m, streakOf(t)), 0);
+  $("#statStreak").textContent = best ? `${best} days` : "—";
+
+  $("#chatUrl").value = S.chat.url || "";
+  $("#chatKey").value = S.chat.key || "";
+  $("#syncUrl").value = S.sync.url || "";
+  $("#syncToken").value = S.sync.token || "";
+  $("#syncState").textContent = S.sync.url
+    ? (S.sync.lastError
+        ? `Error: ${S.sync.lastError}`
+        : S.sync.lastAt ? `Last synced ${new Date(S.sync.lastAt).toLocaleString()}` : "Connected, not yet synced.")
+    : "Not connected. The dashboard works fully offline without this.";
+
+  if ("Notification" in window) {
+    const p = Notification.permission;
+    $("#notifyState").textContent =
+      p === "granted" ? "Notifications are on for this device."
+      : p === "denied" ? "Blocked — re-enable them in your browser's site settings."
+      : "Not enabled yet.";
+    $("#btnNotify").disabled = p === "granted";
+  } else {
+    $("#notifyState").textContent = "This browser does not support notifications.";
+    $("#btnNotify").disabled = true;
+  }
+}
+
+function fill(sel, nodes) {
+  const c = $(sel);
+  c.innerHTML = "";
+  nodes.forEach(n => c.appendChild(n));
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+}
+
+let currentView = "today";
+function render() {
+  // The header sits above every view, so it always gets refreshed.
+  renderHeader();
+  if (currentView === "today") renderToday();
+  else if (currentView === "all") renderAll();
+  else if (currentView === "cal") renderCal();
+  else if (currentView === "ask") renderChat();
+  else if (currentView === "settings") renderSettings();
+}
+
+function switchView(v) {
+  currentView = v;
+  ["today", "all", "ask", "cal", "settings"].forEach(name => {
+    $("#view-" + name).hidden = name !== v;
+  });
+  // The composer is pinned above the nav, so the body needs extra clearance.
+  $("#composer").hidden = v !== "ask";
+  document.body.classList.toggle("composing", v === "ask");
+  document.querySelectorAll(".nav button").forEach(b => {
+    if (b.dataset.view === v) b.setAttribute("aria-current", "page");
+    else b.removeAttribute("aria-current");
+  });
+  $("#fabStack").hidden = (v === "settings" || v === "cal" || v === "ask");
+  if (v !== "today" && !isViewingToday()) viewDate = new Date();
+  window.scrollTo(0, 0);
+  render();
+  // The interesting end of a conversation is the bottom, not the top.
+  if (v === "ask" && S.chat.history.length) scrollChatDown();
+}
+
+/* =========================================================================
+   Edit sheet
+   ========================================================================= */
+let editing = null;
+let pickedDays = [];
+
+function buildDayPicker() {
+  const p = $("#dayPicker");
+  p.innerHTML = "";
+  DAY_NAMES.forEach((name, i) => {
+    const b = el("button", null, name[0]);
+    b.type = "button";
+    b.setAttribute("aria-pressed", "false");
+    b.setAttribute("aria-label", name);
+    b.addEventListener("click", () => {
+      const on = b.getAttribute("aria-pressed") === "true";
+      b.setAttribute("aria-pressed", String(!on));
+      pickedDays = on ? pickedDays.filter(d => d !== i) : pickedDays.concat(i);
+    });
+    p.appendChild(b);
+  });
+}
+
+function syncFreqFields() {
+  const f = $("#fFreq").value;
+  $("#wrapDays").hidden = f !== "weekly";
+  $("#wrapDom").hidden = f !== "monthly";
+  $("#wrapDate").hidden = f !== "once";
+}
+
+function openSheet(task) {
+  editing = task || null;
+  $("#sheetTitle").textContent = task ? "Edit routine" : "New routine";
+  $("#fTitle").value = task ? task.title : "";
+  $("#fNotes").value = task ? (task.notes || "") : "";
+  const s = task ? task.schedule : { freq: "daily" };
+  $("#fFreq").value = s.freq || "daily";
+  $("#fTime").value = s.time || "";
+  $("#fDom").value = s.dom || 1;
+  $("#fDate").value = s.date || today();
+  pickedDays = Array.isArray(s.days) ? s.days.slice() : [];
+  document.querySelectorAll("#dayPicker button").forEach((b, i) => {
+    b.setAttribute("aria-pressed", String(pickedDays.includes(i)));
+  });
+  syncFreqFields();
+
+  const isArchived = !!(task && task.archivedAt);
+  $("#btnArchive").hidden = !task || isArchived;
+  $("#btnUnarchive").hidden = !isArchived;
+
+  $("#sheet").hidden = false;
+  setTimeout(() => $("#fTitle").focus(), 60);
+}
+
+function closeSheet() {
+  $("#sheet").hidden = true;
+  editing = null;
+}
+
+function submitTask(e) {
+  e.preventDefault();
+  const title = $("#fTitle").value.trim();
+  if (!title) return;
+
+  const freq = $("#fFreq").value;
+  if (freq === "weekly" && pickedDays.length === 0) {
+    toast("Pick at least one day.");
+    return;
+  }
+
+  const schedule = { freq, time: $("#fTime").value || "" };
+  if (freq === "weekly") schedule.days = pickedDays.slice().sort();
+  if (freq === "monthly") schedule.dom = Math.min(31, Math.max(1, Number($("#fDom").value) || 1));
+  if (freq === "once") schedule.date = $("#fDate").value || today();
+
+  if (editing) {
+    editing.title = title;
+    editing.notes = $("#fNotes").value.trim();
+    editing.schedule = schedule;
+  } else {
+    S.tasks.push({
+      id: "t_" + Math.random().toString(36).slice(2, 10),
+      title,
+      notes: $("#fNotes").value.trim(),
+      schedule,
+      source: "local",
+      startDate: today(),
+      createdAt: new Date().toISOString(),
+      archivedAt: null
+    });
+  }
+  save();
+  closeSheet();
+  render();
+  scheduleNotifications();
+  queueSync();
+  toast(editing ? "Routine updated." : "Routine added.");
+}
+
+/* =========================================================================
+   Calendar export
+   ========================================================================= */
+function rrule(t) {
+  const s = t.schedule;
+  if (s.freq === "daily") return "RRULE:FREQ=DAILY";
+  if (s.freq === "weekdays") return "RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR";
+  if (s.freq === "weekly") {
+    const map = ["SU","MO","TU","WE","TH","FR","SA"];
+    return "RRULE:FREQ=WEEKLY;BYDAY=" + (s.days || []).map(d => map[d]).join(",");
+  }
+  if (s.freq === "monthly") return `RRULE:FREQ=MONTHLY;BYMONTHDAY=${s.dom || 1}`;
+  return "";
+}
+
+function pad(n) { return String(n).padStart(2, "0"); }
+
+/** Local floating time — no Z suffix, so the event stays at the same wall-clock time. */
+function icsLocal(d) {
+  return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+}
+function icsUtc(d) {
+  return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
+}
+
+function firstOccurrence(t) {
+  const [h, m] = (t.schedule.time || "09:00").split(":").map(Number);
+  let d = new Date();
+  d.setHours(h, m, 0, 0);
+  if (t.schedule.freq === "once" && t.schedule.date) {
+    d = parseKey(t.schedule.date);
+    d.setHours(h, m, 0, 0);
+    return d;
+  }
+  for (let i = 0; i < 400; i++) {
+    if (isDueOn(t, d) && d.getTime() > Date.now() - 60000) return d;
+    d = addDays(d, 1);
+    d.setHours(h, m, 0, 0);
+  }
+  return new Date();
+}
+
+function gcalLink(t) {
+  const start = firstOccurrence(t);
+  const end = new Date(start.getTime() + 30 * 60000);
+  const p = new URLSearchParams({
+    action: "TEMPLATE",
+    text: t.title + " #task",
+    details: (t.notes || "") + "\n\nTracked in DynamiX Daily.",
+    dates: `${icsLocal(start)}/${icsLocal(end)}`
+  });
+  const r = rrule(t);
+  let url = "https://calendar.google.com/calendar/render?" + p.toString();
+  if (r) url += "&recur=" + encodeURIComponent(r);
+  return url;
+}
+
+function icsEscape(s) {
+  return String(s).replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+}
+
+function buildIcs() {
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//DynamiX Group//Daily Dashboard//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "X-WR-CALNAME:DynamiX Daily"
+  ];
+  const stamp = icsUtc(new Date());
+  for (const t of activeTasks()) {
+    const start = firstOccurrence(t);
+    const end = new Date(start.getTime() + 30 * 60000);
+    lines.push(
+      "BEGIN:VEVENT",
+      `UID:${t.id}@dynamix-daily`,
+      `DTSTAMP:${stamp}`,
+      // Floating local time (no TZID, no Z): every client reads this as
+      // wall-clock time, which is what a daily routine actually means.
+      `DTSTART:${icsLocal(start)}`,
+      `DTEND:${icsLocal(end)}`,
+      `SUMMARY:${icsEscape(t.title)} #task`,
+      `DESCRIPTION:${icsEscape((t.notes || "") + "\n\nTracked in DynamiX Daily.")}`
+    );
+    const r = rrule(t);
+    if (r) lines.push(r);
+    lines.push(
+      "BEGIN:VALARM",
+      "ACTION:DISPLAY",
+      `DESCRIPTION:${icsEscape(t.title)}`,
+      "TRIGGER:-PT0M",
+      "END:VALARM",
+      "END:VEVENT"
+    );
+  }
+  lines.push("END:VCALENDAR");
+  // RFC 5545 wants CRLF line endings.
+  return lines.join("\r\n");
+}
+
+function downloadIcs() {
+  if (!activeTasks().length) { toast("Add a routine first."); return; }
+  downloadBlob(buildIcs(), "dynamix-daily.ics", "text/calendar");
+  toast("Open the file on your phone to add it to Google Calendar.");
+}
+
+function downloadBlob(text, name, type) {
+  const blob = new Blob([text], { type: type + ";charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+/* =========================================================================
+   Notifications
+   ========================================================================= */
+let notifyTimer = null;
+
+function askNotify() {
+  if (!("Notification" in window)) { toast("Notifications are not supported here."); return; }
+  Notification.requestPermission().then(p => {
+    render();
+    if (p === "granted") { toast("Reminders are on."); scheduleNotifications(); }
+    else toast("Reminders stayed off.");
+  });
+}
+
+function fire(title, body) {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  try {
+    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+      navigator.serviceWorker.ready.then(reg => {
+        reg.showNotification(title, { body, icon: "../assets/dynamix-badge.png", badge: "../assets/dynamix-favicon.png", tag: title });
+      }).catch(() => new Notification(title, { body }));
+    } else {
+      new Notification(title, { body });
+    }
+  } catch (e) { /* Some browsers block constructing notifications directly. */ }
+}
+
+/**
+ * Polls once a minute for routines whose time has arrived. This only runs while
+ * the page is alive, which is why calendar alerts are the recommended backstop.
+ */
+function scheduleNotifications() {
+  if (notifyTimer) clearInterval(notifyTimer);
+  notifyTimer = setInterval(checkDueNow, 60000);
+  checkDueNow();
+}
+
+function checkDueNow() {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  const key = today();
+  if (!S.notified[key]) S.notified[key] = [];
+  // Keep only today's record so this does not grow forever.
+  Object.keys(S.notified).forEach(k => { if (k !== key) delete S.notified[k]; });
+
+  const now = new Date();
+  const hhmm = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  let changed = false;
+
+  for (const t of dueToday()) {
+    if (!t.schedule.time) continue;
+    if (isDone(t, key)) continue;
+    if (S.notified[key].includes(t.id)) continue;
+    if (t.schedule.time <= hhmm) {
+      const missed = missedRun(t);
+      fire(t.title, missed > 0 ? `Due now — missed ${missed} ${missed === 1 ? "day" : "days"} running.` : "Due now.");
+      S.notified[key].push(t.id);
+      changed = true;
+    }
+  }
+  if (changed) save();
+}
+
+function haptic() { if (navigator.vibrate) navigator.vibrate(12); }
+
+/* =========================================================================
+   Sync bridge (Google Apps Script web app)
+   ========================================================================= */
+let syncDebounce = null;
+
+function setSyncBadge(state, text) {
+  $("#syncBtn").dataset.state = state;
+  $("#syncText").textContent = text;
+}
+
+function queueSync() {
+  if (!S.sync.url) return;
+  clearTimeout(syncDebounce);
+  syncDebounce = setTimeout(() => doSync(true), 2500);
+}
+
+async function doSync(quiet) {
+  if (!S.sync.url) { if (!quiet) toast("Connect the bridge first."); return; }
+  if (!navigator.onLine) { setSyncBadge("error", "Offline"); return; }
+
+  setSyncBadge("busy", "Syncing");
+  try {
+    // Apps Script does not answer CORS preflights, so this must stay a "simple"
+    // request: text/plain body, no custom headers.
+    const res = await fetch(S.sync.url, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        token: S.sync.token,
+        action: "sync",
+        log: S.log,
+        activity: S.activity,
+        localTasks: S.tasks.filter(t => t.source === "local" && !t.archivedAt)
+      }),
+      redirect: "follow"
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    mergeRemote(data);
+    S.sync.lastAt = Date.now();
+    S.sync.lastError = null;
+    save();
+    setSyncBadge("ok", "Synced");
+    render();
+    scheduleNotifications();
+    if (!quiet) toast(`Synced — ${data.tasks ? data.tasks.length : 0} task${data.tasks && data.tasks.length === 1 ? "" : "s"} from Google.`);
+  } catch (err) {
+    S.sync.lastError = err.message || String(err);
+    save();
+    setSyncBadge("error", "Sync failed");
+    if (!quiet) toast("Sync failed: " + S.sync.lastError);
+    render();
+  }
+}
+
+/**
+ * Remote calendar/email tasks are owned by Google — replace them wholesale.
+ * Locally created routines are never touched. Completion logs union both ways
+ * so marking something done on one device shows up on the others.
+ */
+function mergeRemote(data) {
+  const remote = Array.isArray(data.tasks) ? data.tasks : [];
+  const local = S.tasks.filter(t => t.source === "local");
+
+  const byRemoteId = new Map();
+  for (const r of remote) {
+    if (!r || !r.id || !r.title) continue;
+    byRemoteId.set(r.id, {
+      id: r.id,
+      title: String(r.title).slice(0, 200),
+      notes: String(r.notes || "").slice(0, 800),
+      schedule: normaliseSchedule(r.schedule),
+      source: r.source === "email" ? "email" : "calendar",
+      sourceRef: r.sourceRef || null,
+      startDate: r.startDate || today(),
+      createdAt: r.createdAt || new Date().toISOString(),
+      archivedAt: null
+    });
+  }
+  S.tasks = local.concat(Array.from(byRemoteId.values()));
+
+  // Activity merges by entry id, so a note written on one device is never lost
+  // and re-syncing never duplicates it.
+  if (data.activity && typeof data.activity === "object") {
+    for (const day in data.activity) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || !Array.isArray(data.activity[day])) continue;
+      if (!S.activity[day]) S.activity[day] = [];
+      const seen = new Set(S.activity[day].map(e => e.id));
+      for (const e of data.activity[day]) {
+        if (e && e.id && !seen.has(e.id)) { S.activity[day].push(e); seen.add(e.id); }
+      }
+    }
+  }
+
+  if (data.log && typeof data.log === "object") {
+    for (const id in data.log) {
+      if (!S.log[id]) S.log[id] = {};
+      for (const k in data.log[id]) {
+        if (!S.log[id][k]) S.log[id][k] = data.log[id][k];
+      }
+    }
+  }
+}
+
+function normaliseSchedule(s) {
+  s = s || {};
+  const freq = ["daily","weekdays","weekly","monthly","once"].includes(s.freq) ? s.freq : "daily";
+  const out = { freq, time: /^\d{2}:\d{2}$/.test(s.time || "") ? s.time : "" };
+  if (freq === "weekly") out.days = Array.isArray(s.days) ? s.days.filter(d => d >= 0 && d <= 6) : [];
+  if (freq === "monthly") out.dom = Number(s.dom) || 1;
+  if (freq === "once") out.date = /^\d{4}-\d{2}-\d{2}$/.test(s.date || "") ? s.date : today();
+  return out;
+}
+
+/* =========================================================================
+   Voice
+   =========================================================================
+   Uses the browser's own SpeechRecognition. Nothing is recorded or uploaded by
+   this app — but note that Chrome performs recognition server-side, so spoken
+   text does leave the device via the browser. Safari on recent iOS does it
+   on-device. Say nothing to it you would not type into a search box.
+   ========================================================================= */
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let voiceFinal = "";
+let voiceOnDone = null;
+
+function voiceSupported() { return !!SpeechRec; }
+
+function openVoice(onDone, prompt) {
+  if (!voiceSupported()) {
+    toast("This browser cannot do speech recognition. Chrome or Safari can.");
+    return;
+  }
+  voiceOnDone = onDone;
+  voiceFinal = "";
+  $("#voiceOrb").innerHTML = icon("mic");
+  $("#voiceStatus").textContent = prompt || "Listening";
+  $("#voiceText").innerHTML = "";
+  $("#voiceOverlay").hidden = false;
+  $("#voiceOverlay").classList.add("listening");
+
+  recognition = new SpeechRec();
+  recognition.lang = navigator.language || "en-SG";
+  recognition.interimResults = true;
+  // Keep the mic open across natural pauses; the user decides when to stop.
+  recognition.continuous = true;
+
+  recognition.onresult = (ev) => {
+    let interim = "";
+    for (let i = ev.resultIndex; i < ev.results.length; i++) {
+      const r = ev.results[i];
+      if (r.isFinal) voiceFinal += r[0].transcript;
+      else interim += r[0].transcript;
+    }
+    const box = $("#voiceText");
+    box.textContent = voiceFinal;
+    if (interim) {
+      const span = el("span", "interim", interim);
+      box.appendChild(span);
+    }
+  };
+
+  recognition.onerror = (ev) => {
+    // "no-speech" and "aborted" are ordinary, not failures worth shouting about.
+    if (ev.error === "not-allowed" || ev.error === "service-not-allowed") {
+      closeVoice();
+      toast("Microphone permission was declined.");
+    } else if (ev.error !== "no-speech" && ev.error !== "aborted") {
+      $("#voiceStatus").textContent = "Trouble hearing you";
+    }
+  };
+
+  // Chrome ends the session on a long silence even with continuous set, so
+  // restart while the overlay is still open.
+  recognition.onend = () => {
+    if (!$("#voiceOverlay").hidden && recognition) {
+      try { recognition.start(); } catch (e) { /* already restarting */ }
+    }
+  };
+
+  try {
+    recognition.start();
+  } catch (e) {
+    closeVoice();
+    toast("Could not start the microphone.");
+  }
+}
+
+function closeVoice() {
+  const rec = recognition;
+  recognition = null;              // stops onend from restarting it
+  if (rec) { try { rec.stop(); } catch (e) { /* already stopped */ } }
+  $("#voiceOverlay").hidden = true;
+  $("#voiceOverlay").classList.remove("listening");
+}
+
+function finishVoice() {
+  const text = voiceFinal.trim();
+  const done = voiceOnDone;
+  closeVoice();
+  if (!text) { toast("Nothing was heard."); return; }
+  if (done) done(text);
+}
+
+/** Speaks a reply back, for when the exchange started with the voice. */
+function speak(text) {
+  if (!("speechSynthesis" in window) || !text) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text.slice(0, 600));
+    u.lang = navigator.language || "en-SG";
+    u.rate = 1.02;
+    window.speechSynthesis.speak(u);
+  } catch (e) { /* speech is a bonus, never a requirement */ }
+}
+
+/* =========================================================================
+   Assistant
+   ========================================================================= */
+let chatBusy = false;
+let chatSpokenTurn = false;
+
+/**
+ * The endpoint is stateless, so every turn carries the routines with it.
+ * Sending pre-computed status rather than the raw completion log keeps the
+ * payload small and stops the model having to do date arithmetic.
+ */
+function chatContext() {
+  const key = today();
+  const now = new Date();
+  return {
+    today: key,
+    viewingDate: viewKey(),
+    weekday: now.toLocaleDateString(undefined, { weekday: "long" }),
+    localTime: `${pad(now.getHours())}:${pad(now.getMinutes())}`,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Singapore",
+    routines: activeTasks().map(t => ({
+      id: t.id,
+      title: t.title,
+      notes: t.notes || undefined,
+      schedule: scheduleLabel(t) + (t.schedule.time ? ` at ${fmtTime(t.schedule.time)}` : ""),
+      source: t.source,
+      dueToday: isDueOn(t, now),
+      doneToday: isDone(t, key),
+      streakDays: streakOf(t),
+      missedInARow: missedRun(t)
+    })),
+    activity: activityFor(viewKey()).map(e => ({ at: e.at, text: e.text, source: e.source }))
+  };
+}
+
+const SUGGESTIONS = [
+  "What's still outstanding today?",
+  "What have I been missing most?",
+  "How are my streaks looking?",
+  "What's on for tomorrow?"
+];
+
+function renderChat() {
+  const suggest = $("#chatSuggest");
+  suggest.innerHTML = "";
+  if (S.chat.history.length === 0) {
+    SUGGESTIONS.forEach(q => {
+      const b = el("button", null, q);
+      b.addEventListener("click", () => { $("#chatInput").value = q; sendChat(); });
+      suggest.appendChild(b);
+    });
+  }
+
+  const log = $("#chatLog");
+  log.innerHTML = "";
+
+  if (S.chat.history.length === 0) {
+    const e = el("div", "empty");
+    e.innerHTML = icon("checkCircle", "lucide-lg") +
+      "<p>Ask about what's due, what you keep missing, or tell me to tick something off.</p>";
+    log.appendChild(e);
+    return;
+  }
+
+  for (const m of S.chat.history) {
+    // Tool turns carry no prose; the action chips already reported them.
+    const text = messageText(m);
+    if (!text) continue;
+    log.appendChild(el("div", "msg " + (m.role === "user" ? "user" : "bot"), text));
+    if (m.actions) {
+      m.actions.forEach(a => log.appendChild(el("div", "msg act", a)));
+    }
+  }
+}
+
+/** Pulls the plain text out of a message whose content may be blocks. */
+function messageText(m) {
+  if (typeof m.content === "string") return m.content;
+  if (!Array.isArray(m.content)) return "";
+  return m.content.filter(b => b.type === "text").map(b => b.text).join("").trim();
+}
+
+function scrollChatDown() {
+  requestAnimationFrame(() => window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }));
+}
+
+/** Applies a model-requested action locally and returns a human summary. */
+function runChatTool(name, input) {
+  if (name === "complete_routine") {
+    const t = S.tasks.find(x => x.id === input.id);
+    if (!t) return { ok: false, text: `No routine with id ${input.id}.` };
+    const day = /^\d{4}-\d{2}-\d{2}$/.test(input.date || "") ? input.date : today();
+    setDone(t, day, true);
+    return { ok: true, text: `Marked done: ${t.title}${day === today() ? "" : " (" + day + ")"}` };
+  }
+
+  if (name === "add_routine") {
+    const title = String(input.title || "").trim();
+    if (!title) return { ok: false, text: "A routine needs a title." };
+    const schedule = normaliseSchedule({
+      freq: input.freq, time: input.time, days: input.days, dom: input.dom, date: input.date
+    });
+    if (schedule.freq === "weekly" && (!schedule.days || !schedule.days.length)) {
+      return { ok: false, text: "A weekly routine needs at least one weekday." };
+    }
+    S.tasks.push({
+      id: "t_" + Math.random().toString(36).slice(2, 10),
+      title, notes: String(input.notes || "").slice(0, 500),
+      schedule, source: "local", startDate: today(),
+      createdAt: new Date().toISOString(), archivedAt: null
+    });
+    save();
+    return { ok: true, text: `Added: ${title} — ${scheduleLabel({ schedule })}` };
+  }
+
+  if (name === "log_activity") {
+    const day = /^\d{4}-\d{2}-\d{2}$/.test(input.date || "") ? input.date : viewKey();
+    const entry = addActivity(input.text, "assistant", day);
+    if (!entry) return { ok: false, text: "An activity note needs some text." };
+    return { ok: true, text: `Logged: ${entry.text}` };
+  }
+
+  if (name === "archive_routine") {
+    const t = S.tasks.find(x => x.id === input.id);
+    if (!t) return { ok: false, text: `No routine with id ${input.id}.` };
+    t.archivedAt = new Date().toISOString();
+    save();
+    return { ok: true, text: `Archived: ${t.title}` };
+  }
+
+  return { ok: false, text: `Unknown action: ${name}` };
+}
+
+/**
+ * One request/response round. Returns the assistant turn so the caller can
+ * decide whether tool results need another round.
+ */
+async function chatTurn(apiMessages, onDelta) {
+  const res = await fetch(S.chat.url || "/api/chat", {
+    method: "POST",
+    headers: Object.assign(
+      { "Content-Type": "application/json" },
+      S.chat.key ? { "X-Dashboard-Key": S.chat.key } : {}
+    ),
+    body: JSON.stringify({ messages: apiMessages, context: chatContext() })
+  });
+
+  if (!res.ok) {
+    let detail = `HTTP ${res.status}`;
+    try { const j = await res.json(); if (j.error) detail = j.error; } catch (e) { /* not JSON */ }
+    throw new Error(detail);
+  }
+  if (!res.body) throw new Error("No response stream.");
+
+  // Parse the SSE frames by hand — EventSource cannot POST.
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let done = null;
+  let failure = null;
+
+  while (true) {
+    const chunk = await reader.read();
+    if (chunk.done) break;
+    buffer += decoder.decode(chunk.value, { stream: true });
+
+    const frames = buffer.split("\n\n");
+    buffer = frames.pop() || "";
+
+    for (const frame of frames) {
+      const evLine = frame.split("\n").find(l => l.startsWith("event: "));
+      const dataLine = frame.split("\n").find(l => l.startsWith("data: "));
+      if (!evLine || !dataLine) continue;
+
+      const event = evLine.slice(7).trim();
+      let payload;
+      try { payload = JSON.parse(dataLine.slice(6)); } catch (e) { continue; }
+
+      if (event === "text") onDelta(payload.text);
+      else if (event === "error") failure = payload.message;
+      else if (event === "done") done = payload;
+    }
+  }
+
+  if (failure) throw new Error(failure);
+  if (!done) throw new Error("The reply ended unexpectedly.");
+  return done;
+}
+
+async function sendChat() {
+  if (chatBusy) return;
+  const input = $("#chatInput");
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = "";
+  input.style.height = "auto";
+  chatBusy = true;
+  $("#chatSend").disabled = true;
+
+  S.chat.history.push({ role: "user", content: text });
+  save();
+  renderChat();
+
+  const log = $("#chatLog");
+  const bubble = el("div", "msg bot");
+  bubble.innerHTML = '<span class="cursor"></span>';
+  log.appendChild(bubble);
+  scrollChatDown();
+
+  // The wire history keeps tool blocks; the rendered history keeps prose.
+  const wire = S.chat.history.map(m => ({ role: m.role, content: m.content }));
+  let streamed = "";
+
+  try {
+    for (let round = 0; round < 4; round++) {
+      streamed = "";
+      const done = await chatTurn(wire, delta => {
+        streamed += delta;
+        bubble.textContent = streamed;
+        scrollChatDown();
+      });
+
+      if (done.stop_reason === "refusal") throw new Error("That request was declined.");
+
+      wire.push({ role: "assistant", content: done.content });
+      const turn = { role: "assistant", content: done.content, actions: [] };
+      S.chat.history.push(turn);
+
+      if (!done.tool_uses || done.tool_uses.length === 0) break;
+
+      // Apply each action locally, then feed the outcomes back for the next round.
+      const results = done.tool_uses.map(tu => {
+        const out = runChatTool(tu.name, tu.input || {});
+        turn.actions.push(out.text);
+        return {
+          type: "tool_result",
+          tool_use_id: tu.id,
+          content: out.text,
+          is_error: !out.ok
+        };
+      });
+
+      wire.push({ role: "user", content: results });
+      S.chat.history.push({ role: "user", content: results });
+      bubble.innerHTML = '<span class="cursor"></span>';
+    }
+
+    save();
+    renderChat();
+    render();
+    queueSync();
+    // Only read the answer back when the question was spoken — nobody wants
+    // their phone talking after they typed.
+    if (chatSpokenTurn && streamed) speak(streamed);
+  } catch (err) {
+    bubble.remove();
+    const e = el("div", "msg err", err.message || String(err));
+    log.appendChild(e);
+    // Drop the unanswered user turn so a retry does not double up.
+    S.chat.history = S.chat.history.filter(m => m.role !== "user" || messageText(m) !== text);
+    save();
+  } finally {
+    chatBusy = false;
+    chatSpokenTurn = false;
+    $("#chatSend").disabled = false;
+    scrollChatDown();
+  }
+}
+
+/* =========================================================================
+   Backup
+   ========================================================================= */
+function exportBackup() {
+  downloadBlob(JSON.stringify(S, null, 2), `dynamix-daily-${today()}.json`, "application/json");
+  toast("Backup downloaded.");
+}
+
+function importBackup(file) {
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const data = JSON.parse(r.result);
+      if (!data || !Array.isArray(data.tasks)) throw new Error("Not a dashboard backup.");
+      S = Object.assign(defaultState(), data);
+      save();
+      render();
+      scheduleNotifications();
+      toast("Backup restored.");
+    } catch (e) {
+      toast("Could not read that file.");
+    }
+  };
+  r.readAsText(file);
+}
+
+/* =========================================================================
+   Toast
+   ========================================================================= */
+let toastTimer = null;
+function toast(msg) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, 3200);
+}
+
+/* =========================================================================
+   Seed
+   ========================================================================= */
+function seedIfEmpty() {
+  if (S.seeded || S.tasks.length) return;
+  const seeds = [
+    { title: "Review today's calendar and priorities", time: "08:00", freq: "weekdays" },
+    { title: "Follow up on open client conversations", time: "10:00", freq: "weekdays" },
+    { title: "Log the day's activity in the CRM",      time: "17:30", freq: "weekdays" },
+    { title: "Plan tomorrow's top three",              time: "18:00", freq: "weekdays" },
+    { title: "Weekly pipeline review",                 time: "09:00", freq: "weekly", days: [1] }
+  ];
+  S.tasks = seeds.map((s, i) => ({
+    id: "t_seed" + i,
+    title: s.title,
+    notes: "",
+    schedule: { freq: s.freq, time: s.time, days: s.days },
+    source: "local",
+    startDate: today(),
+    createdAt: new Date().toISOString(),
+    archivedAt: null
+  }));
+  S.seeded = true;
+  save();
+}
+
+/* =========================================================================
+   Wiring
+   ========================================================================= */
+function init() {
+  buildDayPicker();
+  seedIfEmpty();
+
+  document.querySelectorAll(".nav button").forEach(b => {
+    b.addEventListener("click", () => switchView(b.dataset.view));
+  });
+
+  $("#fab").addEventListener("click", () => openSheet(null));
+
+  // --- Day navigation
+  $("#dayPrev").addEventListener("click", () => setViewDate(addDays(viewDate, -1)));
+  $("#dayNext").addEventListener("click", () => setViewDate(addDays(viewDate, 1)));
+  $("#dayToday").addEventListener("click", () => setViewDate(new Date()));
+
+  // --- Activity
+  function noteTyped() {
+    const text = prompt("What happened?");
+    if (text && addActivity(text, "typed")) { render(); queueSync(); toast("Note added."); }
+  }
+  function noteSpoken() {
+    openVoice(text => {
+      addActivity(text, "voice");
+      render();
+      queueSync();
+      toast("Note logged.");
+    }, "Listening — what happened?");
+  }
+  $("#btnAddNote").addEventListener("click", noteTyped);
+  $("#btnVoiceNote").addEventListener("click", noteSpoken);
+  $("#fabMic").addEventListener("click", noteSpoken);
+
+  $("#voiceStop").addEventListener("click", finishVoice);
+  $("#voiceCancel").addEventListener("click", closeVoice);
+  $("#voiceOverlay").addEventListener("click", e => { if (e.target === $("#voiceOverlay")) closeVoice(); });
+
+  // --- Dictating a question to the assistant
+  $("#chatMic").addEventListener("click", () => {
+    openVoice(text => {
+      $("#chatInput").value = text;
+      chatSpokenTurn = true;
+      sendChat();
+    }, "Listening — ask away");
+  });
+  $("#btnCancel").addEventListener("click", closeSheet);
+  $("#taskForm").addEventListener("submit", submitTask);
+  $("#fFreq").addEventListener("change", syncFreqFields);
+
+  $("#sheet").addEventListener("click", e => { if (e.target === $("#sheet")) closeSheet(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#sheet").hidden) closeSheet(); });
+
+  $("#btnArchive").addEventListener("click", () => {
+    if (!editing) return;
+    editing.archivedAt = new Date().toISOString();
+    save(); closeSheet(); render(); toast("Archived.");
+  });
+  $("#btnUnarchive").addEventListener("click", () => {
+    if (!editing) return;
+    editing.archivedAt = null;
+    save(); closeSheet(); render(); toast("Restored.");
+  });
+
+  $("#btnIcs").addEventListener("click", downloadIcs);
+  $("#btnNotify").addEventListener("click", askNotify);
+  $("#btnTestNotify").addEventListener("click", () => {
+    if (Notification.permission !== "granted") { askNotify(); return; }
+    fire("DynamiX Daily", "Reminders are working. This is what a nudge looks like.");
+  });
+
+  $("#syncBtn").addEventListener("click", () => {
+    if (!S.sync.url) switchView("settings");
+    else doSync(false);
+  });
+  $("#btnSaveSync").addEventListener("click", () => {
+    const url = $("#syncUrl").value.trim();
+    if (url && !/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(url)) {
+      toast("That does not look like an Apps Script /exec URL.");
+      return;
+    }
+    S.sync.url = url;
+    S.sync.token = $("#syncToken").value.trim();
+    S.sync.lastError = null;
+    save();
+    if (url) doSync(false); else { setSyncBadge("off", "Local"); render(); }
+  });
+  $("#btnClearSync").addEventListener("click", () => {
+    S.sync = { url: "", token: "", lastAt: null, lastError: null };
+    // Google-owned tasks came from the bridge; drop them with it.
+    S.tasks = S.tasks.filter(t => t.source === "local");
+    save();
+    setSyncBadge("off", "Local");
+    render();
+    toast("Disconnected.");
+  });
+
+  $("#btnSaveChat").addEventListener("click", () => {
+    S.chat.url = $("#chatUrl").value.trim() || "/api/chat";
+    S.chat.key = $("#chatKey").value.trim();
+    save();
+    toast("Assistant settings saved.");
+  });
+  $("#btnClearChat").addEventListener("click", () => {
+    S.chat.history = [];
+    save();
+    renderChat();
+    toast("Conversation cleared.");
+  });
+
+  $("#chatSend").addEventListener("click", sendChat);
+  $("#chatInput").addEventListener("keydown", e => {
+    // Enter sends on a desktop keyboard; Shift+Enter and mobile keep newlines.
+    if (e.key === "Enter" && !e.shiftKey && !/Mobi|Android/i.test(navigator.userAgent)) {
+      e.preventDefault();
+      sendChat();
+    }
+  });
+  $("#chatInput").addEventListener("input", e => {
+    e.target.style.height = "auto";
+    e.target.style.height = Math.min(e.target.scrollHeight, 110) + "px";
+  });
+
+  $("#btnExport").addEventListener("click", exportBackup);
+  $("#btnImport").addEventListener("click", () => $("#importFile").click());
+  $("#importFile").addEventListener("change", e => {
+    if (e.target.files[0]) importBackup(e.target.files[0]);
+    e.target.value = "";
+  });
+  $("#btnReset").addEventListener("click", () => {
+    if (!confirm("Delete every routine, the conversation, and all completion history on this device?")) return;
+    localStorage.removeItem(KEY);
+    S = defaultState();
+    seedIfEmpty();
+    render();
+    toast("Reset.");
+  });
+
+  // Install prompt (Chrome / Android).
+  let deferredPrompt = null;
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    $("#btnInstall").hidden = false;
+  });
+  $("#btnInstall").addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    $("#btnInstall").hidden = true;
+  });
+
+  if (S.sync.url) setSyncBadge(S.sync.lastError ? "error" : "ok", S.sync.lastError ? "Sync failed" : "Synced");
+
+  switchView("today");
+  scheduleNotifications();
+  if (S.sync.url) doSync(true);
+
+  // Roll the view over at midnight, and whenever the app comes back to focus.
+  let lastDay = today();
+  setInterval(() => {
+    if (today() !== lastDay) { lastDay = today(); render(); }
+  }, 30000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      if (today() !== lastDay) lastDay = today();
+      render();
+      checkDueNow();
+      if (S.sync.url) doSync(true);
+    }
+  });
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+}
+
+init();
+
+})();
+</script>
+</body>
+</html>
