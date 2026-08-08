@@ -11,8 +11,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Daily" />
 <link rel="manifest" href="manifest.webmanifest" />
-<link rel="icon" type="image/png" href="../assets/dynamix-favicon-gold.png" />
-<link rel="apple-touch-icon" href="../assets/dynamix-badge-gold.png" />
+<link rel="icon" type="image/png" href="../assets/dynamix-favicon.png" />
+<link rel="apple-touch-icon" href="../assets/dynamix-badge.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -430,7 +430,7 @@
 <header class="topbar">
   <div class="topbar-row">
     <div class="brand">
-      <img src="../assets/dynamix-badge-gold.png" alt="" />
+      <img src="../assets/dynamix-badge.png" alt="" />
       <span class="brand-name">Dynami<span class="x">X</span> Daily</span>
     </div>
     <button class="sync-dot" id="syncBtn" data-state="off" title="Sync now">
@@ -1384,7 +1384,7 @@ function fire(title, body) {
   try {
     if (navigator.serviceWorker && navigator.serviceWorker.ready) {
       navigator.serviceWorker.ready.then(reg => {
-        reg.showNotification(title, { body, icon: "../assets/dynamix-badge-gold.png", badge: "../assets/dynamix-favicon-gold.png", tag: title });
+        reg.showNotification(title, { body, icon: "../assets/dynamix-badge.png", badge: "../assets/dynamix-favicon.png", tag: title });
       }).catch(() => new Notification(title, { body }));
     } else {
       new Notification(title, { body });

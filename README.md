@@ -10,19 +10,28 @@ Gold is a light colour, which makes two rules load-bearing rather than stylistic
 
 ## Logo assets
 
-The site now ships flat gold-and-forest marks generated to match the brand kit, which also satisfies the DynamiX kit's own instruction not to reproduce the original chrome/bevel rendering on screen:
+`assets/dynamix-lockup.png` (1006x523) is the real DynamiX Group logo with a genuine alpha
+channel — 78% of its pixels are fully transparent, so it drops straight onto the forest hero
+panel without a plate behind it. Everything else is derived from it:
 
-- `dynamix-badge-gold.png` (180x180) — nav, footer, and apple-touch-icon.
-- `dynamix-favicon-gold.png` (64x64) — browser tab icon.
-- `dynamix-icon-512.png` (512x512) — PWA manifest icon (`any` + `maskable`).
-- `dynamix-social-gold.png` (1200x630) — `og:image` for link previews.
-- `dynamix-lockup-gold.png` (1000x520, transparent) — the hero lockup.
+- `dynamix-favicon.png` (64x64) — browser tab.
+- `dynamix-badge.png` (180x180) — nav, footer, apple-touch-icon.
+- `dynamix-icon-512.png` (512x512) — PWA manifest, `purpose: any`.
+- `dynamix-maskable-512.png` (512x512) — PWA `purpose: maskable`, with a wider safe zone,
+  since launchers crop maskable icons to a circle.
+- `dynamix-social.png` (1200x630) — `og:image`, the full lockup on forest at OG's 1.91:1.
 
-These are a coded wordmark — an X monogram in a thin gold ring, per the kit's fallback rules — not the official artwork. Drop in a real flat logo when one exists and repoint these filenames.
+The square icons crop to the **X motif** rather than shrinking the whole lockup: the lockup is
+nearly 2:1, so at 64px the wordmark is unreadable, while the X stays legible and is the mark
+the brand kit itself calls the signature. Regenerate them from the lockup if it ever changes.
 
-The original chrome exports are kept alongside them (`dynamix-badge.png`, `dynamix-favicon.png`, `dynamix-social.png`, `dynamix-lockup.png`) and are no longer referenced.
+The logo carries its own red, which is why `--brand-logo-red` exists. It is used *only* by the
+coded wordmark in the nav, so the text X matches the X in the mark beside it. It is never used
+on a dark ground — the logo red is 7.8:1 on white but 1.3:1 on forest, so the footer wordmark
+stays gold.
 
-The two earlier exports (`Dynamix New Transparent.jpg` / `.png`) both turned out to have the transparency-preview checkerboard flattened into the pixels rather than a real alpha channel, so they aren't used. If a clean transparent PNG or SVG of the full lockup (or just the X/ring mark on its own) becomes available, it can replace these directly.
+The two earlier exports (`Dynamix New Transparent.jpg` / `.png`) had the transparency-preview
+checkerboard flattened into the pixels rather than a real alpha channel, so they aren't used.
 
 ## Daily Dashboard
 

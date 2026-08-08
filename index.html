@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>DynamiX Group | Providing Certainty in Life</title>
 <meta name="description" content="DynamiX Group is a Singapore wealth advisory firm founded and led by David Seen, providing certainty in life for individuals, families, and businesses." />
-<link rel="icon" type="image/png" href="assets/dynamix-favicon-gold.png" />
+<link rel="icon" type="image/png" href="assets/dynamix-favicon.png" />
 <meta property="og:title" content="DynamiX Group | Providing Certainty in Life" />
 <meta property="og:description" content="A Singapore wealth advisory firm founded and led by David Seen." />
-<meta property="og:image" content="assets/dynamix-social-gold.png" />
+<meta property="og:image" content="assets/dynamix-social.png" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,6 +23,10 @@
     /* Gold is an accent, never a field, and never body copy on white — it only
        reaches 2.1:1 there. This darkened gold is the text-safe variant (5.0:1). */
     --brand-gold-deep: #8A6B1E;
+    /* Sampled from the logo artwork. Used only by the coded wordmark, so the
+       text X matches the X in the mark beside it. 7.8:1 on white — but only
+       1.3:1 on forest, so it is never used on a dark ground. */
+    --brand-logo-red: #9C1B24;
     --brand-gold-bright: #E0BA5C;
     --brand-forest-soft: #33473A;
 
@@ -140,7 +144,7 @@
   .brand .ring-mark { width: 32px; height: 32px; flex-shrink: 0; border-radius: 8px; object-fit: cover; box-shadow: 0 1px 3px rgba(23,20,20,0.25); }
   .brand .word { display: flex; flex-direction: column; line-height: 1.05; }
   .brand .word .name { font-family: "Raleway", sans-serif; font-weight: 700; font-size: 17px; letter-spacing: -0.005em; color: var(--text); }
-  .brand .word .name .x { color: var(--accent-text); }
+  .brand .word .name .x { color: var(--brand-logo-red); }
   .brand .word .sub { font-size: 9.5px; letter-spacing: 0.14em; color: var(--text-faint); margin-top: 1px; }
   .nav-links { display: flex; align-items: center; gap: 28px; }
   .nav-links a { font-size: 14px; color: var(--text-muted); transition: color .15s var(--ease-brand); }
@@ -303,7 +307,7 @@
   .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
   .footer-brand { display: flex; align-items: center; gap: 10px; }
   .footer-brand .word .name { font-family: "Raleway", sans-serif; color: var(--text-on-dark); font-weight: 700; font-size: 15px; }
-  .footer-brand .word .name .x { color: var(--accent-bright); }
+  .footer-brand .word .name .x { color: var(--accent-bright); } /* red would be 1.3:1 here */
   .footer-brand .word .tagline { font-size: 11.5px; margin-top: 2px; color: var(--text-on-dark-muted); }
   .footer-links { display: flex; gap: 22px; }
   .footer-links a { font-size: 13.5px; }
@@ -333,7 +337,7 @@
 <header class="nav">
   <div class="nav-inner">
     <a href="#top" class="brand">
-      <img class="ring-mark" src="assets/dynamix-badge-gold.png" alt="DynamiX Group" />
+      <img class="ring-mark" src="assets/dynamix-badge.png" alt="DynamiX Group" />
       <span class="word">
         <span class="name">Dynami<span class="x">X</span> Group</span>
         <span class="sub">PROVIDING CERTAINTY IN LIFE</span>
@@ -376,7 +380,7 @@
       </div>
       <div class="hero-visual" aria-hidden="true">
         <div class="grain"></div>
-        <img class="logo-mark" src="assets/dynamix-lockup-gold.png" alt="" />
+        <img class="logo-mark" src="assets/dynamix-lockup.png" alt="" />
         <div class="cert-panel">
           <div class="label">HOW WE WORK</div>
           <div class="value">One firm. One standard.</div>
@@ -567,7 +571,7 @@
 <footer>
   <div class="container footer-inner">
     <div class="footer-brand">
-      <img src="assets/dynamix-badge-gold.png" alt="DynamiX Group" style="width:28px;height:28px;border-radius:7px;object-fit:cover;flex-shrink:0;" />
+      <img src="assets/dynamix-badge.png" alt="DynamiX Group" style="width:28px;height:28px;border-radius:7px;object-fit:cover;flex-shrink:0;" />
       <span class="word">
         <div class="name">Dynami<span class="x">X</span> Group</div>
         <div class="tagline">Providing certainty in life.</div>

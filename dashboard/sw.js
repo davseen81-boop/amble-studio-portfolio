@@ -7,14 +7,14 @@
  * and, optionally, the Apps Script bridge (which is always network-only).
  */
 
-const CACHE = "dynamix-daily-v2";
+const CACHE = "dynamix-daily-v3";
 
 const SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "../assets/dynamix-badge-gold.png",
-  "../assets/dynamix-favicon-gold.png",
+  "../assets/dynamix-badge.png",
+  "../assets/dynamix-favicon.png",
   "../assets/dynamix-icon-512.png"
 ];
 
