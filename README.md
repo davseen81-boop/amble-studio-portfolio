@@ -70,9 +70,13 @@ Open `index.html` directly in a browser, or serve the folder with any static fil
 
 ## Deploy
 
-- **Vercel:** project `amble-studio-portfolio` (name predates two rebrands now; rename when convenient).
-  There is no build step — the site is static and `api/chat.ts` is picked up as a serverless
-  function automatically, so leave the framework preset as "Other" and the build command empty.
+- **Vercel:** project `daily-dashboard`, under the `david-seen-s-projects` scope, root directory
+  the repository root. There is no build step — the site is static and `api/chat.ts` is picked up
+  as a serverless function automatically, so the framework preset stays "Other" and the build
+  command stays empty.
+
+  The project name describes the dashboard, but the deployment is the whole repository: the
+  DynamiX marketing page is served at `/` and the dashboard at `/dashboard/`.
 
   The dashboard assistant needs `ANTHROPIC_API_KEY` set in the project's environment variables,
   and `DASHBOARD_SHARED_KEY` is strongly recommended so the endpoint is not open to anyone who
