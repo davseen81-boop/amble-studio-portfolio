@@ -71,7 +71,15 @@ Open `index.html` directly in a browser, or serve the folder with any static fil
 ## Deploy
 
 - **Vercel:** project `amble-studio-portfolio` (name predates two rebrands now; rename when convenient).
+  There is no build step — the site is static and `api/chat.ts` is picked up as a serverless
+  function automatically, so leave the framework preset as "Other" and the build command empty.
+
   The dashboard assistant needs `ANTHROPIC_API_KEY` set in the project's environment variables,
   and `DASHBOARD_SHARED_KEY` is strongly recommended so the endpoint is not open to anyone who
-  finds the URL.
+  finds the URL. Without the first, the Ask tab returns *"ANTHROPIC_API_KEY is not configured on
+  the server."*
+
+  `vercel.json` raises the chat function's timeout to 60s — the default 10s cuts long answers off
+  mid-sentence, since the model thinks before it writes — marks `/dashboard/` `noindex`, keeps the
+  service worker uncached so updates land, and caches `/assets/` immutably.
 - **GitHub Pages:** enable in repo settings (Pages → `main` branch, root folder).
