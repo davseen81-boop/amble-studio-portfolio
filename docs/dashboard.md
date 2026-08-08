@@ -10,7 +10,8 @@ It is deliberately built in layers:
 |---|---|---|
 | **The dashboard** | Nothing. Open the page. | Routines, tick-offs, streaks, carry-over nagging, calendar export, on-device reminders. |
 | **The bridge** | A one-off Apps Script setup, ~5 minutes | Tasks created from Calendar events, Gmail, and Zoho Mail, plus completions synced across devices. |
-| **The assistant** | An Anthropic API key in Vercel | A chat panel that answers questions about your routines and can tick them off, add them, or archive them. |
+| **The assistant** | An Anthropic API key in Vercel | A chat panel that answers questions about your routines and activity, and can tick things off, add routines, or log what happened. |
+| **Voice** | Nothing. Chrome or Safari. | Speak a note instead of typing it; dictate questions and hear the answer back. |
 
 The dashboard is fully useful on its own. The bridge is what satisfies "let me instruct work
 through the calendar or email app." The assistant is optional on top of both.
@@ -60,6 +61,50 @@ Two mechanisms, and you want both:
 
 Times are written as floating local time, so a 9am routine is 9am wherever you are rather than
 shifting when you travel.
+
+### The activity log and the day browser
+
+Routines are what you *intended* to do. The activity log is what actually happened — meetings,
+calls, outcomes. Each entry is timestamped and filed under a day.
+
+The date in the header is a browser. Use `‹` and `›` to step back through previous days;
+**Today** returns. Everything on the screen follows the day you are looking at: the ring, the
+routine lists, and the activity. You can still tick a routine off on a past day, which is how
+you back-fill something you forgot to mark at the time.
+
+Carry-over is deliberately *not* shown on past days. "Missed three in a row" is a statement
+about now; on a day in the past a routine was simply done or it wasn't.
+
+Three ways to log activity:
+
+- **Speak it.** The microphone button beside `+`, or *Speak a note*. Talk, then **Stop & save**.
+- **Type it.** *Add a note*.
+- **Tell the assistant.** Say "I met Mr Tan about his SRS top-up" in the Ask tab and it files
+  the entry itself — that is what `log_activity` is for.
+
+### Voice
+
+Voice uses the browser's own `SpeechRecognition`, so there is nothing to install and no audio
+service to pay for.
+
+- **The microphone on the Today view** captures an activity note.
+- **The microphone in the Ask composer** dictates a question. Because the question was spoken,
+  the answer is read back aloud; a typed question stays silent.
+- The mic stays open across natural pauses, so you can think mid-sentence. You decide when to
+  stop.
+
+> **Where your voice goes.** This app records nothing and uploads nothing itself. But Chrome
+> performs speech recognition **on Google's servers**, so dictated text leaves the device via
+> the browser. Recent Safari does it on-device. Treat the microphone the way you would a search
+> box, and type anything you would not want transcribed off-device.
+
+Unsupported browsers (notably Firefox, which does not ship `SpeechRecognition`) simply say so
+and leave typing available.
+
+**This is push-to-talk, not an always-on agent.** Gemini Spark keeps working in the cloud with
+your laptop shut; a web page cannot. Browsers suspend background pages, and no page may hold
+the microphone open indefinitely. If you want ambient always-listening capture, that needs a
+native app or a device assistant, not this.
 
 ### Your data
 
@@ -180,6 +225,8 @@ the Done folder so it stops coming back.
 - Routines you create in the dashboard are **never touched** by sync.
 - Completions are **union-merged in both directions** and never deleted remotely, so two
   devices syncing in any order cannot clobber each other.
+- Activity notes merge **by entry id**, so a note written on your phone reaches your laptop and
+  re-syncing never duplicates it.
 - Syncing happens on load, when the app regains focus, and a couple of seconds after you tick
   something off.
 - History older than 400 days is pruned.

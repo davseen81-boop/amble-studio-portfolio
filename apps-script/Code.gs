@@ -155,6 +155,9 @@ function handle(req) {
   if (req.log && typeof req.log === 'object') {
     mergeLog(state.log, req.log);
   }
+  if (req.activity && typeof req.activity === 'object') {
+    mergeActivity(state.activity, req.activity);
+  }
 
   const tasks = collectTasks();
 
@@ -169,10 +172,11 @@ function handle(req) {
   }
 
   state.log = pruneLog(state.log, HISTORY_DAYS);
+  state.activity = pruneActivity(state.activity, HISTORY_DAYS);
   state.lastSync = new Date().toISOString();
   writeState(state);
 
-  return { tasks: tasks, log: state.log, at: state.lastSync };
+  return { tasks: tasks, log: state.log, activity: state.activity, at: state.lastSync };
 }
 
 // ============================================================================
@@ -603,13 +607,13 @@ function parseDirectives(text) {
 
 function readState() {
   const file = findStateFile();
-  if (!file) return { log: {}, lastSync: null };
+  if (!file) return { log: {}, activity: {}, lastSync: null };
   try {
     const parsed = JSON.parse(file.getBlob().getDataAsString());
-    return { log: parsed.log || {}, lastSync: parsed.lastSync || null };
+    return { log: parsed.log || {}, activity: parsed.activity || {}, lastSync: parsed.lastSync || null };
   } catch (err) {
     console.error('State file unreadable, starting fresh: ' + err);
-    return { log: {}, lastSync: null };
+    return { log: {}, activity: {}, lastSync: null };
   }
 }
 
@@ -636,6 +640,40 @@ function mergeLog(target, incoming) {
     });
   });
   return target;
+}
+
+/** Activity merges by entry id, so the same note is never stored twice. */
+function mergeActivity(target, incoming) {
+  Object.keys(incoming).forEach(function (day) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return;
+    const entries = incoming[day];
+    if (!Array.isArray(entries)) return;
+    if (!target[day]) target[day] = [];
+
+    const seen = {};
+    target[day].forEach(function (e) { if (e && e.id) seen[e.id] = true; });
+
+    entries.forEach(function (e) {
+      if (!e || !e.id || seen[e.id]) return;
+      target[day].push({
+        id: String(e.id).slice(0, 40),
+        at: String(e.at || new Date().toISOString()).slice(0, 40),
+        text: String(e.text || '').slice(0, 1000),
+        source: ['voice', 'typed', 'assistant'].indexOf(e.source) === -1 ? 'typed' : e.source
+      });
+      seen[e.id] = true;
+    });
+  });
+  return target;
+}
+
+function pruneActivity(activity, days) {
+  const cutoff = dateKey(addDays(new Date(), -days));
+  const out = {};
+  Object.keys(activity || {}).forEach(function (day) {
+    if (day >= cutoff && activity[day] && activity[day].length) out[day] = activity[day];
+  });
+  return out;
 }
 
 function pruneLog(log, days) {
@@ -722,7 +760,7 @@ function setup() {
   getOrCreateLabel(LABEL_TODO);
   getOrCreateLabel(LABEL_DONE);
   if (!findStateFile()) {
-    DriveApp.createFile(STATE_FILE, JSON.stringify({ log: {}, lastSync: null }), MimeType.PLAIN_TEXT);
+    DriveApp.createFile(STATE_FILE, JSON.stringify({ log: {}, activity: {}, lastSync: null }), MimeType.PLAIN_TEXT);
   }
   console.log('Labels ready: ' + LABEL_TODO + ', ' + LABEL_DONE);
   console.log('State file ready: ' + STATE_FILE);

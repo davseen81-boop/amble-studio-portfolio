@@ -79,6 +79,24 @@ const TOOLS: Anthropic.Tool[] = [
     },
   },
   {
+    name: "log_activity",
+    description:
+      "Record something that happened, in the day's activity log. Use when the user reports what " +
+      "they did, who they saw, or what came out of a meeting — anything worth having a record of " +
+      "later. This is a diary entry, not a routine: do not use it to tick a routine off.",
+    input_schema: {
+      type: "object",
+      properties: {
+        text: { type: "string", description: "What happened, in the user's own words where possible." },
+        date: {
+          type: "string",
+          description: "Date to file it under, as YYYY-MM-DD. Defaults to the day being viewed.",
+        },
+      },
+      required: ["text"],
+    },
+  },
+  {
     name: "archive_routine",
     description: "Archive a routine so it stops appearing. Use when the user no longer wants to track it.",
     input_schema: {
@@ -95,18 +113,22 @@ function systemPrompt(ctx: DashboardContext): string {
     "David founded and leads DynamiX Group, a Singapore wealth advisory firm. You are speaking to him directly, not to a client.",
     "",
     "## What you can see",
-    "Every turn you receive the full current state of his routines and completion history. Answer from it directly.",
-    "Never invent a routine, a streak, or a completion that is not in the data below.",
+    "Every turn you receive the full current state of his routines, plus the activity log for the day he is looking at.",
+    "Answer from that directly. Never invent a routine, a streak, a completion, or an activity entry that is not in the data below.",
+    "The activity log is his record of what actually happened — meetings, calls, decisions. Routines are what he intended to do. Keep the two straight.",
     "",
     "## How to answer",
     "Lead with the answer. If he asks what is outstanding, list what is outstanding — do not restate the question or narrate what you are about to do.",
     "Keep replies short. Two or three sentences for most questions; a tight list when a list is genuinely the answer.",
+    "Replies may be read aloud, so write them to be heard: plain sentences, no markdown, no bullet characters, no emoji.",
     "Use his own wording for routines rather than paraphrasing them.",
     "When something has been missed repeatedly, say so plainly and without moralising. He can see the numbers; he does not need a lecture.",
     "",
     "## Acting on his behalf",
-    "You can mark routines done, add new ones, and archive ones he has finished with.",
+    "You can mark routines done, add new ones, archive ones he has finished with, and log activity.",
     "Do those when he asks. Do not mark anything done on your own initiative, and do not add a routine he only mentioned in passing.",
+    "When he tells you what he did — a meeting, a call, an outcome — log it with log_activity, in his own words, without being asked. That is the point of the log.",
+    "Much of what reaches you is dictated, so expect transcription noise: fix obvious mis-hearings, and never read punctuation aloud back to him.",
     "If a request is ambiguous about the schedule, ask one short question rather than guessing.",
     "",
     "## Scope",
@@ -116,9 +138,15 @@ function systemPrompt(ctx: DashboardContext): string {
     "",
     "## Current state",
     `Today is ${ctx.today} (${ctx.weekday}). Local time ${ctx.localTime}, timezone ${ctx.timezone}.`,
+    ctx.viewingDate && ctx.viewingDate !== ctx.today
+      ? `He is currently looking at ${ctx.viewingDate}, not today. Answer about that day unless he says otherwise.`
+      : "",
     "",
     "Routines, as JSON:",
     JSON.stringify(ctx.routines, null, 1),
+    "",
+    `Activity logged on ${ctx.viewingDate || ctx.today}, as JSON:`,
+    JSON.stringify(ctx.activity || [], null, 1),
   ].join("\n");
 }
 
@@ -127,7 +155,9 @@ interface DashboardContext {
   weekday: string;
   localTime: string;
   timezone: string;
+  viewingDate?: string;
   routines: unknown[];
+  activity?: unknown[];
 }
 
 function bad(res: VercelResponse, status: number, message: string) {

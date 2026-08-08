@@ -40,8 +40,14 @@ checkerboard flattened into the pixels rather than a real alpha channel, so they
 
 `dashboard/` is a private, installable daily task dashboard for David, served from the same
 site at `/dashboard/` (`noindex`, not linked from the marketing page). It tracks recurring
-routines, keeps nagging about anything missed until it is done, and can pull tasks in from
-Google Calendar events tagged `#task` and Gmail threads labelled `Dashboard/Task`.
+routines, keeps nagging about anything missed until it is done, keeps a spoken or typed record
+of what actually happened each day, and can pull tasks in from Google Calendar events tagged
+`#task`, Gmail threads labelled `Dashboard/Task`, and Zoho Mail.
+
+The date in the dashboard header is a day browser — step back through previous days to see what
+was due, what was done, and what was logged. Voice capture uses the browser's own
+`SpeechRecognition`, so there is no audio service in the loop; note that Chrome does that
+recognition server-side, which `docs/dashboard.md` spells out.
 
 It works standalone with no setup — routines live in the browser's local storage. Two optional
 layers sit on top:

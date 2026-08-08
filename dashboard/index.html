@@ -170,7 +170,70 @@
 
   .hero { display: flex; align-items: flex-end; gap: 18px; margin-top: 20px; }
   .hero-text { flex: 1; min-width: 0; }
-  .hero-date { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-on-dark-muted); font-weight: 600; }
+  .hero-date { display: flex; align-items: center; gap: 2px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-on-dark-muted); font-weight: 600; }
+  .daynav {
+    background: none; border: 0; color: var(--text-on-dark-muted); padding: 2px 3px;
+    display: inline-flex; align-items: center; border-radius: var(--radius-sm);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .daynav .lucide { width: 15px; height: 15px; }
+  .daynav:hover { color: var(--accent); }
+  .daynav:disabled { opacity: 0.3; pointer-events: none; }
+  .daynav.jump {
+    font: inherit; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--accent); border: 1px solid rgba(213,171,69,0.4);
+    padding: 2px 8px; margin-left: 6px; border-radius: var(--radius-pill);
+  }
+  .daynav.jump[hidden] { display: none; }
+
+  /* ---------- Activity ---------- */
+  .act {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-md); padding: 11px 13px; box-shadow: var(--shadow-card);
+  }
+  .act .when { flex: none; font-size: 12px; font-weight: 600; color: var(--accent-text); font-variant-numeric: tabular-nums; padding-top: 1px; }
+  .act .what { flex: 1; min-width: 0; font-size: 14.5px; word-wrap: break-word; white-space: pre-wrap; }
+  .act .via { font-size: 11px; color: var(--text-faint); margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+  .act .via .lucide { width: 12px; height: 12px; }
+
+  /* ---------- Voice ---------- */
+  .voice-backdrop {
+    position: fixed; inset: 0; z-index: 70; background: rgba(17,17,17,0.72);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  }
+  .voice-backdrop[hidden] { display: none; }
+  .voice-card {
+    background: var(--card); border-radius: var(--radius-lg); padding: 28px 24px 22px;
+    width: 100%; max-width: 420px; text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+  .voice-orb {
+    width: 78px; height: 78px; margin: 0 auto 18px; border-radius: 50%;
+    background: var(--accent-soft); border: 2px solid var(--accent);
+    display: grid; place-content: center; color: var(--accent-text);
+  }
+  .voice-orb .lucide { width: 32px; height: 32px; }
+  .voice-backdrop.listening .voice-orb { animation: orb 1.4s ease-in-out infinite; }
+  @keyframes orb {
+    0%,100% { box-shadow: 0 0 0 0 rgba(213,171,69,0.45); }
+    50%     { box-shadow: 0 0 0 16px rgba(213,171,69,0); }
+  }
+  .voice-status { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-faint); font-weight: 600; }
+  .voice-text { margin: 12px 0 20px; font-size: 16px; line-height: 1.45; min-height: 3em; color: var(--text); }
+  .voice-text .interim { color: var(--text-faint); }
+  .voice-actions { display: flex; gap: 8px; justify-content: center; }
+
+  .fab-stack { position: fixed; right: 16px; z-index: 45; bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 14px); display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .fab-stack[hidden] { display: none; }
+  .fab-mic {
+    width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--border-strong);
+    background: var(--card); color: var(--accent-text); display: grid; place-content: center;
+    box-shadow: var(--shadow-card); -webkit-tap-highlight-color: transparent;
+  }
+  .fab-mic .lucide { width: 20px; height: 20px; }
+  .fab-mic:active { transform: scale(0.93); }
   .hero h1 { font-size: 26px; margin-top: 5px; color: var(--text-on-dark); }
   .hero-sub { font-size: 13px; color: var(--text-on-dark-muted); margin-top: 6px; }
 
@@ -303,8 +366,9 @@
   .nav button[aria-current="page"] { color: var(--accent-text); }
 
   .fab {
-    position: fixed; right: 16px; z-index: 45;
-    bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 14px);
+    /* Positioned by .fab-stack now. Leaving position:fixed here made it float
+       over the mic button and swallow its clicks. */
+    position: relative; z-index: 1;
     width: 54px; height: 54px; border-radius: 50%;
     background: var(--accent); color: var(--on-accent); border: 0;
     box-shadow: 0 6px 20px rgba(0,0,0,0.32);
@@ -439,7 +503,16 @@
   </div>
   <div class="hero">
     <div class="hero-text">
-      <div class="hero-date" id="heroDate"></div>
+      <div class="hero-date">
+        <button class="daynav" id="dayPrev" aria-label="Previous day">
+          <svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span id="heroDate"></span>
+        <button class="daynav" id="dayNext" aria-label="Next day">
+          <svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="daynav jump" id="dayToday" hidden>Today</button>
+      </div>
       <h1 id="heroGreeting">Today</h1>
       <div class="hero-sub" id="heroSub"></div>
     </div>
@@ -473,6 +546,18 @@
         <span class="count" id="cnt-today"></span>
       </div>
       <div class="task-list" id="list-today"></div>
+    </div>
+
+    <div class="section" id="sec-activity">
+      <div class="section-head">
+        <h2 class="label">Activity</h2>
+        <span class="count" id="cnt-activity"></span>
+      </div>
+      <div class="task-list" id="list-activity"></div>
+      <div class="btn-row" style="margin-top:10px">
+        <button class="btn btn-sm" id="btnAddNote">Add a note</button>
+        <button class="btn btn-sm" id="btnVoiceNote">Speak a note</button>
+      </div>
     </div>
 
     <div class="section" id="sec-done" hidden>
@@ -604,6 +689,7 @@
       <p class="desc">Everything lives in this browser's local storage. Nothing is sent anywhere unless you connect the bridge above.</p>
       <div class="kv"><span>Routines</span><span id="statTasks">0</span></div>
       <div class="kv"><span>Completions logged</span><span id="statDone">0</span></div>
+      <div class="kv"><span>Activity notes</span><span id="statNotes">0</span></div>
       <div class="kv"><span>Tracking since</span><span id="statSince">—</span></div>
       <div class="kv"><span>Best current streak</span><span id="statStreak">—</span></div>
       <div class="btn-row" style="margin-top:14px">
@@ -629,7 +715,12 @@
   </section>
 </main>
 
+<div class="fab-stack" id="fabStack">
+<button class="fab-mic" id="fabMic" aria-label="Speak a note">
+  <svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+</button>
 <button class="fab" id="fab" aria-label="Add a routine"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+</div>
 
 <nav class="nav">
   <button data-view="today" aria-current="page"><svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Today</button>
@@ -695,9 +786,24 @@
 
 <div class="composer" id="composer" hidden>
   <textarea id="chatInput" rows="1" placeholder="Ask about your routines…" maxlength="2000"></textarea>
+  <button class="send" id="chatMic" aria-label="Dictate" style="background:var(--card);border:1px solid var(--border-strong);color:var(--accent-text)">
+    <svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+  </button>
   <button class="send" id="chatSend" aria-label="Send">
     <svg class="lucide" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
   </button>
+</div>
+
+<div class="voice-backdrop" id="voiceOverlay" hidden>
+  <div class="voice-card" role="dialog" aria-modal="true" aria-labelledby="voiceStatus">
+    <div class="voice-orb" id="voiceOrb"></div>
+    <div class="voice-status" id="voiceStatus">Listening</div>
+    <div class="voice-text" id="voiceText"></div>
+    <div class="voice-actions">
+      <button class="btn btn-primary" id="voiceStop">Stop &amp; save</button>
+      <button class="btn btn-sm" id="voiceCancel">Cancel</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast" hidden></div>
@@ -718,6 +824,9 @@ const defaultState = () => ({
   tasks: [],
   /* log[taskId] = { "YYYY-MM-DD": epochMillis } */
   log: {},
+  /* activity["YYYY-MM-DD"] = [{ id, at, text, source }] — a free-form record of
+     what actually happened that day, alongside the routine tick-offs. */
+  activity: {},
   notified: {},           // { "YYYY-MM-DD": [taskId, ...] }
   sync: { url: "", token: "", lastAt: null, lastError: null },
   chat: { url: "/api/chat", key: "", history: [] },
@@ -826,16 +935,29 @@ function missedRun(task) {
 }
 
 function activeTasks() { return S.tasks.filter(t => !t.archivedAt); }
-function dueToday() {
-  const now = new Date();
+
+/* The Today view doubles as a day browser, so most rendering works off the
+   date being viewed rather than the real today. */
+let viewDate = new Date();
+function viewKey() { return dateKey(viewDate); }
+function isViewingToday() { return viewKey() === today(); }
+function setViewDate(d) {
+  const limit = new Date();
+  // There is nothing to see in the future, so the browser stops at today.
+  viewDate = d > limit ? limit : d;
+  render();
+}
+
+function dueOn(d) {
   return activeTasks()
-    .filter(t => isDueOn(t, now))
+    .filter(t => isDueOn(t, d))
     .sort((a, b) => {
       const at = a.schedule.time || "99:99";
       const bt = b.schedule.time || "99:99";
       return at === bt ? a.title.localeCompare(b.title) : at.localeCompare(bt);
     });
 }
+function dueToday() { return dueOn(new Date()); }
 
 function scheduleLabel(t) {
   const s = t.schedule || {};
@@ -858,6 +980,39 @@ function fmtTime(hhmm) {
 }
 
 /* =========================================================================
+   Activity log
+   ========================================================================= */
+function activityFor(key) { return (S.activity && S.activity[key]) || []; }
+
+function addActivity(text, source, key) {
+  text = String(text || "").trim();
+  if (!text) return null;
+  const day = key || viewKey();
+  if (!S.activity[day]) S.activity[day] = [];
+  const entry = {
+    id: "a_" + Math.random().toString(36).slice(2, 10),
+    at: new Date().toISOString(),
+    text: text.slice(0, 1000),
+    source: source || "typed"
+  };
+  S.activity[day].push(entry);
+  save();
+  return entry;
+}
+
+function removeActivity(day, id) {
+  if (!S.activity[day]) return;
+  S.activity[day] = S.activity[day].filter(e => e.id !== id);
+  if (!S.activity[day].length) delete S.activity[day];
+  save();
+}
+
+function fmtClock(iso) {
+  const d = new Date(iso);
+  return isNaN(d) ? "" : `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+/* =========================================================================
    Rendering
    ========================================================================= */
 const $ = sel => document.querySelector(sel);
@@ -875,7 +1030,10 @@ const ICONS = {
   target:  '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
   checkCircle: '<circle cx="12" cy="12" r="10"/><polyline points="8 12.5 11 15.5 16 9"/>',
   list:    '<polyline points="3 17 4 18 7 15"/><polyline points="3 7 4 8 7 5"/><line x1="11" y1="6" x2="21" y2="6"/><line x1="11" y1="12" x2="21" y2="12"/><line x1="11" y1="18" x2="21" y2="18"/>',
-  plus:    '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>'
+  plus:    '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+  mic:     '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>',
+  sparkle: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>',
+  stop:    '<rect x="6" y="6" width="12" height="12" rx="2"/>'
 };
 function icon(name, cls) {
   return `<svg class="lucide${cls ? " " + cls : ""}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name] || ""}</svg>`;
@@ -940,43 +1098,47 @@ function taskNode(t, opts) {
 }
 
 function renderToday() {
-  const key = today();
-  const due = dueToday();
+  const key = viewKey();
+  const onToday = isViewingToday();
+  const due = dueOn(viewDate);
 
   const pending = [], finished = [], overdue = [];
   for (const t of due) {
     if (isDone(t, key)) finished.push(t);
     else {
-      const m = missedRun(t);
+      // Carry-over only makes sense relative to now; on a past day a routine was
+      // simply done or not done, so it is listed plainly.
+      const m = onToday ? missedRun(t) : 0;
       (m > 0 ? overdue : pending).push({ t, m });
     }
   }
-  // Routines not due today but with a live missed streak still deserve a nudge.
-  for (const t of activeTasks()) {
-    if (isDueOn(t, new Date())) continue;
-    const m = missedRun(t);
-    if (m > 0) overdue.push({ t, m });
+  if (onToday) {
+    for (const t of activeTasks()) {
+      if (isDueOn(t, viewDate)) continue;
+      const m = missedRun(t);
+      if (m > 0) overdue.push({ t, m });
+    }
   }
   overdue.sort((a, b) => b.m - a.m);
 
-  fill("#list-overdue", overdue.map(o => taskNode(o.t, { missed: o.m })));
+  fill("#list-overdue", overdue.map(o => taskNode(o.t, { missed: o.m, dateKey: key })));
   $("#sec-overdue").hidden = overdue.length === 0;
   $("#cnt-overdue").textContent = overdue.length ? `${overdue.length} needing attention` : "";
 
-  const todayNodes = pending.map(o => taskNode(o.t, { missed: 0 }));
+  const todayNodes = pending.map(o => taskNode(o.t, { missed: 0, dateKey: key }));
   if (todayNodes.length === 0) {
     const e = el("div", "empty");
     if (due.length === 0) {
       e.innerHTML = icon("target", "lucide-lg") +
-        '<p>Nothing scheduled for today.<br>Tap + to add your first routine.</p>';
+        (onToday ? '<p>Nothing scheduled for today.<br>Tap + to add your first routine.</p>'
+                 : '<p>Nothing was scheduled for this day.</p>');
     } else if (overdue.length) {
-      // Everything due today is already sitting in the carried-over list above,
-      // so congratulating the user here would be simply untrue.
       e.innerHTML = icon("list", "lucide-lg") +
         '<p>Nothing new today — the carried-over items above are what is outstanding.</p>';
     } else {
       e.innerHTML = icon("checkCircle", "lucide-lg") +
-        '<p>Everything due today is done. Well held.</p>';
+        (onToday ? '<p>Everything due today is done. Well held.</p>'
+                 : '<p>Everything due that day was done.</p>');
     }
     fill("#list-today", [e]);
   } else {
@@ -984,23 +1146,71 @@ function renderToday() {
   }
   $("#cnt-today").textContent = due.length ? `${finished.length} of ${due.length}` : "";
 
-  fill("#list-done", finished.map(t => taskNode(t)));
+  fill("#list-done", finished.map(t => taskNode(t, { dateKey: key })));
   $("#sec-done").hidden = finished.length === 0;
   $("#cnt-done").textContent = finished.length ? String(finished.length) : "";
 
+  renderActivity(key);
   renderBanners();
 }
 
-function renderHeader() {
-  const key = today();
-  const due = dueToday();
-  const finished = due.filter(t => isDone(t, key));
-  const overdue = activeTasks().filter(t => !isDone(t, key) && missedRun(t) > 0);
+function renderActivity(key) {
+  const entries = activityFor(key).slice().sort((a, b) => String(a.at).localeCompare(String(b.at)));
+  $("#cnt-activity").textContent = entries.length ? `${entries.length} logged` : "";
 
-  const now = new Date();
-  $("#heroDate").textContent = now.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" });
-  const h = now.getHours();
-  $("#heroGreeting").textContent = h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+  if (!entries.length) {
+    const e = el("div", "empty");
+    e.innerHTML = icon("mic", "lucide-lg") +
+      '<p>Nothing logged for this day yet.<br>Speak or type a note to record what happened.</p>';
+    fill("#list-activity", [e]);
+    return;
+  }
+
+  fill("#list-activity", entries.map(entry => {
+    const row = el("div", "act");
+    row.appendChild(el("div", "when", fmtClock(entry.at)));
+
+    const body = el("div", "what");
+    body.appendChild(document.createTextNode(entry.text));
+    const via = el("div", "via");
+    via.innerHTML = icon(entry.source === "voice" ? "mic" : entry.source === "assistant" ? "sparkle" : "pencil") +
+      (entry.source === "voice" ? "Spoken" : entry.source === "assistant" ? "Logged by the assistant" : "Typed");
+    body.appendChild(via);
+    row.appendChild(body);
+
+    const del = el("button", "icon-btn", "\u00d7");
+    del.title = "Delete this note";
+    del.setAttribute("aria-label", "Delete note");
+    del.addEventListener("click", () => {
+      removeActivity(key, entry.id);
+      render();
+      queueSync();
+    });
+    row.appendChild(del);
+    return row;
+  }));
+}
+
+function renderHeader() {
+  const key = viewKey();
+  const onToday = isViewingToday();
+  const due = dueOn(viewDate);
+  const finished = due.filter(t => isDone(t, key));
+  const overdue = onToday
+    ? activeTasks().filter(t => !isDone(t, key) && missedRun(t) > 0)
+    : [];
+
+  $("#heroDate").textContent = viewDate.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" });
+  $("#dayNext").disabled = onToday;
+  $("#dayToday").hidden = onToday;
+
+  if (onToday) {
+    const h = new Date().getHours();
+    $("#heroGreeting").textContent = h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+  } else {
+    const days = Math.round((parseKey(today()) - parseKey(key)) / 86400000);
+    $("#heroGreeting").textContent = days === 1 ? "Yesterday" : `${days} days ago`;
+  }
 
   const total = due.length, doneN = finished.length;
   const pct = total ? Math.round((doneN / total) * 100) : 0;
@@ -1012,11 +1222,21 @@ function renderHeader() {
   $("#ringCount").textContent = `${doneN} / ${total}`;
 
   const left = total - doneN;
-  $("#heroSub").textContent = total === 0
+  const notes = activityFor(key).length;
+  const noteBit = notes ? `  ${notes} note${notes === 1 ? "" : "s"} logged.` : "";
+
+  if (!onToday) {
+    $("#heroSub").textContent = (total === 0
+      ? "Nothing was scheduled."
+      : `${doneN} of ${total} done.`) + noteBit;
+    return;
+  }
+
+  $("#heroSub").textContent = (total === 0
     ? (overdue.length ? `Nothing due today, ${overdue.length} carried over.` : "No routines due today.")
     : left === 0
       ? (overdue.length ? `Today is clear — ${overdue.length} carried over.` : "All clear for today.")
-      : `${left} still to do${overdue.length ? `, ${overdue.length} carried over` : ""}.`;
+      : `${left} still to do${overdue.length ? `, ${overdue.length} carried over` : ""}.`) + noteBit;
 }
 
 function renderBanners() {
@@ -1079,7 +1299,10 @@ function renderSettings() {
   $("#statTasks").textContent = String(activeTasks().length);
   let doneCount = 0;
   for (const id in S.log) doneCount += Object.keys(S.log[id]).length;
+  let noteCount = 0;
+  for (const d in S.activity) noteCount += S.activity[d].length;
   $("#statDone").textContent = String(doneCount);
+  $("#statNotes").textContent = String(noteCount);
   $("#statSince").textContent = new Date(S.createdAt).toLocaleDateString();
   const best = activeTasks().reduce((m, t) => Math.max(m, streakOf(t)), 0);
   $("#statStreak").textContent = best ? `${best} days` : "—";
@@ -1140,7 +1363,8 @@ function switchView(v) {
     if (b.dataset.view === v) b.setAttribute("aria-current", "page");
     else b.removeAttribute("aria-current");
   });
-  $("#fab").hidden = (v === "settings" || v === "cal" || v === "ask");
+  $("#fabStack").hidden = (v === "settings" || v === "cal" || v === "ask");
+  if (v !== "today" && !isViewingToday()) viewDate = new Date();
   window.scrollTo(0, 0);
   render();
   // The interesting end of a conversation is the bottom, not the top.
@@ -1460,6 +1684,7 @@ async function doSync(quiet) {
         token: S.sync.token,
         action: "sync",
         log: S.log,
+        activity: S.activity,
         localTasks: S.tasks.filter(t => t.source === "local" && !t.archivedAt)
       }),
       redirect: "follow"
@@ -1512,6 +1737,19 @@ function mergeRemote(data) {
   }
   S.tasks = local.concat(Array.from(byRemoteId.values()));
 
+  // Activity merges by entry id, so a note written on one device is never lost
+  // and re-syncing never duplicates it.
+  if (data.activity && typeof data.activity === "object") {
+    for (const day in data.activity) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || !Array.isArray(data.activity[day])) continue;
+      if (!S.activity[day]) S.activity[day] = [];
+      const seen = new Set(S.activity[day].map(e => e.id));
+      for (const e of data.activity[day]) {
+        if (e && e.id && !seen.has(e.id)) { S.activity[day].push(e); seen.add(e.id); }
+      }
+    }
+  }
+
   if (data.log && typeof data.log === "object") {
     for (const id in data.log) {
       if (!S.log[id]) S.log[id] = {};
@@ -1533,9 +1771,113 @@ function normaliseSchedule(s) {
 }
 
 /* =========================================================================
+   Voice
+   =========================================================================
+   Uses the browser's own SpeechRecognition. Nothing is recorded or uploaded by
+   this app — but note that Chrome performs recognition server-side, so spoken
+   text does leave the device via the browser. Safari on recent iOS does it
+   on-device. Say nothing to it you would not type into a search box.
+   ========================================================================= */
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let voiceFinal = "";
+let voiceOnDone = null;
+
+function voiceSupported() { return !!SpeechRec; }
+
+function openVoice(onDone, prompt) {
+  if (!voiceSupported()) {
+    toast("This browser cannot do speech recognition. Chrome or Safari can.");
+    return;
+  }
+  voiceOnDone = onDone;
+  voiceFinal = "";
+  $("#voiceOrb").innerHTML = icon("mic");
+  $("#voiceStatus").textContent = prompt || "Listening";
+  $("#voiceText").innerHTML = "";
+  $("#voiceOverlay").hidden = false;
+  $("#voiceOverlay").classList.add("listening");
+
+  recognition = new SpeechRec();
+  recognition.lang = navigator.language || "en-SG";
+  recognition.interimResults = true;
+  // Keep the mic open across natural pauses; the user decides when to stop.
+  recognition.continuous = true;
+
+  recognition.onresult = (ev) => {
+    let interim = "";
+    for (let i = ev.resultIndex; i < ev.results.length; i++) {
+      const r = ev.results[i];
+      if (r.isFinal) voiceFinal += r[0].transcript;
+      else interim += r[0].transcript;
+    }
+    const box = $("#voiceText");
+    box.textContent = voiceFinal;
+    if (interim) {
+      const span = el("span", "interim", interim);
+      box.appendChild(span);
+    }
+  };
+
+  recognition.onerror = (ev) => {
+    // "no-speech" and "aborted" are ordinary, not failures worth shouting about.
+    if (ev.error === "not-allowed" || ev.error === "service-not-allowed") {
+      closeVoice();
+      toast("Microphone permission was declined.");
+    } else if (ev.error !== "no-speech" && ev.error !== "aborted") {
+      $("#voiceStatus").textContent = "Trouble hearing you";
+    }
+  };
+
+  // Chrome ends the session on a long silence even with continuous set, so
+  // restart while the overlay is still open.
+  recognition.onend = () => {
+    if (!$("#voiceOverlay").hidden && recognition) {
+      try { recognition.start(); } catch (e) { /* already restarting */ }
+    }
+  };
+
+  try {
+    recognition.start();
+  } catch (e) {
+    closeVoice();
+    toast("Could not start the microphone.");
+  }
+}
+
+function closeVoice() {
+  const rec = recognition;
+  recognition = null;              // stops onend from restarting it
+  if (rec) { try { rec.stop(); } catch (e) { /* already stopped */ } }
+  $("#voiceOverlay").hidden = true;
+  $("#voiceOverlay").classList.remove("listening");
+}
+
+function finishVoice() {
+  const text = voiceFinal.trim();
+  const done = voiceOnDone;
+  closeVoice();
+  if (!text) { toast("Nothing was heard."); return; }
+  if (done) done(text);
+}
+
+/** Speaks a reply back, for when the exchange started with the voice. */
+function speak(text) {
+  if (!("speechSynthesis" in window) || !text) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text.slice(0, 600));
+    u.lang = navigator.language || "en-SG";
+    u.rate = 1.02;
+    window.speechSynthesis.speak(u);
+  } catch (e) { /* speech is a bonus, never a requirement */ }
+}
+
+/* =========================================================================
    Assistant
    ========================================================================= */
 let chatBusy = false;
+let chatSpokenTurn = false;
 
 /**
  * The endpoint is stateless, so every turn carries the routines with it.
@@ -1547,6 +1889,7 @@ function chatContext() {
   const now = new Date();
   return {
     today: key,
+    viewingDate: viewKey(),
     weekday: now.toLocaleDateString(undefined, { weekday: "long" }),
     localTime: `${pad(now.getHours())}:${pad(now.getMinutes())}`,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Singapore",
@@ -1560,7 +1903,8 @@ function chatContext() {
       doneToday: isDone(t, key),
       streakDays: streakOf(t),
       missedInARow: missedRun(t)
-    }))
+    })),
+    activity: activityFor(viewKey()).map(e => ({ at: e.at, text: e.text, source: e.source }))
   };
 }
 
@@ -1642,6 +1986,13 @@ function runChatTool(name, input) {
     });
     save();
     return { ok: true, text: `Added: ${title} — ${scheduleLabel({ schedule })}` };
+  }
+
+  if (name === "log_activity") {
+    const day = /^\d{4}-\d{2}-\d{2}$/.test(input.date || "") ? input.date : viewKey();
+    const entry = addActivity(input.text, "assistant", day);
+    if (!entry) return { ok: false, text: "An activity note needs some text." };
+    return { ok: true, text: `Logged: ${entry.text}` };
   }
 
   if (name === "archive_routine") {
@@ -1774,6 +2125,9 @@ async function sendChat() {
     renderChat();
     render();
     queueSync();
+    // Only read the answer back when the question was spoken — nobody wants
+    // their phone talking after they typed.
+    if (chatSpokenTurn && streamed) speak(streamed);
   } catch (err) {
     bubble.remove();
     const e = el("div", "msg err", err.message || String(err));
@@ -1783,6 +2137,7 @@ async function sendChat() {
     save();
   } finally {
     chatBusy = false;
+    chatSpokenTurn = false;
     $("#chatSend").disabled = false;
     scrollChatDown();
   }
@@ -1864,6 +2219,41 @@ function init() {
   });
 
   $("#fab").addEventListener("click", () => openSheet(null));
+
+  // --- Day navigation
+  $("#dayPrev").addEventListener("click", () => setViewDate(addDays(viewDate, -1)));
+  $("#dayNext").addEventListener("click", () => setViewDate(addDays(viewDate, 1)));
+  $("#dayToday").addEventListener("click", () => setViewDate(new Date()));
+
+  // --- Activity
+  function noteTyped() {
+    const text = prompt("What happened?");
+    if (text && addActivity(text, "typed")) { render(); queueSync(); toast("Note added."); }
+  }
+  function noteSpoken() {
+    openVoice(text => {
+      addActivity(text, "voice");
+      render();
+      queueSync();
+      toast("Note logged.");
+    }, "Listening — what happened?");
+  }
+  $("#btnAddNote").addEventListener("click", noteTyped);
+  $("#btnVoiceNote").addEventListener("click", noteSpoken);
+  $("#fabMic").addEventListener("click", noteSpoken);
+
+  $("#voiceStop").addEventListener("click", finishVoice);
+  $("#voiceCancel").addEventListener("click", closeVoice);
+  $("#voiceOverlay").addEventListener("click", e => { if (e.target === $("#voiceOverlay")) closeVoice(); });
+
+  // --- Dictating a question to the assistant
+  $("#chatMic").addEventListener("click", () => {
+    openVoice(text => {
+      $("#chatInput").value = text;
+      chatSpokenTurn = true;
+      sendChat();
+    }, "Listening — ask away");
+  });
   $("#btnCancel").addEventListener("click", closeSheet);
   $("#taskForm").addEventListener("submit", submitTask);
   $("#fFreq").addEventListener("change", syncFreqFields);
